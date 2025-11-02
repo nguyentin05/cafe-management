@@ -45,6 +45,7 @@ class User(BaseModel):
     avatar = Column(String(200))
     image = Column(String(100))# cap nhat hinh nen mac dinh
     is_active = Column(Boolean,default=True)
+    joined_date = Column(Date, default=date.today())
 
 class Employee(User):
     __abstract__ = True
