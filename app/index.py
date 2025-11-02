@@ -1,9 +1,58 @@
-from flask import render_template,request
-from app import app
+from flask import render_template, request, redirect, url_for
+from app import app, login
+from app.dao import *
+from flask_login import login_user, logout_user
 
 @app.route('/')
 def index():
-    return render_template("index.html")
+    return render_template('index.html')
+
+@app.route('/register', methods = ['get', 'post'])
+def user_register():
+    err_msg = ""
+
+    if request.method.__eq__('POST'):
+        fullname = request.form.get('fullname')
+        username = request.form.get('username')
+        password = request.form.get('password')
+        confirm = request.form.get('confirm')
+        email = request.form.get('email')
+
+        try:
+            if password.strip().__eq__(confirm.strip()):
+                add_customer(fullname=fullname, username=username, password=password, email=email)
+                return redirect(url_for('user_signin'))
+            else:
+                err_msg = 'Mat khau khong khop'
+        except Exception as ex:
+            err_msg = 'He thong loi' + str(ex)
+
+    return render_template('register.html', err_msg=err_msg)
+
+@app.route('/user-login', methods=['get', 'post'])
+def user_signin():
+    err_msg = ''
+    if request.method.__eq__('POST'):
+        username = request.form.get('username')
+        password = request.form.get('password')
+
+        user = check_login(username=username, password=password)
+        if user:
+            login_user(user=user)
+            return redirect(url_for('index'))
+        else:
+            err_msg = 'username hoac password ko chinh xac'
+
+    return render_template('login.html', err_msg=err_msg)
+
+@app.route('/user-logout')
+def user_signout():
+    logout_user()
+    return redirect(url_for('user_signin'))
+
+@login.user_loader
+def user_load(user_id):
+    return get_user_by_id(user_id)
 
 if __name__ == '__main__':
     with app.app_context():

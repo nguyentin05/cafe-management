@@ -1,14 +1,21 @@
 import os
 from flask import Flask
 from dotenv import load_dotenv
+from flask_admin.theme import Bootstrap4Theme
 from flask_sqlalchemy import SQLAlchemy
+from flask_login import LoginManager
+from flask_admin import Admin
 
 load_dotenv()
 
 app = Flask(__name__)
-
+app.secret_key = 'hef81h47##H#Rjj98ffj3fefu8e#$(@fsf'
 app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = True
 app.config["PAGE_SIZE"]=3
+
+admin = Admin(app=app, name='Cafe Administration', theme=Bootstrap4Theme(swatch='cerulean'))
+
+login = LoginManager(app=app)
 
 db = SQLAlchemy(app=app)

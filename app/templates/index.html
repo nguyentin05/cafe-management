@@ -5,6 +5,10 @@
     <title>Title</title>
 </head>
 <body>
-
+{% if current_user.is_authenticated %}
+    <h1>{{current_user.username}}</h1>
+{% else %}
+    <h1>chua dang nhap</h1>
+{% endif %}
 </body>
 </html>

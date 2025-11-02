@@ -2,6 +2,7 @@ blinker==1.9.0
 click==8.3.0
 Flask==3.1.2
 Flask-Admin==2.0.0
+Flask-Login==0.6.3
 Flask-SQLAlchemy==3.1.1
 greenlet==3.2.4
 itsdangerous==2.2.0

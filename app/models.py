@@ -4,6 +4,7 @@ from app import db,app
 from datetime import datetime, date
 from sqlalchemy.orm import relationship
 from enum import Enum as Enums
+from flask_login import UserMixin
 
 class DishUnit(Enums):
     PIECE = "PIECE"
@@ -20,6 +21,11 @@ class OrderStatus(Enums):
     COMPLETE = 4
     CANCELED = 5
 
+class UserRole(Enums):
+    ADMIN = "ADMIN"
+    CUSTOMER = "CUSTOMER"
+    EMPLOYEE = "EMPLOYEE"
+
 class EmployeeRole(Enums):
     MANAGER = "MANAGER"
     CASHIER = "CASHIER"
@@ -35,45 +41,76 @@ class BaseModel(db.Model):
 
     id = Column(Integer, primary_key=True, autoincrement=True)
 
-class User(BaseModel):
-    __abstract__ = True
-
+class User(BaseModel, UserMixin):
     fullname = Column(String(50), nullable=False)
     username = Column(String(50), nullable=False, unique=True)
     password = Column(String(50), nullable=False)
     email = Column(String(100),nullable=True, unique=True)
     avatar = Column(String(200))
     image = Column(String(100))# cap nhat hinh nen mac dinh
-    is_active = Column(Boolean,default=True)
+    active = Column(Boolean, default=True)
     joined_date = Column(Date, default=date.today())
+    user_role = Column(Enum(UserRole), nullable=False)
+
+    __mapper_args__ = {
+        'polymorphic_on': user_role,
+        'polymorphic_identity': 'user'
+    }
 
 class Employee(User):
-    __abstract__ = True
-
-    role = Column(Enum(EmployeeRole), nullable=False)
+    id = Column(Integer, ForeignKey(User.id), primary_key=True)
+    employee_role = Column(Enum(EmployeeRole), nullable=False)
 
     @property
     def employee_code(self):
         return f"{self.role.value[0]}{self.id:04d}"
 
+    __mapper_args__ = {
+        'polymorphic_on': employee_role,
+        'polymorphic_identity': UserRole.EMPLOYEE
+    }
+
 class Admin(User):
-    pass
+    id = Column(Integer, ForeignKey(User.id), primary_key=True)
+
+    __mapper_args__ = {
+        'polymorphic_identity': UserRole.ADMIN
+    }
 
 class Customer(User):
+    id = Column(Integer, ForeignKey(User.id), primary_key=True)
     orders = relationship('Order', backref='order', lazy=True)
 
     @property
     def customer_code(self):
         return f"{"KH"}{self.id:04d}"
 
+    __mapper_args__ = {
+        'polymorphic_identity': UserRole.CUSTOMER
+    }
+
 class Cashier(Employee):
+    id = Column(Integer, ForeignKey(Employee.id), primary_key=True)
     orders = relationship('Order', backref='cashier', lazy=True)
 
+    __mapper_args__ = {
+        'polymorphic_identity': EmployeeRole.CASHIER
+    }
+
 class Manager(Employee):
-    pass
+    id = Column(Integer, ForeignKey(Employee.id), primary_key=True)
+
+    __mapper_args__ = {
+        'polymorphic_identity': EmployeeRole.MANAGER
+    }
 
 class Waiter(Employee):
+    id = Column(Integer, ForeignKey(Employee.id), primary_key=True)
     orders = relationship('Order', backref='waiter', lazy=True)
+
+    __mapper_args__ = {
+        'polymorphic_identity': EmployeeRole.WAITER
+    }
 
 
 class DishCategory(BaseModel):
@@ -172,7 +209,6 @@ class Note(BaseModel):
     }
 
 class GoodsReceiptNote(Note):
-    __tablename__ = 'goods_receipt_note'
     id = Column(Integer, ForeignKey(Note.id), primary_key=True)
 
     __mapper_args__ = {
@@ -180,7 +216,6 @@ class GoodsReceiptNote(Note):
     }
 
 class GoodsIssueNote(Note):
-    __tablename__ = 'goods_issue_note'
     id = Column(Integer, ForeignKey(Note.id), primary_key=True)
 
     __mapper_args__ = {
@@ -188,7 +223,6 @@ class GoodsIssueNote(Note):
     }
 
 class StockTransferNote(Note):
-    __tablename__ = 'stock_transfer_note'
     id = Column(Integer, ForeignKey(Note.id), primary_key=True)
 
     __mapper_args__ = {

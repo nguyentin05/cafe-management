@@ -5,6 +5,17 @@
     <title>Title</title>
 </head>
 <body>
+{% if err_msg %}
+    <h1>
+        {{err_msg}}
+    </h1>
+{% endif %}
 
+<h1>dang ki</h1>
+<form method="post" action="{{ url_for('user_signin') }}">
+    <input type="text" name="username" required>
+    <input type="password" name="password" required>
+    <input type="submit">
+</form>
 </body>
 </html>
