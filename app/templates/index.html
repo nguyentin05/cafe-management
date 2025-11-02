@@ -1,14 +1,56 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-{% if current_user.is_authenticated %}
-    <h1>{{current_user.username}}</h1>
-{% else %}
-    <h1>chua dang nhap</h1>
-{% endif %}
-</body>
-</html>
+{%extends "layout/base.html"%}
+
+{%block content%}
+<section class="hero-section vh-100 d-flex align-items-center">
+  <div class="container">
+    <div class="hero-content text-center text-white">
+      <h1 class="display-4">A UNION OF ELEGANCE</h1>
+      <p class="lead">Discover more</p>
+    </div>
+  </div>
+</section>
+
+<section class="hero-section vh-100 d-flex align-items-center position-relative overflow-hidden">
+  <video
+    src="{{ url_for('static', filename='videos/intro-video.mp4') }}"
+    class="hero-video"
+    autoplay
+    loop
+    muted
+    playsinline>
+  </video>
+  <div class="hero-overlay"></div>
+  <div class="container position-relative"> <div class="hero-content text-center text-white">
+      <h1 class="display-4">A UNION OF ELEGANCE</h1>
+      <p class="lead">Discover more</p>
+    </div>
+  </div>
+</section>
+
+<section class="space-section py-5 bg-black text-white">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-6 mb-4 mb-md-0">
+                <h2 class="display-5">CELEBRATING THE ART OF WATCHMAKING</h2>
+                <h3 class="display-6 fw-bold mb-4">WITH A BRAND NEW BOOK</h3>
+                <p class="lead">
+                  To mark our 150th anniversary, we are pleased to unveil a new book
+                  dedicated to the history and the anatomy of the watch.
+                </p>
+                <a href="#" class="btn btn-outline-light">Discover</a>
+            </div>
+            <div class="col-md-6">
+                <img
+                  src="{{ url_for('static', filename='images/background-index1.jpg') }}"
+                  alt="Book Cover"
+                  class="img-fluid shadow-lg">
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="container my-5">
+  <h2>Nội dung trang web</h2>
+  <p>Đây là phần nội dung bên dưới khu vực hero...</p>
+</div>
+{%endblock%}
