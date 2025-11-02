@@ -142,7 +142,7 @@ class Ingredient(BaseModel):
 class Recipe(BaseModel):
     instruction = Column(String(500), nullable=False)
     details = relationship('RecipeDetail', backref='recipe', lazy=True)
-    dish_id = Column(Integer, ForeignKey(Dish.id), nullable=False)
+    dish_id = Column(Integer, ForeignKey(Dish.id), nullable=False, unique=True)
     dish = relationship('Dish', back_populates='recipe')
 
 class RecipeDetail(BaseModel):
@@ -161,24 +161,42 @@ class StorageDetail(BaseModel):
     Storage = Column(Integer, ForeignKey(Storage.id), nullable=False)
 
 class Note(BaseModel):
-    __abstract__ = True
-
     type = Column(Enum(NoteType), nullable=False)
     created_date = Column(DateTime, default=datetime.now())
-    # details = relationship('NoteDetail', backref='note', lazy=True)
+    details = relationship('NoteDetail', backref='note', lazy=True)
 
-# class GoodsReceiptNote(Note):
-#     pass
-#
-# class GoodsIssueNote(Note):
-#     pass
-#
-# class StockTransferNote(Note):
-#     pass
+    __mapper_args__ = {
+        'polymorphic_on': type,
+        'polymorphic_identity': 'note'
+    }
+
+class GoodsReceiptNote(Note):
+    __tablename__ = 'goods_receipt_note'
+    id = Column(Integer, ForeignKey(Note.id), primary_key=True)
+
+    __mapper_args__ = {
+        'polymorphic_identity': NoteType.GOODS_RECEIPT
+    }
+
+class GoodsIssueNote(Note):
+    __tablename__ = 'goods_issue_note'
+    id = Column(Integer, ForeignKey(Note.id), primary_key=True)
+
+    __mapper_args__ = {
+        'polymorphic_identity': NoteType.GOODS_ISSUE
+    }
+
+class StockTransferNote(Note):
+    __tablename__ = 'stock_transfer_note'
+    id = Column(Integer, ForeignKey(Note.id), primary_key=True)
+
+    __mapper_args__ = {
+        'polymorphic_identity': NoteType.STOCK_TRANSFER
+    }
 
 class NoteDetail(BaseModel):
     quantity = Column(Float, default=0)
-    # note_id = Column(Integer, ForeignKey(Note.id), nullable=False)
+    note_id = Column(Integer, ForeignKey(Note.id), nullable=False)
     ingredient_id = Column(Integer, ForeignKey(Ingredient.id), nullable=False)
 
 class InventoryReport(BaseModel):
@@ -212,5 +230,6 @@ class InventoryReportDetail(BaseModel):
 
 if __name__ == "__main__":
     with app.app_context():
+        db.drop_all()
         db.create_all()
         db.session.commit()

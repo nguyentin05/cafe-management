@@ -1,5 +1,5 @@
 from app import app
-from models import Category, Dish
+from models import DishCategory, Dish
 
-def load_categories():
-    return Category.query.all()
+def load_dish_categories():
+    return DishCategory.query.all()
