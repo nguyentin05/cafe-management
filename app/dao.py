@@ -5,6 +5,9 @@ import hashlib
 def load_dish_categories():
     return DishCategory.query.all()
 
+def get_dish_by_id(id):
+    return Dish.query.get(id)
+
 def add_customer(fullname, username, password, **kwargs):
     password = hashlib.md5(password.strip().encode('utf-8')).hexdigest()
     user = User(fullname = fullname.strip(),
