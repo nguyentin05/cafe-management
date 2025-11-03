@@ -2,55 +2,144 @@
 
 {%block content%}
 <section class="hero-section vh-100 d-flex align-items-center">
-  <div class="container">
-    <div class="hero-content text-center text-white">
-      <h1 class="display-4">A UNION OF ELEGANCE</h1>
-      <p class="lead">Discover more</p>
+    <div class="container">
+        <div class="hero-content text-center text-white col-md-3">
+            <h1 class="display-3">A UNION OF ELEGANCE</h1>
+            <p class="lead">Discover more</p>
+        </div>
     </div>
-  </div>
 </section>
 
 <section class="hero-section vh-100 d-flex align-items-center position-relative overflow-hidden">
-  <video
-    src="{{ url_for('static', filename='videos/intro-video.mp4') }}"
-    class="hero-video"
-    autoplay
-    loop
-    muted
-    playsinline>
-  </video>
-  <div class="hero-overlay"></div>
-  <div class="container position-relative"> <div class="hero-content text-center text-white">
-      <h1 class="display-4">A UNION OF ELEGANCE</h1>
-      <p class="lead">Discover more</p>
+    <video
+            src="{{ url_for('static', filename='videos/intro-video.mp4') }}"
+            class="hero-video"
+            autoplay
+            loop
+            muted
+            playsinline>
+    </video>
+    <div class="hero-overlay"></div>
+    <div class="container position-relative">
+        <div class="hero-content text-center text-white">
+            <h1 class="display-4">A UNION OF ELEGANCE</h1>
+            <p class="lead">Discover more</p>
+        </div>
     </div>
-  </div>
 </section>
 
 <section class="space-section py-5 bg-black text-white">
     <div class="container">
         <div class="row align-items-center">
-            <div class="col-md-6 mb-4 mb-md-0">
+            <div class="col-md-6 mb-4 mb-md-0 scroll-animate slide-up">
                 <h2 class="display-5">CELEBRATING THE ART OF WATCHMAKING</h2>
                 <h3 class="display-6 fw-bold mb-4">WITH A BRAND NEW BOOK</h3>
                 <p class="lead">
-                  To mark our 150th anniversary, we are pleased to unveil a new book
-                  dedicated to the history and the anatomy of the watch.
+                    To mark our 150th anniversary, we are pleased to unveil a new book
+                    dedicated to the history and the anatomy of the watch.
                 </p>
                 <a href="#" class="btn btn-outline-light">Discover</a>
             </div>
-            <div class="col-md-6">
-                <img
-                  src="{{ url_for('static', filename='images/background-index1.jpg') }}"
-                  alt="Book Cover"
-                  class="img-fluid shadow-lg">
+            <div class="col-md-1"></div>
+            <div class="col-md-5">
+                <div class="image-zoom-wrapper">
+                    <img
+                        src="{{ url_for('static', filename='images/index-1.jpg') }}"
+                        alt="Book Cover"
+                        class="img-fluid shadow-lg">
+                </div>
             </div>
         </div>
     </div>
 </section>
 
-<div class="container my-5">
-  <h2>Nội dung trang web</h2>
-  <p>Đây là phần nội dung bên dưới khu vực hero...</p>
-</div>
+<section class="complication-section py-5 bg-black text-white">
+    <div class="container">
+        <div class="row align-items-start">
+            <div class="col-lg-7 col-md-8 scroll-animate slide-up">
+                <h2 class="display-4">A COMPLICATION ROOTED</h2>
+                <h2 class="display-4 mb-4">IN THE UNIVERSE</h2>
+                <p class="lead mb-4">
+                    Building on its heritage and past developments while looking to the
+                    future, Audemars Piguet has reimagined the perpetual calendar
+                    mechanism with ergonomics in mind.
+                </p>
+                <a href="#" class="text-white text-decoration-none discover-link">Discover more</a>
+            </div>
+            <div class="col-lg-5 col-md-4 scroll-animate slide-up">
+                <div class="border border-white-50 p-3">
+                    <p class="text-uppercase small mb-0">
+                        A COMPLICATION ROOTED IN THE UNIVERSE
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="two-image-section py-5 bg-black text-white">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 mb-4 mb-md-0">
+                <div class="image-zoom-wrapper">
+                    <img
+                            src="{{ url_for('static', filename='images/index-2.jpg') }}"
+                            alt="AP Chronicles"
+                            class="img-fluid shadow-lg">
+                </div>
+                <div class="scroll-animate slide-up mt-3">
+                    <h3>AP CHRONICLES</h3>
+                    <p>
+                        Travel back in time and immerse yourself into Audemars Piguet's universe through enriched
+                        articles,
+                        technical sheets of models and calibres as well as exclusive anecdotes...
+                    </p>
+                    <a href="#" class="btn btn-outline-light btn-sm">Discover more</a>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="image-zoom-wrapper">
+                    <img
+                            src="{{ url_for('static', filename='images/index-3.jpg') }}"
+                            alt="Musée Atelier"
+                            class="img-fluid shadow-lg">
+                </div>
+                <div class="scroll-animate slide-up mt-3">
+                    <h3>MUSÉE ATELIER AUDEMARS PIGUET</h3>
+                    <p>
+                        Experience our heritage, craftsmanship and connection to the world in the Musée Atelier
+                        Audemars Piguet which pays tribute to the craftspeople...
+                    </p>
+                    <a href="#" class="btn btn-outline-light btn-sm">Discover more</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="space-section py-5 bg-black text-white">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-5 mb-4 mb-md-0">
+                <div class="image-zoom-wrapper">
+                    <img
+                        src="{{ url_for('static', filename='images/index-4.jpg') }}"
+                        alt="AP Chronicles"
+                        class="img-fluid shadow-lg">
+                </div>
+            </div>
+            <div class="col-md-1"></div>
+            <div class="col-md-6 scroll-animate slide-up">
+                <h2 class="display-5">CELEBRATING THE ART OF WATCHMAKING</h2>
+                <h3 class="display-6 fw-bold mb-4">WITH A BRAND NEW BOOK</h3>
+                <p class="lead">
+                    To mark our 150th anniversary, we are pleased to unveil a new book
+                    dedicated to the history and the anatomy of the watch.
+                </p>
+                <a href="#" class="btn btn-outline-light">Discover</a>
+            </div>
+        </div>
+    </div>
+</section>
 {%endblock%}
