@@ -5,8 +5,20 @@ import hashlib
 def load_dish_categories():
     return DishCategory.query.all()
 
+def load_dishes(dish_cate=None):
+    query = Dish.query
+
+    if dish_cate:
+        query = query.filter(Dish.dishCategory_id.__eq__(dish_cate))
+
+    return query.all()
+
 def get_dish_by_id(id):
     return Dish.query.get(id)
+
+# def load_Dish(q=None, cate_id=None, page=None):
+#     query = Dish.query
+
 
 def add_customer(fullname, username, password, **kwargs):
     password = hashlib.md5(password.strip().encode('utf-8')).hexdigest()

@@ -1,10 +1,13 @@
 import os
+
+from cloudinary.utils import cloudinary_url
 from flask import Flask
 from dotenv import load_dotenv
 from flask_admin.theme import Bootstrap4Theme
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_admin import Admin
+import cloudinary
 
 load_dotenv()
 
@@ -19,3 +22,5 @@ admin = Admin(app=app, name='Cafe Administration', theme=Bootstrap4Theme(swatch=
 login = LoginManager(app=app)
 
 db = SQLAlchemy(app=app)
+
+cloudinary.config(cloudinary_url=os.getenv('CLOUDINARY_URL'), secure=True)

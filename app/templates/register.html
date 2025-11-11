@@ -13,11 +13,18 @@
 
 <h1>dang ki</h1>
 <form method="post" action="{{ url_for('user_register') }}">
+    <p>full name</p>
     <input type="text" name="fullname" required>
+    <p>email</p>
     <input type="email" name="email">
+    <p>username</p>
     <input type="text" name="username" required>
+    <p>password</p>
     <input type="password" name="password" required>
+    <p>confirm</p>
     <input type="password" name="confirm" required>
+    <br>
+    <br>
     <input type="submit">
 </form>
 </body>

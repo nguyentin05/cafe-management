@@ -29,6 +29,10 @@ def user_register():
 
     return render_template('register.html', err_msg=err_msg)
 
+@app.route('/main')
+def main():
+    return render_template('main.html')
+
 @app.route('/user-login', methods=['get', 'post'])
 def user_signin():
     err_msg = ''
@@ -53,6 +57,18 @@ def user_signout():
 @login.user_loader
 def user_load(user_id):
     return get_user_by_id(user_id)
+
+@app.route('/menu')
+def menu():
+    dish_cate = request.args.get('dishCate')
+    dishes = load_dishes(dish_cate)
+    return render_template('menu.html', dishes=dishes)
+
+@app.context_processor
+def common_response():
+    return {
+        'dish_categories': load_dish_categories()
+    }
 
 if __name__ == '__main__':
     with app.app_context():

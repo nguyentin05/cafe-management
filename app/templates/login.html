@@ -11,11 +11,13 @@
     </h1>
 {% endif %}
 
-<h1>dang ki</h1>
+<h1>dang nhap</h1>
 <form method="post" action="{{ url_for('user_signin') }}">
     <input type="text" name="username" required>
     <input type="password" name="password" required>
     <input type="submit">
+    <a href="{{ url_for('user_register') }}">chua co tai khoan?</a>
+    <a href="#">quen mat khau</a>
 </form>
 </body>
 </html>

@@ -1,5 +1,5 @@
 from abc import abstractmethod, ABC
-from sqlalchemy import Column, Integer, DateTime, String, Float, Boolean, ForeignKey, Enum, Date
+from sqlalchemy import Column, Integer, DateTime, String, Float, Boolean, ForeignKey, Enum, Date, Text
 from app import db,app
 from datetime import datetime, date
 from sqlalchemy.orm import relationship
@@ -122,7 +122,7 @@ class DishCategory(BaseModel):
 
 class Dish(BaseModel):
     name = Column(String(50), unique=True, nullable=False)
-    description = Column(String(200), nullable=True)
+    description = Column(Text, nullable=True)
     price = Column(Float, nullable=False)
     is_active = Column(Boolean, default=True)
     image = Column(String(200)) #nho cap nhat anh mac dinh sau khi up cloudinary
@@ -130,7 +130,6 @@ class Dish(BaseModel):
     dishCategory_id = Column(Integer, ForeignKey(DishCategory.id), nullable=False)
     details = relationship('OrderDetails', backref='dish', lazy=True)
     recipe = relationship('Recipe', uselist=False, back_populates='dish')
-
 
     def __str__(self):
         return self.name
@@ -267,4 +266,6 @@ if __name__ == "__main__":
     with app.app_context():
         db.drop_all()
         db.create_all()
+        c1 = DishCategory(name ='Latte')
+        db.session.add(c1)
         db.session.commit()

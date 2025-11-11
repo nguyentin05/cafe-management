@@ -1,26 +1,14 @@
-<nav class="navbar navbar-expand-lg navbar-dark position-absolute top-0 start-0 w-100 py-4 px-4" style="z-index: 10;">
+<nav class="navbar navbar-expand-sm navbar-dark bg-dark">
   <div class="container-fluid">
-    <a class="navbar-brand fs-1" href="#">CAFE</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <a class="navbar-brand" href="{{ url_for('main') }}">CAFE</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mynavbar">
       <span class="navbar-toggler-icon"></span>
     </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav">
-        <li class="nav-item">
-          <a class="nav-link fs-4" href="#">MENU</a>
-        </li>
-          <li class="nav-item">
-          <a class="nav-link fs-4" href="#">STORIES</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link fs-4" href="#">ABOUT US</a>
-        </li>
-      </ul>
-
-      <ul class="navbar-nav ms-auto">
-        <li class="nav-item">
-        <a class="nav-link fs-2 px-3" href="#"> <i class="bi bi-person"></i> </a>
-        </li>
+    <div class="collapse navbar-collapse" id="mynavbar">
+      <ul class="navbar-nav me-auto">
+            <li class="nav-item">
+                 <a class="nav-link" href="{{ url_for('menu') }}">MENU</a>
+            </li>
       </ul>
     </div>
   </div>
