@@ -1,4 +1,4 @@
-{%extends "layout/base.html"%}
+{%extends "layout/base/base-main.html"%}
 
 {%block content%}
     {%block headerMenu%}
@@ -11,7 +11,7 @@
                 <ul class="navbar-nav me-auto">
                     {% for c in dish_categories %}
                     <li class="nav-item">
-                        <a class="nav-link" href="/?dishCate={{ c.id }}">{{c.name}}</a>
+                        <a class="nav-link" href="{{ url_for('menu', dishCate=c.id) }}">{{c.name}}</a>
                     </li>
                     {% endfor %}
                 </ul>
@@ -24,7 +24,7 @@
     </nav>
     {%endblock%}
     <div class="container">
-        <div class="row">
+        <div class="row ">
             {% for d in dishes %}
             <div class="col-md-3 col-12">
                 <div class="card" style="width:400px">

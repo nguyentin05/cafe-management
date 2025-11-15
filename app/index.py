@@ -5,7 +5,7 @@ from flask_login import login_user, logout_user
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('home.html')
 
 @app.route('/register', methods = ['get', 'post'])
 def user_register():
@@ -43,7 +43,7 @@ def user_signin():
         user = check_login(username=username, password=password)
         if user:
             login_user(user=user)
-            return redirect(url_for('index'))
+            return redirect(url_for('home'))
         else:
             err_msg = 'username hoac password ko chinh xac'
 
@@ -63,6 +63,14 @@ def menu():
     dish_cate = request.args.get('dishCate')
     dishes = load_dishes(dish_cate)
     return render_template('menu.html', dishes=dishes)
+
+@app.route('/info')
+def info():
+    return render_template('info.html')
+
+@app.route('/menu/<int:id>')
+def detailMenu(id):
+    pass
 
 @app.context_processor
 def common_response():

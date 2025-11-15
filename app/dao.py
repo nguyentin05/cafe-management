@@ -1,5 +1,5 @@
 from app import app, db
-from models import DishCategory, Dish, User, UserRole
+from models import DishCategory, Dish, User, UserRole, Customer
 import hashlib
 
 def load_dish_categories():
@@ -22,7 +22,7 @@ def get_dish_by_id(id):
 
 def add_customer(fullname, username, password, **kwargs):
     password = hashlib.md5(password.strip().encode('utf-8')).hexdigest()
-    user = User(fullname = fullname.strip(),
+    user = Customer(fullname = fullname.strip(),
                 username = username.strip(),
                 password = password,
                 user_role = UserRole.CUSTOMER,

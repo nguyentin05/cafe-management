@@ -1,0 +1,142 @@
+{%extends "layout/base/base-home.html"%}
+
+{%block content%}
+<section class="background-section vh-100 d-flex align-items-center">
+    <div class="container">
+        <div class="text-left text-white col-md-5">
+            <h1 class="display-2 " style="font-family: 'Raleway'">CHOOSE US FOR YOUR COFFEE</h1>
+        </div>
+    </div>
+</section>
+
+<section class="video-section vh-100 d-flex align-items-center position-relative overflow-hidden">
+    <video
+            src="{{ url_for('static', filename='videos/video-home.mp4') }}"
+            class="video"
+            autoplay
+            loop
+            muted
+            playsinline>
+    </video>
+    <div class="video-overlay"></div>
+    <div class="container position-relative">
+        <div class="video-content text-center text-white col-md-5">
+            <h1 class="display-4" style="font-family: 'Raleway'">TON VINH NGHE THUAT PHA CHE</h1>
+        </div>
+    </div>
+</section>
+
+<section class="py-5 bg-black text-white">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-6 mb-4 mb-md-0 scroll-animate slide-left">
+                <h2 class="display-3" style="font-family: 'Raleway'">THIET KE BANG ANH SANG TU NHIEN</h2>
+                <h3 class="display-6 mb-4">KHONG GIAN TRUYEN CAM HUNG</h3>
+                <p class="lead">
+                    Tan huong nguon cam hung bat tan trong khong gian kien truc thoang đang,
+                    ngap tran anh sang tu nhien cua chung toi.
+                </p>
+            </div>
+            <div class="col-md-1"></div>
+            <div class="col-md-5">
+                <div class="image-zoom">
+                    <img
+                        src="{{ url_for('static', filename='images/home/home-1.jpg') }}"
+                        alt="Space Image"
+                        class="img-fluid shadow-lg">
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-5 bg-black text-white">
+    <div class="container">
+        <div class="row align-items-start scroll-animate slide-up">
+            <div class="col-lg-7 col-md-8">
+                <h2 class="display-5">SU HOAN HAO AN TRONG TUNG CHI TIET</h2>
+                <h2 class="display-5 mb-4">MOT HANH TRINH TI MI</h2>
+                <p class="lead mb-4">
+                    Ke thua di san cua nhung nghe nhan,
+                    chung toi theo duoi chat luong tuyet doi.
+                    Tu viec lua chon hat den ky thuat pha che,
+                    moi yeu to đeu đuoc kiem soat voi đo chinh xac cao nhat.
+                </p>
+            </div>
+            <div class="col-lg-5 col-md-4">
+                <div class="border border-white-50 p-3">
+                    <p class="small mb-0">TIM HIEU THEM</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="quality-section py-5 bg-black text-white">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 mb-4 mb-md-0">
+                <div class="image-zoom">
+                    <img
+                        src="{{ url_for('static', filename='images/home/home-2.jpg') }}"
+                        alt="Coffee Bean Image"
+                        class="img-fluid shadow-lg">
+                </div>
+                <div class="scroll-animate slide-up mt-3">
+                    <h3>CAU CHUYEN NGUYEN BAN</h3>
+                    <p>
+                        Du hanh qua cac vung dat tru danh.
+                        Kham pha tuyen chon nhung hat ca phe thuong hang,
+                        duoc rang xay thu cong de danh thuc tron ven huong vi nguyen ban...
+                    </p>
+<!--                    <a href="#" class="btn btn-outline-light btn-sm">Discover more</a>-->
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="image-zoom">
+                    <img
+                        src="{{ url_for('static', filename='images/home/home-3.jpg') }}"
+                        alt="Equipment Image"
+                        class="img-fluid shadow-lg">
+                </div>
+                <div class="scroll-animate slide-up mt-3">
+                    <h3>XUONG PHA CHE TINH XAO</h3>
+                    <p>
+                        Trai nghiem di san và tay nghe thu cong,
+                        noi cong nghe chiet xuat hang dau the gioi gap go ky thuat cua barista
+                        de tao ra giot espresso hoan hao...
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-5 bg-black text-white">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-5 mb-4 mb-md-0">
+                <div class="image-zoom">
+                    <img
+                        src="{{ url_for('static', filename='images/home/home-4.jpg') }}"
+                        alt="CAFE Image"
+                        class="img-fluid shadow-lg">
+                </div>
+            </div>
+            <div class="col-md-1"></div>
+            <div class="col-md-6 scroll-animate slide-right text-md-end">
+                <h2 class="display-5" style="font-family: 'Raleway'">KHONG CHI LA MOT QUAN CA PHE</h2>
+                <h3 class="display-6 fw-bold mb-4" style="font-family: 'Raleway'">Mot Tuyen Ngon Ve Phong Cach</h3>
+                <p class="lead">
+                    CAFE duoc sinh ra tu dam me voi su hoan hao.
+                    Chung toi khong chi phuc vu ca phe,
+                    chung toi mang den mot trai nghiem—noi nghe thuat pha che,
+                    kien truc tinh te va di san gap go.
+                </p>
+                <a href="#" class="btn btn-outline-light">Cau chuyen cua chung toi</a>
+            </div>
+        </div>
+    </div>
+</section>
+{%endblock%}

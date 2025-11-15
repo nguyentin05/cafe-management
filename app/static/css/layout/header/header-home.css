@@ -1,0 +1,38 @@
+.navbar-dark .navbar-nav .nav-link:hover {
+  color: #fff !important;
+}
+.navbar-nav .nav-link {
+  position: relative;
+  padding-bottom: 0.25rem;
+}
+.navbar-nav .nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 2px;
+  transition: width 0.3s ease;
+}
+.navbar-nav .nav-link:hover::after {
+  width: 100%;
+}
+.navbar-dark .navbar-nav .nav-link::after {
+  background-color: white;
+}
+.navbar-light .navbar-nav .nav-link::after {
+  background-color: black;
+}
+.navbar-dark .navbar-nav .nav-link:hover::after {
+  width: 100%;
+}
+.navbar {
+  transition: transform 0.3s ease, background-color 0.3s ease;
+}
+.navbar.header-scrolled {
+  position: fixed;
+}
+.navbar.header-hidden {
+  transform: translateY(-100%);
+}

@@ -1,3 +1,4 @@
+//cai nay cho navbar
 document.addEventListener('DOMContentLoaded', function() {
 
   const header = document.querySelector('.navbar');
@@ -33,6 +34,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   }, false);
 });
+// cai any cho chu truoc len
 document.addEventListener("DOMContentLoaded", function() {
   const observerOptions = {
     root: null,
