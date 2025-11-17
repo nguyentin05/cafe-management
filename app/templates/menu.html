@@ -1,42 +1,49 @@
 {%extends "layout/base/base-main.html"%}
 
 {%block content%}
-    {%block headerMenu%}
-    <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
-        <div class="container-fluid">
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mynavbar">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="mynavbar">
-                <ul class="navbar-nav me-auto">
-                    {% for c in dish_categories %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('menu', dishCate=c.id) }}">{{c.name}}</a>
-                    </li>
-                    {% endfor %}
-                </ul>
-                <form class="d-flex">
-                    <input class="form-control me-2" type="text" placeholder="Search">
-                    <button class="btn btn-primary" type="button">Search</button>
-                </form>
-            </div>
+<div class="container mt-3">
+    <div class="row">
+        <div class="col-md-2 col-12">
+            <ul class="nav flex-column menu-sidebar">
+                {% for cg in category_groups %}
+                <li class="nav-item menu-title fs-4">{{ cg.name }}</li>
+                {% for dc in cg.categories %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('menu', dishCate=dc.id) }}">{{dc.name}}</a>
+                </li>
+                {% endfor %}
+                {% endfor %}
+            </ul>
         </div>
-    </nav>
-    {%endblock%}
-    <div class="container">
-        <div class="row ">
-            {% for d in dishes %}
-            <div class="col-md-3 col-12">
-                <div class="card" style="width:400px">
-                    <img class="card-img-top" src="{{ d.image }}" alt="Card image">
-                    <div class="card-body">
-                        <h4 class="card-title">{{ d.name }}</h4>
-                        <p class="card-text">{{ d.price }}</p>
-                        <a href="#" class="btn btn-primary">detail</a>
+        <div class="col-md-10 col-12 fs-4">
+            <div class="mb-3 text-muted">
+                {% if current_cate %}
+                <div class="mb-2 text-muted">
+                    <a class="text-decoration-none text-muted" href="{{ url_for('menu') }}">Menu</a>
+                    / <span class="fw-semibold">{{ current_cate.name }}</span>
+                </div>
+                {% else %}
+                <h2 class="fw-bold mb-3 text-black">MENU</h2>
+                {% endif %}
+            </div>
+            <hr>
+            <div class="row row-cols-md-4 g-4" style="padding: 0.5rem">
+                {% for d in dishes %}
+                <div class="col">
+                    <div class="image-zoom-dish">
+                        <img class="img-fluid shadow-lg" src="{{ d.image }}" alt="Card image">
+                    </div>
+                    <h4 class="card-title mt-2 fs-5" style="font-family: 'Montserrat', sans-serif">{{ d.name }}</h4>
+                    <div class="card-body d-flex align-items-center justify-content-between">
+                        <div>
+                            <h5 class="card-text">{{ d.price }}</h5>
+                        </div>
+                        <a href="#" class="btn btn-detail">add to cart</a>
                     </div>
                 </div>
+                {% endfor %}
             </div>
-            {% endfor %}
         </div>
     </div>
+</div>
 {%endblock%}

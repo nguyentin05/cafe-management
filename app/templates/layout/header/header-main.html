@@ -1,18 +1,26 @@
 <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="{{ url_for('main') }}">CAFE</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mynavbar">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="mynavbar">
-      <ul class="navbar-nav me-auto">
-            <li class="nav-item">
-                 <a class="nav-link" href="{{ url_for('menu') }}">MENU</a>
-            </li>
-           <li class="nav-item">
-                 <a class="nav-link" href="{{ url_for('info') }}">ACCOUNT</a>
-            </li>
-      </ul>
+    <div class="container-fluid">
+        <a class="navbar-brand" href="{{ url_for('home') }}">CAFE</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mynavbar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="mynavbar">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('menu') }}">MENU</a>
+                </li>
+                <li>
+                    <a class="nav-link" href="">Thong bao</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link" href="#" role="button" data-bs-toggle="dropdown">ACCOUNT</a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{{ url_for('info') }}">information</a></li>
+                        <li><a class="dropdown-item" href="#">history</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('user_signout') }}">log out</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
     </div>
-  </div>
 </nav>
