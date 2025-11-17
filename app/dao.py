@@ -1,6 +1,9 @@
 from app import app, db
-from models import DishCategory, Dish, User, UserRole, Customer
+from models import DishCategory, Dish, User, UserRole, Customer, CategoryGroup
 import hashlib
+
+def load_category_groups():
+    return CategoryGroup.query.all()
 
 def load_dish_categories():
     return DishCategory.query.all()
@@ -15,6 +18,9 @@ def load_dishes(dish_cate=None):
 
 def get_dish_by_id(id):
     return Dish.query.get(id)
+
+def get_dish_category_by_id(id):
+    return DishCategory.query.get(id)
 
 # def load_Dish(q=None, cate_id=None, page=None):
 #     query = Dish.query

@@ -4,7 +4,7 @@ from app.dao import *
 from flask_login import login_user, logout_user
 
 @app.route('/')
-def index():
+def home():
     return render_template('home.html')
 
 @app.route('/register', methods = ['get', 'post'])
@@ -43,7 +43,7 @@ def user_signin():
         user = check_login(username=username, password=password)
         if user:
             login_user(user=user)
-            return redirect(url_for('home'))
+            return redirect(url_for('main'))
         else:
             err_msg = 'username hoac password ko chinh xac'
 
@@ -61,8 +61,9 @@ def user_load(user_id):
 @app.route('/menu')
 def menu():
     dish_cate = request.args.get('dishCate')
+    current_cate = get_dish_category_by_id(dish_cate) if dish_cate else None
     dishes = load_dishes(dish_cate)
-    return render_template('menu.html', dishes=dishes)
+    return render_template('menu.html', dishes=dishes, current_cate=current_cate)
 
 @app.route('/info')
 def info():
@@ -75,7 +76,8 @@ def detailMenu(id):
 @app.context_processor
 def common_response():
     return {
-        'dish_categories': load_dish_categories()
+        'dish_categories': load_dish_categories(),
+        'category_groups': load_category_groups()
     }
 
 if __name__ == '__main__':
