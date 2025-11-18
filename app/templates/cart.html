@@ -1,0 +1,126 @@
+{%extends "layout/base/base-blank.html"%}
+{% block css %}
+{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/pages/cart.css')}}">
+{% endblock %}
+
+{% block js %}
+{{ super() }}
+<script src="{{ url_for('static', filename='js/cart.js') }}"></script>
+{% endblock %}
+
+{%block content%}
+<div class="row g-0">
+    <div class="col-lg-4 col-md-5">
+        <div class="left-panel">
+            <a href="{{ url_for('menu') }}" class="text-white text-decoration-none back-link">
+                <span class="back-icon">&lt;</span>
+                <span>Back to menu</span>
+            </a>
+
+            <div class="review-title">
+                Review order (<span class="cartCounter">{{ cart_stats.total_quantity }}</span>)
+            </div>
+
+            <div class="store-card mb-3 address-card">
+                <div class="d-flex justify-content-between align-items-center">
+                    <!-- Khối nhập địa chỉ -->
+                    <div class="flex-grow-1 me-3">
+                        <label for="addressInput" class="form-label address-label mb-1">
+                            Address
+                        </label>
+                        <input type="text"
+                               class="form-control address-input"
+                               id="addressInput"
+                               placeholder="Enter your address">
+                    </div>
+
+                    <!-- Nút X để xóa/clear hoặc chọn lại gì đó -->
+                    <button type="button"
+                            class="btn btn-sm btn-outline-light rounded-circle address-clear-btn">
+                        &times;
+                    </button>
+                </div>
+            </div>
+
+
+            <div class="row g-3 mt-2">
+                <div class="col-12 col-lg-6">
+                    <div class="pickup-box">
+                        <div class="pickup-label">Pickup method</div>
+                        <div class="pickup-value">
+                            <span>In store</span>
+                            <span>▼</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-lg-6">
+                    <div class="pickup-box">
+                        <div class="pickup-label">Pickup time</div>
+                        <div class="pickup-value">
+                            <span>3–6 mins</span>
+                            <span>▼</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- RIGHT -->
+    <div class="col-lg-8 col-md-7">
+        <div class="right-panel">
+
+            <!-- Item 1 -->
+            <div class="cart-item-card">
+                <div class="product-img">
+                    <img src="https://images.unsplash.com/photo-1511920170033-f8396924c348?auto=format&fit=crop&w=400&q=80"
+                         alt="">
+                </div>
+                <div class="item-main">
+                    <div class="item-name">Iced Vanilla Protein Latte</div>
+                    <div class="item-meta">Grande 16 fl oz • 270 Calories</div>
+                    <div class="item-actions text-success">
+                        <span>✏️ Edit</span>
+                        <span>⋯</span>
+                        <span>🗑</span>
+                    </div>
+                </div>
+                <div class="item-price">$6.95</div>
+            </div>
+
+            <!-- Summary -->
+            <div class="summary-card">
+                <div class="summary-row">
+                    <span>Subtotal</span>
+                    <span>$26.60</span>
+                </div>
+                <!-- thêm các dòng thuế, phí… nếu muốn -->
+                <div class="summary-row total">
+                    <span>Total</span>
+                    <span>$26.60</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<button class="btn-continue">
+    Continue
+</button>
+
+
+<!--<div class="row">-->
+<!--    <div class="col-md-6 col-12">-->
+<!--       <h1>review order</h1>-->
+<!--    </div>-->
+<!--    <div class="col-md-6 col-12">-->
+<!--        <table>-->
+<!--            <tr>-->
+<!--                <th></th>-->
+<!--            </tr>-->
+<!--        </table>-->
+<!--    </div>-->
+<!--</div>-->
+{%endblock%}

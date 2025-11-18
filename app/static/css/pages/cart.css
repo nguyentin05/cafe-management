@@ -1,0 +1,217 @@
+body {
+    background-color: #f5f5f5;
+}
+
+.left-panel {
+    background-color: #1e3932;   /* xanh Starbucks */
+    color: #fff;
+    min-height: 100vh;
+    padding: 1.5rem 2rem;
+}
+
+.back-link {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    font-weight: 500;
+    margin-bottom: 2rem;
+}
+
+.back-link i {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 1px solid #fff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-style: normal;
+    font-size: .8rem;
+}
+
+.review-title {
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+}
+
+.store-card {
+    background-color: #123026;
+    border-radius: .75rem;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1rem;
+    font-size: .95rem;
+}
+
+.store-name {
+    font-weight: 500;
+}
+
+.pickup-box {
+    background-color: #123026;
+    border-radius: .75rem;
+    padding: .9rem 1rem;
+    font-size: .9rem;
+}
+
+.pickup-label {
+    font-size: .75rem;
+    opacity: .8;
+}
+
+.pickup-value {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: .15rem;
+    font-weight: 500;
+}
+
+.pickup-value span:last-child {
+    font-size: .8rem;
+}
+
+/* Right side */
+.right-panel {
+    padding: 2rem 2.5rem;
+}
+
+.cart-item-card {
+    background-color: #fff;
+    border-radius: 1rem;
+    padding: 1rem 1.5rem;
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    margin-bottom: 1rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,.04);
+}
+
+.product-img {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.product-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.item-main {
+    flex: 1;
+}
+
+.item-name {
+    font-weight: 600;
+    margin-bottom: .2rem;
+}
+
+.item-meta {
+    font-size: .8rem;
+    color: #555;
+}
+
+.item-actions {
+    margin-top: .5rem;
+    font-size: .85rem;
+    display: flex;
+    gap: .5rem;
+}
+
+.item-actions span {
+    cursor: pointer;
+}
+
+.item-price {
+    font-weight: 600;
+    font-size: .95rem;
+    white-space: nowrap;
+}
+
+.summary-card {
+    background-color: #fff;
+    border-radius: 1rem 1rem 0 0;
+    padding: 1.25rem 1.5rem;
+    box-shadow: 0 -2px 6px rgba(0,0,0,.06);
+    margin-top: 2rem;
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: .35rem;
+    font-size: .9rem;
+}
+
+.summary-row.total {
+    font-weight: 700;
+    margin-top: .5rem;
+    font-size: 1rem;
+}
+
+.btn-continue {
+    position: fixed;
+    right: 2.5rem;
+    bottom: 1.5rem;
+    padding: .8rem 2.5rem;
+    border-radius: 999px;
+    background-color: #00754a;
+    border: none;
+    color: #fff;
+    font-weight: 600;
+    box-shadow: 0 4px 10px rgba(0,0,0,.25);
+}
+
+@media (max-width: 991.98px) {
+    .left-panel {
+        min-height: auto;
+    }
+    .btn-continue {
+        right: 1rem;
+        left: 1rem;
+    }
+}
+/* đã có sẵn từ trước, giữ nguyên nếu đang dùng */
+.store-card {
+    background-color: #123026;
+    border-radius: .75rem;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1rem;
+    font-size: .95rem;
+}
+
+/* style riêng cho address card */
+.address-label {
+    font-size: .85rem;
+    color: #ffffff;
+    opacity: .9;
+}
+
+.address-input {
+    max-width: 260px;          /* muốn full width thì bỏ dòng này */
+    background-color: #ffffff;
+    border: none;
+    border-radius: 2px;
+    padding: .3rem .5rem;
+    height: 32px;
+}
+
+.address-input:focus {
+    box-shadow: 0 0 0 2px rgba(255,255,255,0.4);
+    outline: none;
+}
+
+/* nút X bên phải */
+.address-clear-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
