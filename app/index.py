@@ -1,5 +1,5 @@
-from flask import render_template, request, redirect, url_for
-from app import app, login
+from flask import render_template, request, redirect, url_for, session, jsonify
+from app import app, login, utils
 from app.dao import *
 from flask_login import login_user, logout_user
 
@@ -49,6 +49,32 @@ def user_signin():
 
     return render_template('login.html', err_msg=err_msg)
 
+
+@app.route('/api/add-cart', methods=['post'])
+def add_to_cart():
+    data = request.json
+    id = str(data.get('id'))
+    name = data.get('name')
+    price = data.get('price')
+
+    cart = session.get('cart')
+    if not cart:
+        cart = {}
+
+    if id in cart:
+        cart[id]['quantity'] +=1
+    else:
+        cart[id] = {
+            'id': id,
+            'name': name,
+            'price': price,
+            'quantity': 1
+        }
+
+    session['cart'] = cart
+
+    return jsonify(utils.count_cart(cart=cart))
+
 @app.route('/user-logout')
 def user_signout():
     logout_user()
@@ -73,11 +99,16 @@ def info():
 def detailMenu(id):
     pass
 
+@app.route('/cart')
+def cart():
+    return render_template('cart.html')
+
 @app.context_processor
 def common_response():
     return {
         'dish_categories': load_dish_categories(),
-        'category_groups': load_category_groups()
+        'category_groups': load_category_groups(),
+        'cart_stats': utils.count_cart(session.get('cart'))
     }
 
 if __name__ == '__main__':

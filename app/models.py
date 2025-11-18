@@ -1,5 +1,3 @@
-from os import name
-
 from sqlalchemy import Column, Integer, DateTime, String, Float, Boolean, ForeignKey, Enum, Date, Text
 from app import db,app
 from datetime import datetime, date
@@ -16,11 +14,13 @@ class IngredientUnit(Enums):
     L = "L"
 
 class OrderStatus(Enums):
-    WAITING = 1
-    PROCESSING = 2
-    READY_FOR_CHECKOUT = 3
-    COMPLETE = 4
-    CANCELED = 5
+    PENDING = 'pending'
+    CONFIRMED = 'confirmed'
+    PREPARING = 'preparing'
+    DELIVERING = 'delivering'
+    READY_TO_PAY = 'ready_to_pay'
+    COMPLETE = 'completed'
+    CANCELED = 'cancelled'
 
 class UserRole(Enums):
     ADMIN = "ADMIN"
@@ -36,6 +36,10 @@ class NoteType(Enums):
     GOODS_RECEIPT = "GRN"
     GOODS_ISSUE = "GIN"
     STOCK_TRANSFER = "STN"
+
+class OrderType(Enums):
+    ONLINE = "online"
+    OFFLINE = "offline"
 
 class BaseModel(db.Model):
     __abstract__ = True
@@ -80,7 +84,7 @@ class Admin(User):
 
 class Customer(User):
     id = Column(Integer, ForeignKey(User.id), primary_key=True)
-    orders = relationship('Order', backref='order', lazy=True)
+    online_orders = relationship('OnlineOrder', backref='customer', lazy=True)
 
     @property
     def customer_code(self):
@@ -92,7 +96,7 @@ class Customer(User):
 
 class Cashier(Employee):
     id = Column(Integer, ForeignKey(Employee.id), primary_key=True)
-    orders = relationship('Order', backref='cashier', lazy=True)
+    offline_orders = relationship('OfflineOrder', backref='cashier', lazy=True)
 
     __mapper_args__ = {
         'polymorphic_identity': EmployeeRole.CASHIER
@@ -144,13 +148,33 @@ class Dish(BaseModel):
 
 class Order(BaseModel):
     created_date = Column(DateTime, default=datetime.now())
-    status = Column(Enum(OrderStatus), default=OrderStatus.WAITING)
+    status = Column(Enum(OrderStatus), nullable=False)
+    note = Column(Text, nullable=True)
     details = relationship('OrderDetails', backref='order', lazy=True)
-    customer_id = Column(Integer, ForeignKey(Customer.id), nullable=False)
     waiter_id = Column(Integer, ForeignKey(Waiter.id), nullable=False)
-    cashier_id = Column(Integer, ForeignKey(Cashier.id), nullable=False)
-    discount = Column(String(50), nullable=True, unique=True)
+    # discount = Column(String(50), nullable=True, unique=True)
     payments = relationship('Payment', backref='order', lazy=True)
+    order_type = Column(Enum(OrderType), nullable=False)
+    __mapper_args__ = {
+        'polymorphic_on': order_type,
+        'polymorphic_identity': 'order'
+    }
+
+class OnlineOrder(Order):
+    id = Column(Integer, ForeignKey(Order.id), primary_key=True)
+    customer_id = Column(Integer, ForeignKey(Customer.id), nullable=False)
+    customer_address = Column(String(255), nullable=False)
+    __mapper_args__ = {
+        'polymorphic_identity': OrderType.ONLINE,
+    }
+
+class OfflineOrder(Order):
+    id = Column(Integer, ForeignKey(Order.id), primary_key=True)
+    table_number = Column(Integer, nullable=False)
+    cashier_id = Column(Integer, ForeignKey(Cashier.id), nullable=False)
+    __mapper_args__ = {
+        'polymorphic_identity': OrderType.OFFLINE,
+    }
 
 class OrderDetails(BaseModel):
     quantity = Column(Integer, default=0)
