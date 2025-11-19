@@ -25,3 +25,23 @@ function addToCart(id, name, price) {
         updateUI(data);
     })
 }
+
+function pay() {
+    const addressInput = document.getElementById('address');
+    const address = addressInput.value.trim();
+
+    if (confirm('u sure?') == true) {
+        fetch('/api/pay', {
+            method: 'post',
+            body: JSON.stringify({
+                'address': address
+            }),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then(res => res.json()).then(data => {
+            if (data.code == 200)
+                location.reload()
+        })
+    }
+}

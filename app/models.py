@@ -147,11 +147,11 @@ class Dish(BaseModel):
         return self.name
 
 class Order(BaseModel):
-    created_date = Column(DateTime, default=datetime.now())
+    created_date = Column(DateTime, default=datetime.now)
     status = Column(Enum(OrderStatus), nullable=False)
     note = Column(Text, nullable=True)
     details = relationship('OrderDetails', backref='order', lazy=True)
-    waiter_id = Column(Integer, ForeignKey(Waiter.id), nullable=False)
+    waiter_id = Column(Integer, ForeignKey(Waiter.id), nullable=True)
     # discount = Column(String(50), nullable=True, unique=True)
     payments = relationship('Payment', backref='order', lazy=True)
     order_type = Column(Enum(OrderType), nullable=False)

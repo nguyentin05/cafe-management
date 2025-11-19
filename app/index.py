@@ -1,7 +1,8 @@
 from flask import render_template, request, redirect, url_for, session, jsonify
 from app import app, login, utils
 from app.dao import *
-from flask_login import login_user, logout_user
+from flask_login import login_user, logout_user, login_required
+
 
 @app.route('/')
 def home():
@@ -58,6 +59,7 @@ def add_to_cart():
     price = data.get('price')
 
     cart = session.get('cart')
+
     if not cart:
         cart = {}
 
@@ -99,9 +101,25 @@ def info():
 def detailMenu(id):
     pass
 
-@app.route('/cart')
+@app.route('/cart', methods=['get', 'post'])
 def cart():
+    if request.method.__eq__('POST'):
+        address = request.form.get('address')
+
     return render_template('cart.html')
+
+@app.route('/api/pay', methods=['post'])
+@login_required
+def pay():
+    data = request.json
+    address = data.get('address')
+    try:
+        add_online_order(session.get('cart'),address=address)
+        del session['cart']
+    except:
+        return jsonify({'code': 400})
+
+    return jsonify({'code': 200})
 
 @app.context_processor
 def common_response():

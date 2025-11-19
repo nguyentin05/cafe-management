@@ -29,7 +29,7 @@ def add_customer(fullname, username, password, **kwargs):
     user = Customer(fullname = fullname.strip(),
                 username = username.strip(),
                 password = password,
-                user_role = UserRole.CUSTOMER,
+                # user_role = UserRole.CUSTOMER,
                 email = kwargs.get('email'))
 
     db.session.add(user)
@@ -49,18 +49,22 @@ def check_login(username, password, role=None):
 def get_user_by_id(id):
     return User.query.get(id)
 
-def add_online_order(cart):
+def add_online_order(cart, address):
     if cart:
-        order = OnlineOrder(customer=current_user,
-                            status=OrderStatus.PENDING,
-                            )
+        order = OnlineOrder(
+            customer_id=current_user.id,
+            customer_address=address,
+            status=OrderStatus.PENDING
+        )
         db.session.add(order)
 
         for c in cart.values():
-            d = OrderDetails(order=order,
-                             dish_id=c['id'],
-                             quantity=c['quantity'],
-                             unit_price=c['price'])
+            d = OrderDetails(
+                order_id=order.id,
+                dish_id=c['id'],
+                quantity=c['quantity'],
+                unit_price=c['price']
+            )
             db.session.add(d)
 
         db.session.commit()
