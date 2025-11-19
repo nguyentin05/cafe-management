@@ -24,16 +24,11 @@
 
             <div class="store-card mb-3 address-card">
                 <div class="d-flex justify-content-between align-items-center">
-                    <!-- Khối nhập địa chỉ -->
-                    <div class="flex-grow-1 me-3">
-                        <label for="addressInput" class="form-label address-label mb-1">
-                            Address
-                        </label>
-                        <input type="text"
-                               class="form-control address-input"
-                               id="addressInput"
-                               placeholder="Enter your address">
-                    </div>
+                    <form action="{{ url_for('cart') }}" method="post">
+                        <p>dia chi</p>
+                        <input type="text" name="address" id="address" placeholder="nhap dia chi" required>
+                        <input type="button" value="pay" onclick="pay()">Thanh toan</input>
+                    </form>
 
                     <!-- Nút X để xóa/clear hoặc chọn lại gì đó -->
                     <button type="button"
