@@ -50,13 +50,17 @@ def get_user_by_id(id):
     return User.query.get(id)
 
 def add_online_order(cart, address):
-    if cart:
+    if not cart:
+        raise ValueError("Cart is empty")
+
+    try:
         order = OnlineOrder(
             customer_id=current_user.id,
             customer_address=address,
             status=OrderStatus.PENDING
         )
         db.session.add(order)
+        db.session.flush()
 
         for c in cart.values():
             d = OrderDetails(
@@ -68,3 +72,26 @@ def add_online_order(cart, address):
             db.session.add(d)
 
         db.session.commit()
+
+    except Exception as e:
+        db.session.rollback()
+        print('ERROR in add_online_order:', e)
+        raise
+
+# def add_online_order(cart, address):
+#     if cart:
+#         order = OnlineOrder(customer=current_user,
+#                             status=OrderStatus.PENDING,
+#                             customer_address=address)
+#         db.session.add(order)
+#         print('done1')
+#         for c in cart.values():
+#             d = OrderDetails(order=order,
+#                              dish_id=c['id'],
+#                              quantity=c['quantity'],
+#                              unit_price=c['price'])
+#             print(d)
+#             db.session.add(d)
+#
+#         print('done2')
+#         db.session.commit()

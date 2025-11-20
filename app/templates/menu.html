@@ -45,9 +45,9 @@
                     <h4 class="card-title mt-2 fs-5" style="font-family: 'Montserrat', sans-serif">{{ d.name }}</h4>
                     <div class="card-body d-flex align-items-center justify-content-between">
                         <div>
-                            <h5 class="card-text">{{ d.price }}</h5>
+                            <h5 class="card-text">{{ "{:,.0f}".format(d.price) }}</h5>
                         </div>
-                        <a href="#" class="btn btn-detail" onclick="addToCart({{ d.id }}, '{{ d.name }}', {{ d.price }})">add to order</a>
+                        <a href="#" class="btn btn-detail" onclick="addToCart({{ d.id }}, '{{ d.name }}', {{ d.price }}, '{{ d.image }}')">add to order</a>
                     </div>
                 </div>
                 {% endfor %}

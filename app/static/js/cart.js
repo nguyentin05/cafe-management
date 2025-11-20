@@ -8,7 +8,7 @@ function updateUI(data) {
         item.innerText = data.total_amount.toLocaleString();
 }
 
-function addToCart(id, name, price) {
+function addToCart(id, name, price, image) {
     event.preventDefault()
 
     fetch('/api/add-cart', {
@@ -16,7 +16,8 @@ function addToCart(id, name, price) {
         body: JSON.stringify({
             'id': id,
             'name': name,
-            'price': price
+            'price': price,
+            'image': image
         }),
         headers: {
             'Content-Type': 'application/json'
@@ -44,4 +45,24 @@ function pay() {
                 location.reload()
         })
     }
+}
+function updateCart(id) {
+    fetch('/api/update-cart/' + id, {
+        method: 'put',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }).then(res => res.json()).then(data => {
+        updateUI(data);
+    })
+}
+function deleteCart(id) {
+    fetch('/api/delete-cart/' + id, {
+        method: 'delete',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }).then(res => res.json()).then(data => {
+        updateUI(data);
+    })
 }
