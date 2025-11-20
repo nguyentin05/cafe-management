@@ -57,7 +57,6 @@ def add_to_cart():
     id = str(data.get('id'))
     name = data.get('name')
     price = data.get('price')
-
     cart = session.get('cart')
 
     if not cart:
@@ -70,6 +69,7 @@ def add_to_cart():
             'id': id,
             'name': name,
             'price': price,
+            'image': get_dish_by_id(id).image,
             'quantity': 1
         }
 
@@ -107,6 +107,28 @@ def cart():
         address = request.form.get('address')
 
     return render_template('cart.html')
+
+
+@app.route('/api/update-cart/<dish_id>', methods=['put'])
+def update_cart(dish_id):
+    cart = session.get('cart')
+
+    if cart and dish_id in cart:
+        cart[dish_id]['quantity'] += 1
+        session['cart'] = cart
+
+    return jsonify(utils.count_cart(cart=cart))
+
+@app.route('/api/delete-cart/<dish_id>', methods=['delete'])
+def delete_cart(dish_id):
+    cart = session.get('cart')
+
+    if cart and dish_id in cart:
+        del cart[dish_id]
+        session['cart'] = cart
+
+    return jsonify(utils.count_cart(cart=cart))
+
 
 @app.route('/api/pay', methods=['post'])
 @login_required

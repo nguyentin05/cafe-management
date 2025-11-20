@@ -51,8 +51,7 @@ class User(BaseModel, UserMixin):
     username = Column(String(50), nullable=False, unique=True)
     password = Column(String(50), nullable=False)
     email = Column(String(100),nullable=True, unique=True)
-    avatar = Column(String(200))
-    image = Column(String(100))# cap nhat hinh nen mac dinh
+    avatar = Column(String(200))# cap nhat hinh nen mac dinh
     active = Column(Boolean, default=True)
     joined_date = Column(Date, default=date.today())
     user_role = Column(Enum(UserRole), nullable=False)
@@ -102,12 +101,12 @@ class Cashier(Employee):
         'polymorphic_identity': EmployeeRole.CASHIER
     }
 
-class Manager(Employee):
-    id = Column(Integer, ForeignKey(Employee.id), primary_key=True)
-
-    __mapper_args__ = {
-        'polymorphic_identity': EmployeeRole.MANAGER
-    }
+# class Manager(Employee):
+#     id = Column(Integer, ForeignKey(Employee.id), primary_key=True)
+#
+#     __mapper_args__ = {
+#         'polymorphic_identity': EmployeeRole.MANAGER
+#     }
 
 class Waiter(Employee):
     id = Column(Integer, ForeignKey(Employee.id), primary_key=True)

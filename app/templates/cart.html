@@ -13,97 +13,97 @@
 <div class="row g-0">
     <div class="col-lg-4 col-md-5">
         <div class="left-panel">
-            <a href="{{ url_for('menu') }}" class="text-white text-decoration-none back-link">
-                <span class="back-icon">&lt;</span>
+            <a href="{{ url_for('menu') }}"
+               class="d-flex align-items-center gap-2 text-white text-decoration-none mb-4 fw-bold">
+                <svg viewBox="0 0 24 24" style="width: 24px; height: 24px; overflow: visible; fill: currentcolor;">
+                    <path d="M13.4801 5.42385C13.1619 5.15868 12.689 5.20167 12.4238 5.51988L7.69058 11.1998C7.30428 11.6633 7.30428 12.3367 7.69058 12.8002L12.4238 18.4802C12.689 18.7984 13.1619 18.8414 13.4801 18.5762C13.7983 18.311 13.8413 17.8381 13.5762 17.5199L8.97628 12L13.5762 6.48016C13.8413 6.16195 13.7983 5.68903 13.4801 5.42385Z"></path>
+                </svg>
                 <span>Back to menu</span>
             </a>
-
-            <div class="review-title">
+            <div class="mb-4 fs-4 fw-bold">
                 Review order (<span class="cartCounter">{{ cart_stats.total_quantity }}</span>)
             </div>
-
-            <div class="store-card mb-3 address-card">
-                <div class="d-flex justify-content-between align-items-center">
-                    <form action="{{ url_for('cart') }}" method="post">
-                        <p>dia chi</p>
-                        <input type="text" name="address" id="address" placeholder="nhap dia chi" required>
-                        <input type="button" value="pay" onclick="pay()">Thanh toan</input>
-                    </form>
-
-                    <!-- Nút X để xóa/clear hoặc chọn lại gì đó -->
-                    <button type="button"
-                            class="btn btn-sm btn-outline-light rounded-circle address-clear-btn">
-                        &times;
-                    </button>
+            <div class="cart-card mb-3">
+                <div class="fs-4 text-white mb-2">Address</div>
+                <form method="post">
+                    <input type="text"
+                           class="form-control form-control-sm address-input mb-3 fs-6 text-white"
+                           name="address"
+                           id="address"
+                           placeholder="type your address">
+                </form>
+            </div>
+            <div class="pay-button">
+                <div class="cart-card text-center fs-4 fw-bold" onclick="pay()">
+                    Thanh toán
                 </div>
             </div>
-
-
-            <div class="row g-3 mt-2">
-                <div class="col-12 col-lg-6">
-                    <div class="pickup-box">
-                        <div class="pickup-label">Pickup method</div>
-                        <div class="pickup-value">
-                            <span>In store</span>
-                            <span>▼</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-12 col-lg-6">
-                    <div class="pickup-box">
-                        <div class="pickup-label">Pickup time</div>
-                        <div class="pickup-value">
-                            <span>3–6 mins</span>
-                            <span>▼</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
         </div>
     </div>
-
-    <!-- RIGHT -->
     <div class="col-lg-8 col-md-7">
         <div class="right-panel">
-
-            <!-- Item 1 -->
+            {% if 'cart' in session and session['cart'] %}
+            {% for c in session['cart'].values() %}
             <div class="cart-item-card">
-                <div class="product-img">
-                    <img src="https://images.unsplash.com/photo-1511920170033-f8396924c348?auto=format&fit=crop&w=400&q=80"
-                         alt="">
+                <div class="item-image">
+                    <img src="{{ c.image }}" alt="{{ c.image }}">
                 </div>
-                <div class="item-main">
-                    <div class="item-name">Iced Vanilla Protein Latte</div>
-                    <div class="item-meta">Grande 16 fl oz • 270 Calories</div>
-                    <div class="item-actions text-success">
-                        <span>✏️ Edit</span>
-                        <span>⋯</span>
-                        <span>🗑</span>
+                <div class="flex-grow-1">
+                    <div class="mb-1 fw-bold fs-3">{{ c.name }}</div>
+                    <div class="mt-2 d-flex gap-2">
+                        <a href="" onclick="updateCart({{ c.id }})">
+                            <svg viewBox="0 0 24 24"
+                                 style="width: 24px; height: 24px; overflow: visible; fill: currentcolor;">
+                                <path d="M10 2.5c1.366 0 2.646.365 3.75 1.003a10.524 10.524 0 0 1 2.781.304A9 9 0 1 0 3.807 16.53a10.523 10.523 0 0 1-.305-2.78A7.5 7.5 0 0 1 10 2.5ZM14 9a.5.5 0 0 1 .5.5v4h4a.5.5 0 0 1 0 1h-4v4a.5.5 0 0 1-1 0v-4h-4a.5.5 0 0 1 0-1h4v-4A.5.5 0 0 1 14 9Z"></path>
+                                <path d="M14 23a9 9 0 1 0 0-18 9 9 0 0 0 0 18Zm0-1.5a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15Z"></path>
+                            </svg>
+                        </a>
+                        <a href="" onclick="deleteCart({{ c.id }})">
+                            <svg aria-hidden="true" class="valign-middle color-greenAccent" focusable="false"
+                                 preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"
+                                 style="width: 24px; height: 24px; overflow: visible; fill: currentcolor;">
+                                <path d="M8.734 9.5a.5.5 0 0 1 .516.484l.25 8a.5.5 0 0 1-1 .032l-.25-8a.5.5 0 0 1 .484-.516ZM15.266 9.5a.5.5 0 0 1 .484.516l-.25 8a.5.5 0 0 1-1-.032l.25-8a.5.5 0 0 1 .516-.484ZM12 9.5a.5.5 0 0 1 .5.5v8a.5.5 0 0 1-1 0v-8a.5.5 0 0 1 .5-.5Z"></path>
+                                <path d="M10 1a1.75 1.75 0 0 0-1.75 1.75V4H5a2 2 0 0 0-.728 3.863l.414 11.479A2.75 2.75 0 0 0 7.434 22h9.132a2.75 2.75 0 0 0 2.748-2.658l.414-11.479A2 2 0 0 0 19 4h-3.25V2.75A1.75 1.75 0 0 0 14 1h-4Zm4.25 3h-4.5V2.75A.25.25 0 0 1 10 2.5h4a.25.25 0 0 1 .25.25V4ZM5 5.5h14a.5.5 0 0 1 0 1H5a.5.5 0 0 1 0-1ZM5.778 8h12.444l-.407 11.292a1.25 1.25 0 0 1-1.25 1.208h-9.13a1.25 1.25 0 0 1-1.25-1.208L5.778 8Z"></path>
+                            </svg>
+                        </a>
                     </div>
                 </div>
-                <div class="item-price">$6.95</div>
+                <div class="fs-4 text-end">
+                    <div>
+                        {{ c.quantity }}
+                    </div>
+                    <div>
+                        {{ "{:,.0f}".format(c.price) }}
+                    </div>
+                    <div>
+                        {{ "{:,.0f}".format(c.price * c.quantity)}}
+                    </div>
+                </div>
             </div>
+            {% endfor %}
+            {% else %}
+            <p>Hien ko co san pham nao trong gio</p>
+            {% endif %}
+        </div>
 
-            <!-- Summary -->
+        <div class="summary-fixed">
             <div class="summary-card">
                 <div class="summary-row">
                     <span>Subtotal</span>
-                    <span>$26.60</span>
+                    <span>{{ "{:,.0f}".format(cart_stats.total_amount) }}</span>
                 </div>
-                <!-- thêm các dòng thuế, phí… nếu muốn -->
+                <div class="summary-row">
+                    <span>quantity</span>
+                    <span>{{ cart_stats.total_quantity }}</span>
+                </div>
                 <div class="summary-row total">
                     <span>Total</span>
-                    <span>$26.60</span>
+                    <span>{{ "{:,.0f}".format(cart_stats.total_amount) }}</span>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
-<button class="btn-continue">
-    Continue
-</button>
 
 
 <!--<div class="row">-->

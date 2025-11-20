@@ -1,4 +1,5 @@
 import cloudinary.uploader
+from app import app
 from flask import request
 from flask_admin.form import FileUploadField
 from wtforms import TextAreaField
@@ -39,3 +40,14 @@ def count_cart(cart):
         'total_quantity': total_quantity,
         'total_amount': total_amount
     }
+
+def format_price(value):
+    if value is None:
+        return ""
+    try:
+        value = float(value)
+        return "{:,.0f}".format(value)
+    except (ValueError, TypeError):
+        return value
+
+app.jinja_env.filters['format_price'] = format_price
