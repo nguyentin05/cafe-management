@@ -152,6 +152,28 @@ def delete_cart(dish_id):
     return jsonify(utils.count_cart(cart=cart))
 
 
+
+@app.route('/api/update-cart/<dish_id>', methods=['put'])
+def update_cart(dish_id):
+    cart = session.get('cart')
+
+    if cart and dish_id in cart:
+        cart[dish_id]['quantity'] += 1
+        session['cart'] = cart
+
+    return jsonify(utils.count_cart(cart=cart))
+
+@app.route('/api/delete-cart/<dish_id>', methods=['delete'])
+def delete_cart(dish_id):
+    cart = session.get('cart')
+
+    if cart and dish_id in cart:
+        del cart[dish_id]
+        session['cart'] = cart
+
+    return jsonify(utils.count_cart(cart=cart))
+
+
 @app.route('/api/pay', methods=['post'])
 @login_required
 def pay():
