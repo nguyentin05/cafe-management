@@ -241,7 +241,10 @@ class Note(BaseModel):
 
 class GoodsReceiptNote(Note):
     id = Column(Integer, ForeignKey(Note.id), primary_key=True)
-
+    ingredient_name = Column(String(100), nullable=False)
+    unit = Column(String(20), nullable=False)
+    quantity = Column(Float, nullable=False)
+    date_created = Column(Date, default=date.today())
     __mapper_args__ = {
         'polymorphic_identity': NoteType.GOODS_RECEIPT
     }
