@@ -1,0 +1,16 @@
+{%extends "layout/base/base.html"%}
+
+{% block css %}
+    {{ super() }}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/layout/sidebar.css')}}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/pages/dashboard.css')}}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+{% endblock %}
+
+{% block js %}
+    {{ super() }}
+{% endblock %}
+
+{%block content required%}
+
+{%endblock%}

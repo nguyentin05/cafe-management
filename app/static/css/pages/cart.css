@@ -30,8 +30,7 @@
 .cart-card {
     background-color: #123026;
     border-radius: 18px;
-    padding: 14px 18px;
-    margin-bottom: 16px;
+    padding: 14px 14px;
 }
 .pay-button {
     margin-top: auto;
@@ -58,121 +57,22 @@
     height: 100%;
     object-fit: cover;
 }
-
-
-
-
-
-
-.summary-fixed {
+.total-part {
     position: fixed;
     bottom: 0;
     right: 0;
     left: 33.333%;
     padding: 0 2.5rem 1rem 2.5rem;
 }
-
-.pickup-box {
-    background-color: #123026;
-    border-radius: .75rem;
-    padding: .9rem 1rem;
-    font-size: .9rem;
+.total-card {
+    background-color: #ffffff;
+    border-radius: 1rem;
+    padding: 1rem 1.5rem;
+    box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.2);
 }
-
-.pickup-label {
-    font-size: .75rem;
-    opacity: .8;
-}
-
-.pickup-value {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-top: .15rem;
-    font-weight: 500;
-}
-
-.pickup-value span:last-child {
-    font-size: .8rem;form-control
-}
-
-/* Right side */
-
-
-
-
-
-
-
-
-
-
-.item-meta {
-    font-size: .8rem;
-    color: #555;
-}
-
-
-
-.item-actions span {
-    cursor: pointer;
-}
-
-.item-price {
-    font-weight: 600;
-    font-size: .95rem;
-    white-space: nowrap;
-}
-
-.summary-card {
-    background-color: #fff;
-    border-radius: 1rem 1rem 0 0;
-    padding: 1.25rem 1.5rem;
-    box-shadow: 0 -2px 6px rgba(0,0,0,.06);
-    margin-top: 2rem;
-}
-
-.summary-row {
+.total-row {
     display: flex;
     justify-content: space-between;
-    margin-bottom: .35rem;
+    margin-bottom: 0.3rem;
     font-size: 1.2rem;
-}
-.summary-row.total {
-    font-weight: 700;
-    margin-top: .5rem;
-    font-size: 1.5rem;
-}
-.btn-continue {
-    padding: .55rem 1.8rem;
-    border-radius: 999px;
-    border: none;
-    background-color: #00754a;   /* xanh Starbucks */
-    color: #fff;
-    font-weight: 600;
-    font-size: .95rem;
-    box-shadow: 0 4px 10px rgba(0,0,0,.25);
-    cursor: pointer;
-}
-
-.btn-continue:hover {
-    filter: brightness(1.05);
-}
-
-@media (max-width: 991.98px) {
-    .left-panel {
-        min-height: auto;
-    }
-    .btn-continue {
-        right: 1rem;
-        left: 1rem;
-    }
-}
-.address-clear-btn {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
 }

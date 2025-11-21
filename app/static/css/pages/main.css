@@ -29,25 +29,22 @@ html {
   scrollbar-gutter: stable;
 }
 .btn-detail {
-  border: 1px solid #000;      /* viền đen */
-  background-color: #fff;      /* nền trắng */
-  color: #000;                 /* chữ đen */
-  border-radius: 999px;        /* nếu muốn nút bo tròn kiểu pill, bỏ nếu không cần */
-  padding: 0.25rem 0.9rem;     /* chỉnh kích thước nhẹ */
+  border: 1px solid #000;
+  background-color: #fff;
+  color: #000;
+  border-radius: 999px;
+  padding: 0.25rem 0.9rem;
 }
-
-/* trạng thái hover */
 .btn-detail:hover {
-  background-color: #000;      /* nền đen */
-  color: #fff;                 /* chữ trắng */
-  border-color: #000;          /* viền đen */
-  text-decoration: none;       /* bỏ gạch chân nếu có */
+  background-color: #000;
+  color: #fff;
+  border-color: #000;
+  text-decoration: none;
 }
 .btn-detail {
   transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
 }
-/* Hover mở dropdown */
 .nav-item.dropdown:hover .dropdown-menu {
     display: block;
-    margin-top: 0;   /* bỏ animation bị lệch */
+    margin-top: 0;
 }

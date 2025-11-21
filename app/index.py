@@ -1,8 +1,8 @@
 from flask import render_template, request, redirect, url_for, session, jsonify
-from app import app, login, utils
+from app import app, login, utils, db
 from app.dao import *
 from flask_login import login_user, logout_user, login_required
-
+from app.models import ORDER_STATUS_MAP
 
 @app.route('/')
 def home():
@@ -51,6 +51,60 @@ def user_signin():
     return render_template('login.html', err_msg=err_msg)
 
 
+@app.route('/user-logout')
+def user_signout():
+    logout_user()
+    return redirect(url_for('user_signin'))
+
+@login.user_loader
+def user_load(user_id):
+    return get_user_by_id(user_id)
+
+@app.route('/menu')
+def menu():
+    dish_cate = request.args.get('dishCate')
+    current_cate = get_dish_category_by_id(dish_cate) if dish_cate else None
+    dishes = load_dishes(dish_cate)
+    return render_template('menu.html', dishes=dishes, current_cate=current_cate)
+
+@app.route('/info')
+def info():
+    return render_template('info.html')
+
+@app.route('/waiter/dashboard', methods=['get'])
+def waiter_dashboard():
+    order_type = (request.args.get('order_type', OrderType.OFFLINE.name)).upper()
+    order_status = request.args.get('order_status', 'ALL')
+    current_order_type = OrderType[order_type]
+
+    orders = load_orders(order_type, order_status)
+
+    return render_template('waiter/dashboard.html',
+                           current_order_status=order_status,
+                           orders=orders,
+                           order_types=list(OrderType),
+                           current_order_type=current_order_type,
+                           status_map=ORDER_STATUS_MAP)
+
+@app.route('/menu/<int:id>')
+def detailMenu(id):
+    pass
+
+@app.route('/waiter/goods-receipt-note')
+def goods_receipt_note():
+    return render_template('waiter/goods-receipt-note.html')
+
+@app.route('/waiter/offline-order')
+def offline_order():
+    return render_template('waiter/offline-order.html')
+
+@app.route('/cart', methods=['get', 'post'])
+def cart():
+    if request.method.__eq__('POST'):
+        address = request.form.get('address')
+
+    return render_template('cart.html')
+
 @app.route('/api/add-cart', methods=['post'])
 def add_to_cart():
     data = request.json
@@ -77,36 +131,26 @@ def add_to_cart():
 
     return jsonify(utils.count_cart(cart=cart))
 
-@app.route('/user-logout')
-def user_signout():
-    logout_user()
-    return redirect(url_for('user_signin'))
+@app.route('/api/update-cart/<dish_id>', methods=['put'])
+def update_cart(dish_id):
+    cart = session.get('cart')
 
-@login.user_loader
-def user_load(user_id):
-    return get_user_by_id(user_id)
+    if cart and dish_id in cart:
+        cart[dish_id]['quantity'] += 1
+        session['cart'] = cart
 
-@app.route('/menu')
-def menu():
-    dish_cate = request.args.get('dishCate')
-    current_cate = get_dish_category_by_id(dish_cate) if dish_cate else None
-    dishes = load_dishes(dish_cate)
-    return render_template('menu.html', dishes=dishes, current_cate=current_cate)
+    return jsonify(utils.count_cart(cart=cart))
 
-@app.route('/info')
-def info():
-    return render_template('info.html')
+@app.route('/api/delete-cart/<dish_id>', methods=['delete'])
+def delete_cart(dish_id):
+    cart = session.get('cart')
 
-@app.route('/menu/<int:id>')
-def detailMenu(id):
-    pass
+    if cart and dish_id in cart:
+        del cart[dish_id]
+        session['cart'] = cart
 
-@app.route('/cart', methods=['get', 'post'])
-def cart():
-    if request.method.__eq__('POST'):
-        address = request.form.get('address')
+    return jsonify(utils.count_cart(cart=cart))
 
-    return render_template('cart.html')
 
 
 @app.route('/api/update-cart/<dish_id>', methods=['put'])
@@ -150,8 +194,3 @@ def common_response():
         'category_groups': load_category_groups(),
         'cart_stats': utils.count_cart(session.get('cart'))
     }
-
-if __name__ == '__main__':
-    with app.app_context():
-        from app.admin import *
-        app.run(debug=True)

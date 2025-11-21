@@ -41,13 +41,7 @@ def count_cart(cart):
         'total_amount': total_amount
     }
 
-def format_price(value):
-    if value is None:
-        return ""
-    try:
-        value = float(value)
-        return "{:,.0f}".format(value)
-    except (ValueError, TypeError):
-        return value
+import hashlib
 
-app.jinja_env.filters['format_price'] = format_price
+def hash_password(raw_password: str) -> str:
+    return hashlib.md5(raw_password.strip().encode('utf-8')).hexdigest()

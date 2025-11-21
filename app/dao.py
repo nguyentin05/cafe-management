@@ -1,7 +1,7 @@
 from flask_login import current_user
-
+from app.utils import hash_password
 from app import app, db
-from models import DishCategory, Dish, User, UserRole, Customer, CategoryGroup, Order, OrderDetails, OnlineOrder, OrderStatus
+from app.models import DishCategory, Dish, User, UserRole, Customer, CategoryGroup, Order, OrderDetails, OnlineOrder, OrderStatus, OrderType
 import hashlib
 
 def load_category_groups():
@@ -24,6 +24,17 @@ def get_dish_by_id(id):
 def get_dish_category_by_id(id):
     return DishCategory.query.get(id)
 
+def load_orders(order_type, order_status):
+    query = Order.query
+
+    if order_type:
+        query = query.filter(Order.order_type.__eq__(order_type))
+
+    if order_status != 'ALL':
+        query = query.filter(Order.status.__eq__(order_status))
+
+    return query.all()
+
 def add_customer(fullname, username, password, **kwargs):
     password = hashlib.md5(password.strip().encode('utf-8')).hexdigest()
     user = Customer(fullname = fullname.strip(),
@@ -36,7 +47,9 @@ def add_customer(fullname, username, password, **kwargs):
     db.session.commit()
 
 def check_login(username, password, role=None):
-    password = hashlib.md5(password.strip().encode('utf-8')).hexdigest()
+    # password = hashlib.md5(password.strip().encode('utf-8')).hexdigest()
+
+    password = hash_password(password)
 
     u = User.query.filter(User.username.__eq__(username.strip()),
                              User.password.__eq__(password))
