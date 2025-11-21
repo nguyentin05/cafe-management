@@ -24,3 +24,7 @@ login = LoginManager(app=app)
 db = SQLAlchemy(app=app)
 
 cloudinary.config(cloudinary_url=os.getenv('CLOUDINARY_URL'), secure=True)
+
+from app import models          # để load model
+from app import admin as admin_module  # nếu file admin.py đăng ký view cho Flask-Admin
+from app import index

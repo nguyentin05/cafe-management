@@ -1,0 +1,40 @@
+.sidebar {
+    min-height: 100vh;
+    border-right: 1px solid #e5e7eb;
+    padding: 1.5rem 1.25rem;
+}
+.sidebar-menu .nav-link {
+    border-radius: 12px;
+    color: black;
+    font-size: 1rem;
+    padding: 0.6rem 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.3rem
+}
+.sidebar-menu .nav-link .icon-wrap {
+    width: 30px;
+    height: 30px;
+    border-radius: 12px;
+    background: #f3f4ff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.sidebar-menu .nav-link.active {
+    background: #123026;
+    color: #fff;
+}
+.sidebar-menu .nav-link.active .icon-wrap {
+    background: #fff;
+}
+.sidebar-menu .nav-link:hover:not(.active) {
+    background: #eef2ff;
+}
+.user-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: #d1d5db;
+}

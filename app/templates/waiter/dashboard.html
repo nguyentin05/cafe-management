@@ -1,0 +1,69 @@
+{%extends "layout/base/base-waiter.html"%}
+
+{% block css %}
+{{ super() }}
+{% endblock %}
+
+{% block js %}
+{{ super() }}
+{% endblock %}
+
+{%block content%}
+<div class="container-fluid min-vh-100">
+    <div class="row">
+        {%include "layout/sidebar.html"%}
+        <div class="col py-4">
+            <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
+                <h4 class="fw-semibold mb-2">Hello Evano 👋</h4>
+                <form class="search-main" method="get">
+                    <input class="form-control" type="text" placeholder="Search" name="q">
+                </form>
+            </div>
+            <ul class="nav nav-pills order-type-nav mb-3">
+                {% for ot in order_types %}
+                <li class="nav-item">
+                    <a class="nav-link {{ 'active' if current_order_type == ot }}"
+                       href="{{ url_for('waiter_dashboard', order_type=ot.name, order_status=current_order_status) }}">
+                        {{ ot.value }}
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+            <ul class="nav nav-pills order-status-nav mb-3">
+                <li class="nav-item">
+                    <a class="nav-link {{ 'active' if current_order_status == 'ALL' }}"
+                       href="{{ url_for('waiter_dashboard', order_type=current_order_type.name, order_status='ALL') }}">
+                        ALL
+                    </a>
+                </li>
+                {% for os in status_map[current_order_type] %}
+                <li class="nav-item">
+                    <a class="nav-link {{ 'active' if current_order_status == os.name }}"
+                       href="{{ url_for('waiter_dashboard', order_type=current_order_type.name, order_status=os.name) }}">
+                        {{ os.value }}
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+            <div class="row g-3 mb-4">
+                {% for o in orders %}
+                    <div class="col-md-3">
+                        <div class="order-card" data-status="NEW">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <div class="fs-6 small opacity-75">
+                                    {{ 'DELIVERY' if current_order_type.name == 'ONLINE' else 'TABLE' }}
+                                </div>
+                                <span class="order-status status-pending">{{ o.status.name }}</span>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-end">
+                                <div class="fs-5 fw-semibold">{{ o.id }}</div>
+                                <span class="fw-light small">{{ o.created_date.strftime("%H:%M") }}</span>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{%endblock%}

@@ -47,7 +47,7 @@
                         <div>
                             <h5 class="card-text">{{ "{:,.0f}".format(d.price) }}</h5>
                         </div>
-                        <a href="#" class="btn btn-detail" onclick="addToCart({{ d.id }}, '{{ d.name }}', {{ d.price }}, '{{ d.image }}')">add to order</a>
+                        <a href="#" class="btn btn-detail mt-2" onclick="addToCart({{ d.id }}, '{{ d.name }}', {{ d.price }}, '{{ d.image }}')">add to order</a>
                     </div>
                 </div>
                 {% endfor %}

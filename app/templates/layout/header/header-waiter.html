@@ -6,15 +6,17 @@
         </button>
         <div class="collapse navbar-collapse" id="mynavbar">
             <ul class="navbar-nav me-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('menu') }}">MENU</a>
-                </li>
                 <li>
                     <a class="nav-link" href="">Thong bao</a>
                 </li>
+                {% if current_user.is_authenticated and current_user.employee_role == 'WAITER' %}
                 <li>
-                    <a class="nav-link " href="{{ url_for('cart') }}">Gio Hang <span class="cartCounter">{{ cart_stats.total_quantity }}</span></a>
+                    <a class="nav-link " href="{{ url_for('offline_order') }}">create order</a>
                 </li>
+                <li>
+                    <a class="nav-link " href="{{ url_for('goods_receipt_note') }}">create note</a>
+                </li>
+                {% endif %}
                 <li class="nav-item dropdown">
                 {% if current_user.is_authenticated %}
                     <a class="nav-link" href="#" role="button" data-bs-toggle="dropdown">{{ current_user.fullname }}</a>
@@ -31,6 +33,7 @@
                     </ul>
                 {% endif %}
                 </li>
+
             </ul>
         </div>
     </div>
