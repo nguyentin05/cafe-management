@@ -116,12 +116,12 @@ class Cashier(Employee):
         'polymorphic_identity': EmployeeRole.CASHIER
     }
 
-# class Manager(Employee):
-#     id = Column(Integer, ForeignKey(Employee.id), primary_key=True)
-#
-#     __mapper_args__ = {
-#         'polymorphic_identity': EmployeeRole.MANAGER
-#     }
+class Manager(Employee):
+    id = Column(Integer, ForeignKey(Employee.id), primary_key=True)
+
+    __mapper_args__ = {
+        'polymorphic_identity': EmployeeRole.MANAGER
+    }
 
 class Waiter(Employee):
     id = Column(Integer, ForeignKey(Employee.id), primary_key=True)
@@ -185,7 +185,7 @@ class OnlineOrder(Order):
 class OfflineOrder(Order):
     id = Column(Integer, ForeignKey(Order.id), primary_key=True)
     table_number = Column(Integer, nullable=False)
-    cashier_id = Column(Integer, ForeignKey(Cashier.id), nullable=False)
+    cashier_id = Column(Integer, ForeignKey(Cashier.id), nullable=True)
     __mapper_args__ = {
         'polymorphic_identity': OrderType.OFFLINE,
     }

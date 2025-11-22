@@ -1,7 +1,7 @@
 from flask_login import current_user
 from app.utils import hash_password
 from app import app, db
-from app.models import DishCategory, Dish, User, UserRole, Customer, CategoryGroup, Order, OrderDetails, OnlineOrder, OrderStatus, OrderType
+from app.models import DishCategory, Dish, User, UserRole, Customer, CategoryGroup, OfflineOrder, Order, OrderDetails, OnlineOrder, OrderStatus, OrderType
 import hashlib
 
 def load_category_groups():
@@ -62,6 +62,37 @@ def check_login(username, password, role=None):
 def get_user_by_id(id):
     return User.query.get(id)
 
+def add_offline_order(draft, note, table):
+    if not draft:
+        raise ValueError("Draft is empty")
+
+    try:
+        order = OfflineOrder(
+            status=OrderStatus.CONFIRMED,
+            note=note,
+            waiter_id=int(current_user.id),
+            table_number=int(table)
+
+        )
+        db.session.add(order)
+        db.session.flush()
+
+        for c in draft.values():
+            d = OrderDetails(
+                order_id=order.id,
+                dish_id=c['id'],
+                quantity=c['quantity'],
+                unit_price=c['price']
+            )
+            db.session.add(d)
+
+        db.session.commit()
+
+    except Exception as e:
+        db.session.rollback()
+        print('ERROR in add_offline_order:', e)
+        raise e
+
 def add_online_order(cart, address):
     if not cart:
         raise ValueError("Cart is empty")
@@ -89,22 +120,4 @@ def add_online_order(cart, address):
     except Exception as e:
         db.session.rollback()
         print('ERROR in add_online_order:', e)
-        raise
-
-# def add_online_order(cart, address):
-#     if cart:
-#         order = OnlineOrder(customer=current_user,
-#                             status=OrderStatus.PENDING,
-#                             customer_address=address)
-#         db.session.add(order)
-#         print('done1')
-#         for c in cart.values():
-#             d = OrderDetails(order=order,
-#                              dish_id=c['id'],
-#                              quantity=c['quantity'],
-#                              unit_price=c['price'])
-#             print(d)
-#             db.session.add(d)
-#
-#         print('done2')
-#         db.session.commit()
+        raise e

@@ -28,7 +28,7 @@ class MyImage(FileUploadField):
         r = cloudinary.uploader.upload(request.files['image'])
         setattr(obj, name, r['secure_url'])
 
-def count_cart(cart):
+def count_total(cart):
     total_quantity, total_amount = 0, 0
 
     if cart:
