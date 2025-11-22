@@ -2,6 +2,8 @@
     min-height: 100vh;
     border-right: 1px solid #e5e7eb;
     padding: 1.5rem 1.25rem;
+    position: sticky;
+    top: 0;
 }
 .sidebar-menu .nav-link {
     border-radius: 12px;

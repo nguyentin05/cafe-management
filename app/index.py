@@ -94,10 +94,6 @@ def detailMenu(id):
 def goods_receipt_note():
     return render_template('waiter/goods-receipt-note.html')
 
-@app.route('/waiter/offline-order')
-def offline_order():
-    return render_template('waiter/offline-order.html')
-
 @app.route('/cart', methods=['get', 'post'])
 def cart():
     if request.method.__eq__('POST'):
@@ -129,50 +125,74 @@ def add_to_cart():
 
     session['cart'] = cart
 
-    return jsonify(utils.count_cart(cart=cart))
+    return jsonify(utils.count_total(cart=cart))
 
-@app.route('/api/update-cart/<dish_id>', methods=['put'])
-def update_cart(dish_id):
-    cart = session.get('cart')
+@app.route('/waiter/offline-order')
+def offline_order():
+    dishes = load_dishes()
+    return render_template('waiter/offline-order.html', dishes=dishes)
 
-    if cart and dish_id in cart:
-        cart[dish_id]['quantity'] += 1
-        session['cart'] = cart
+@app.route('/api/add-draft', methods=['post'])
+def add_to_draft():
+    data = request.json
+    id = str(data.get('id'))
+    name = data.get('name')
+    price = data.get('price')
+    quantity = data.get('quantity', 1)
 
-    return jsonify(utils.count_cart(cart=cart))
+    draft = session.get('draft', {})
 
-@app.route('/api/delete-cart/<dish_id>', methods=['delete'])
-def delete_cart(dish_id):
-    cart = session.get('cart')
+    if id in draft:
+        draft[id]['quantity'] = quantity
+    else:
+        draft[id] = {
+            'id': id,
+            'name': name,
+            'price': price,
+            'quantity': quantity
+        }
 
-    if cart and dish_id in cart:
-        del cart[dish_id]
-        session['cart'] = cart
+    session['draft'] = draft
 
-    return jsonify(utils.count_cart(cart=cart))
+    return jsonify(utils.count_total(cart=draft))
 
+@app.route('/api/update-draft', methods=['put'])
+def update_draft():
+    data = request.json
+    id = str(data.get('id'))
+    quantity = data.get('quantity')
 
+    draft = session.get('draft')
 
-@app.route('/api/update-cart/<dish_id>', methods=['put'])
-def update_cart(dish_id):
-    cart = session.get('cart')
+    if draft and id in draft:
+        draft[id]['quantity'] = quantity
+        session['draft'] = draft
 
-    if cart and dish_id in cart:
-        cart[dish_id]['quantity'] += 1
-        session['cart'] = cart
+    return jsonify(utils.count_total(cart=draft))
 
-    return jsonify(utils.count_cart(cart=cart))
+@app.route('/api/delete-draft/<dish_id>', methods=['delete'])
+def delete_draft(dish_id):
+    draft = session.get('draft')
 
-@app.route('/api/delete-cart/<dish_id>', methods=['delete'])
-def delete_cart(dish_id):
-    cart = session.get('cart')
+    if draft and dish_id in draft:
+        del draft[dish_id]
+        session['draft'] = draft
 
-    if cart and dish_id in cart:
-        del cart[dish_id]
-        session['cart'] = cart
+    return jsonify(utils.count_total(cart=draft))
 
-    return jsonify(utils.count_cart(cart=cart))
+@app.route('/api/complete', methods=['post'])
+@login_required
+def complete():
+    data = request.json
+    table = data.get('table')
+    note = data.get('note', '')
+    try:
+        add_offline_order(session.get('draft'),note=note, table=table)
+        session.pop('draft', None)
+    except:
+        return jsonify({'code': 400})
 
+    return jsonify({'code': 200})
 
 @app.route('/api/pay', methods=['post'])
 @login_required
@@ -181,16 +201,39 @@ def pay():
     address = data.get('address')
     try:
         add_online_order(session.get('cart'),address=address)
-        del session['cart']
+        session.pop('cart', None)
     except:
         return jsonify({'code': 400})
 
     return jsonify({'code': 200})
+
+
+@app.route('/api/update-cart/<dish_id>', methods=['put'])
+def update_cart(dish_id):
+    cart = session.get('cart')
+
+    if cart and dish_id in cart:
+        cart[dish_id]['quantity'] += 1
+        session['cart'] = cart
+
+    return jsonify(utils.count_total(cart=cart))
+
+@app.route('/api/delete-cart/<dish_id>', methods=['delete'])
+def delete_cart(dish_id):
+    cart = session.get('cart')
+
+    if cart and dish_id in cart:
+        del cart[dish_id]
+        session['cart'] = cart
+
+    return jsonify(utils.count_total(cart=cart))
+
+
 
 @app.context_processor
 def common_response():
     return {
         'dish_categories': load_dish_categories(),
         'category_groups': load_category_groups(),
-        'cart_stats': utils.count_cart(session.get('cart'))
+        'cart_stats': utils.count_total(session.get('cart'))
     }
