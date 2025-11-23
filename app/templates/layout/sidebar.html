@@ -23,10 +23,16 @@
         </div>
         <div class="d-flex align-items-center">
             <div class="user-avatar me-2"></div>
-            <div class="small">
-                <div class="fw-semibold">Evano</div>
-                <div class="text-muted">Project Manager</div>
-            </div>
+            {% if current_user.is_authenticated %}
+                <div class="small">
+                    <div class="fw-semibold">{{ current_user.fullname }}</div>
+                    <div class="text-muted">{{ current_user.user_role if current_user.user_role.name != 'EMPLOYEE' else current_user.employee_role}}</div>
+                </div>
+            {% else %}
+                <div class="small">
+                    <div class="fw-semibold">Dang Nhap</div>
+                </div>
+            {% endif %}
         </div>
     </div>
 </div>

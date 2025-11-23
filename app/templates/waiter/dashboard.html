@@ -47,8 +47,9 @@
             </ul>
             <div class="row g-3 mb-4">
                 {% for o in orders %}
-                    <div class="col-md-3">
-                        <div class="order-card" data-status="NEW">
+                <div class="col-md-3">
+                    <a class="text-decoration-none" href="/waiter/order/{{ o.id }}">
+                        <div class="order-card">
                             <div class="d-flex justify-content-between align-items-center mb-1">
                                 <div class="fs-6 small opacity-75">
                                     {{ 'DELIVERY' if current_order_type.name == 'ONLINE' else 'TABLE' }}
@@ -60,7 +61,8 @@
                                 <span class="fw-light small">{{ o.created_date.strftime("%H:%M") }}</span>
                             </div>
                         </div>
-                    </div>
+                    </a>
+                </div>
                 {% endfor %}
             </div>
         </div>

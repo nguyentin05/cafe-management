@@ -15,15 +15,12 @@
     <div class="row">
         {%include "layout/sidebar.html"%}
         <div class="col-md-9 col-lg-10">
-            <div style="padding-bottom: 100px;">
+            <div style="padding-bottom: 100px">
                 <div class="mt-4 text-center d-flex justify-content-between align-center">
                     <h3>Create Order</h3>
-                    <div class="pay-button">
-                        <div class="cart-card text-white text-center fs-4 fw-semibold" style="background-color: #1b7a04"
-                             onclick="complete()">
-                            hoan tat
-                        </div>
-                    </div>
+                    <button class="cart-card text-white text-center fs-4 fw-semibold" style="background-color: #1b7a04" onclick="complete()">
+                        hoan tat
+                    </button>
                 </div>
                 <form method="post">
                     <div class="row mb-4">
@@ -137,15 +134,15 @@
                     <div class="total-card">
                         <div class="total-row">
                             <span>Subtotal</span>
-                            <span>{{ "{:,.0f}".format(cart_stats.total_amount) }}</span>
+                            <span class="draftAmount">{{ "{:,.0f}".format(draft_stats.total_amount) }}</span>
                         </div>
                         <div class="total-row">
                             <span>Quantity</span>
-                            <span>{{ cart_stats.total_quantity }}</span>
+                            <span class="draftCounter">{{ draft_stats.total_quantity }}</span>
                         </div>
                         <div class="d-flex justify-content-between fw-bold fs-3 mt-1">
                             <span>Total</span>
-                            <span>{{ "{:,.0f}".format(cart_stats.total_amount) }}</span>
+                            <span class="draftAmount">{{ "{:,.0f}".format(draft_stats.total_amount) }}</span>
                         </div>
                     </div>
                 </div>

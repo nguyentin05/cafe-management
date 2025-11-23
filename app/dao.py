@@ -40,15 +40,12 @@ def add_customer(fullname, username, password, **kwargs):
     user = Customer(fullname = fullname.strip(),
                 username = username.strip(),
                 password = password,
-                # user_role = UserRole.CUSTOMER,
                 email = kwargs.get('email'))
 
     db.session.add(user)
     db.session.commit()
 
 def check_login(username, password, role=None):
-    # password = hashlib.md5(password.strip().encode('utf-8')).hexdigest()
-
     password = hash_password(password)
 
     u = User.query.filter(User.username.__eq__(username.strip()),
@@ -61,6 +58,9 @@ def check_login(username, password, role=None):
 
 def get_user_by_id(id):
     return User.query.get(id)
+
+def get_order_by_id(id):
+    return Order.query.get(id)
 
 def add_offline_order(draft, note, table):
     if not draft:
@@ -121,3 +121,17 @@ def add_online_order(cart, address):
         db.session.rollback()
         print('ERROR in add_online_order:', e)
         raise e
+
+def get_total_order(id):
+    total_quantity, total_amount = 0, 0
+
+    order = get_order_by_id(id=id)
+
+    for c in order.details:
+        total_quantity += c.quantity
+        total_amount += c.quantity * c.unit_price
+
+    return {
+        'total_quantity': total_quantity,
+        'total_amount': total_amount
+    }

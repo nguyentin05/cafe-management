@@ -1,0 +1,154 @@
+{%extends "layout/base/base-waiter.html"%}
+
+{% block css %}
+{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/pages/order-detail.css')}}">
+{% endblock %}
+
+{% block js %}
+{{ super() }}
+{% endblock %}
+
+{%block content%}
+<div class="container-fluid">
+    <div class="row">
+        {%include "layout/sidebar.html"%}
+        <div class="col-md-9 col-lg-10">
+            <div class="d-flex justify-content-between align-items-center mb-3 mt-5">
+                <div>
+                    <h4 class="mb-1">Order #{{ order.id }}</h4>
+                    <small class="text-muted">
+                        Bàn: <strong>{{ order.table_number }}</strong> •
+                        Tạo lúc: <strong>{{ order.created_date.strftime('%H:%M %d/%m/%Y') }}</strong>
+                    </small>
+                </div>
+
+                <div class="d-flex align-items-center gap-2">
+                    <!-- nút action nhanh -->
+                    <button class="btn btn-sm btn-outline-secondary">
+                        Quay lại
+                    </button>
+                </div>
+            </div>
+
+            <!-- TOP INFO: 2 CỘT -->
+            <div class="row g-3 mb-4">
+                <!-- Thông tin order -->
+                <div class="col-lg-6">
+                    <div class="card order-info-card h-100">
+                        <div class="card-body">
+                            <h6 class="card-title mb-3">Thông tin đơn hàng</h6>
+
+                            <div class="row mb-2">
+                                <div class="col-5 text-muted">Mã order</div>
+                                <div class="col-7 fw-semibold">#{{ order.id }}</div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-5 text-muted">Bàn</div>
+                                <div class="col-7 fw-semibold">{{ order.table_number }}</div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-5 text-muted">Giờ tạo</div>
+                                <div class="col-7">{{ order.created_date.strftime('%H:%M %d/%m/%Y') }}</div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-5 text-muted">Trạng thái</div>
+                                <div class="col-7">
+                             <span class="badge order-status-badge status-{{ order.status.name|lower }}">
+                                {{ order.status.value }}
+                            </span>
+                                </div>
+                            </div>
+
+                            <div class="mt-3">
+                                <span class="text-muted d-block mb-1">Ghi chú</span>
+                                <p class="mb-0 small">{{ order.note or 'Không có ghi chú' }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tổng quan & nút action -->
+                <div class="col-lg-6">
+                    <div class="card order-summary-card h-100">
+                        <div class="card-body d-flex flex-column justify-content-between">
+                            <div>
+                                <h6 class="card-title mb-3">Tóm tắt</h6>
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span class="text-muted">Tổng sản phẩm</span>
+                                    <span class="fw-semibold">{{ total_order.total_quantity }}</span>
+                                </div>
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span class="text-muted">Tổng tiền</span>
+                                    <span class="fw-bold fs-5">{{ "{:,.0f}".format(total_order.total_amount) }}</span>
+                                </div>
+                            </div>
+
+                            <div class="mt-3 d-flex flex-wrap gap-2 justify-content-end">
+                                <!-- nút chuyển trạng thái tiếp theo -->
+                                <form method="post">
+                                    <button type="submit" class="btn btn-success">
+                                        Chuyển trạng thái tiếp theo
+                                    </button>
+                                </form>
+
+                                <!-- nút chỉnh sửa -->
+                                <button class="btn btn-outline-primary">
+                                    Chỉnh sửa đơn hàng
+                                </button>
+
+                                <!-- nút hủy -->
+                                <form method="post">
+                                    <button type="submit" class="btn btn-outline-danger">
+                                        Hủy order
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ORDER ITEMS -->
+            <div class="card">
+                <div class="card-body">
+                    <h6 class="card-title mb-3">Chi tiết order</h6>
+
+                    <div class="table-responsive">
+                        <table class="table align-middle mb-0">
+                            <thead>
+                            <tr>
+                                <th class="text-nowrap">Sản phẩm</th>
+                                <th class="text-center">Số lượng</th>
+                                <th class="text-end">Đơn giá</th>
+                                <th class="text-end">Thành tiền</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for item in order.details %}
+                            <tr>
+                                <td class="text-nowrap">
+                                    {{ item.dish.name }}
+                                </td>
+                                <td class="text-center">
+                                    {{ item.quantity }}
+                                </td>
+                                <td class="text-end">
+                                    {{ "{:,.0f}".format(item.unit_price) }} đ
+                                </td>
+                                <td class="text-end fw-semibold">
+                                    {{ "{:,.0f}".format(item.unit_price * item.quantity) }} đ
+                                </td>
+                            </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+{%endblock%}
