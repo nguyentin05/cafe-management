@@ -1,3 +1,12 @@
+function updateUI(data) {
+    let items = document.getElementsByClassName("draftCounter");
+    for (let item of items)
+        item.innerText = data.total_quantity;
+
+    let amounts = document.getElementsByClassName("draftAmount");
+    for (let item of amounts)
+        item.innerText = data.total_amount.toLocaleString();
+}
 function addItemRow() {
     const body = document.getElementById('order-items');
     const firstRow = body.querySelector('.order-item');
@@ -66,8 +75,7 @@ function addToDraft(obj) {
     })
     .then(res => res.json())
     .then(data => {
-        console.log('Added:', data);
-        if (typeof updateUI === 'function') updateUI(data);
+        updateUI(data);
     })
     .catch(err => console.error('Error add-draft:', err));
 }
@@ -88,8 +96,7 @@ function updateToDraft(obj) {
     })
     .then(res => res.json())
     .then(data => {
-        console.log('Updated:', data);
-        if (typeof updateUI === 'function') updateUI(data);
+        updateUI(data);
     })
     .catch(err => console.error('Error update-draft:', err));
 }
@@ -111,7 +118,7 @@ function deleteToDraft(obj) {
             'Content-Type': 'application/json'
             }
         }).then(res => res.json()).then(data => {
-             if (typeof updateUI === 'function') updateUI(data);
+             updateUI(data);
         }).catch(err => console.error(err));
     }
 

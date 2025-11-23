@@ -86,18 +86,12 @@ def waiter_dashboard():
                            current_order_type=current_order_type,
                            status_map=ORDER_STATUS_MAP)
 
-@app.route('/menu/<int:id>')
-def detailMenu(id):
-    pass
-
 @app.route('/waiter/goods-receipt-note')
 def goods_receipt_note():
     return render_template('waiter/goods-receipt-note.html')
 
 @app.route('/cart', methods=['get', 'post'])
 def cart():
-    if request.method.__eq__('POST'):
-        address = request.form.get('address')
 
     return render_template('cart.html')
 
@@ -126,6 +120,13 @@ def add_to_cart():
     session['cart'] = cart
 
     return jsonify(utils.count_total(cart=cart))
+
+@app.route('/waiter/order/<int:id>')
+def order_detail(id):
+    total_order = get_total_order(id=id)
+
+    return render_template('order-detail.html', order=get_order_by_id(id=id), total_order=total_order)
+
 
 @app.route('/waiter/offline-order')
 def offline_order():
@@ -235,5 +236,6 @@ def common_response():
     return {
         'dish_categories': load_dish_categories(),
         'category_groups': load_category_groups(),
-        'cart_stats': utils.count_total(session.get('cart'))
+        'cart_stats': utils.count_total(session.get('cart')),
+        'draft_stats': utils.count_total(session.get('draft'))
     }
