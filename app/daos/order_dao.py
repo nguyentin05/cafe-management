@@ -47,7 +47,7 @@ def add_offline_order(draft, note, table):
         print('ERROR in add_offline_order:', e)
         raise e
 
-def add_online_order(cart, address):
+def add_online_order(cart, address, note):
     if not cart:
         raise ValueError("Cart is empty")
 
@@ -55,7 +55,8 @@ def add_online_order(cart, address):
         order = OnlineOrder(
             customer_id=current_user.id,
             customer_address=address,
-            status=OrderStatus.PENDING
+            status=OrderStatus.PENDING,
+            note=note
         )
         db.session.add(order)
         db.session.flush()

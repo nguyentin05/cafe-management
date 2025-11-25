@@ -43,8 +43,9 @@ def add_to_cart():
 def pay():
     data = request.json
     address = data.get('address')
+    orderNote = data.get('orderNote', '')
     try:
-        add_online_order(session.get('cart'),address=address)
+        add_online_order(session.get('cart'), address=address, note=orderNote)
         session.pop('cart', None)
     except:
         return jsonify({'code': 400})
