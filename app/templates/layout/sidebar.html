@@ -3,19 +3,19 @@
         <div>
             <div class="fw-bold fs-2 mb-4">CAFE</div>
             <nav class="nav flex-column sidebar-menu mb-3 gap-2">
-                <a class="nav-link" href="{{ url_for('waiter_dashboard') }}">
+                <a class="nav-link" href="{{ url_for('employee_web.dashboard') }}">
                     <span class="icon-wrap">🏠</span>
                     <span>Dashboard</span>
                 </a>
-                <a class="nav-link" href="{{ url_for('offline_order') }}">
+                <a class="nav-link" href="{{ url_for('waiter_web.offline_order') }}">
                     <span class="icon-wrap">📝</span>
                     <span>Create Order</span>
                 </a>
-                <a class="nav-link" href="{{ url_for('goods_receipt_note') }}">
+                <a class="nav-link" href="{{ url_for('waiter_web.goods_receipt_note') }}">
                     <span class="icon-wrap">📦</span>
                     <span>Create Note</span>
                 </a>
-                <a class="nav-link" href="{{ url_for('waiter_dashboard') }}">
+                <a class="nav-link" href="{{ url_for('employee_web.dashboard') }}">
                     <span class="icon-wrap">📖</span>
                     <span>Recipe</span>
                 </a>

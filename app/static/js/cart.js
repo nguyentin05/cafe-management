@@ -11,7 +11,7 @@ function updateUI(data) {
 function addToCart(id, name, price, image) {
     event.preventDefault()
 
-    fetch('/api/add-cart', {
+    fetch('/api/customer/cart/add', {
         method: 'post',
         body: JSON.stringify({
             'id': id,
@@ -31,8 +31,13 @@ function pay() {
     const addressInput = document.getElementById('address');
     const address = addressInput.value.trim();
 
+    if (!address) {
+        alert("Vui lòng nhập dia chi!");
+        return;
+    }
+
     if (confirm('u sure?') == true) {
-        fetch('/api/pay', {
+        fetch('/api/customer/pay', {
             method: 'post',
             body: JSON.stringify({
                 'address': address
@@ -47,7 +52,7 @@ function pay() {
     }
 }
 function updateCart(id) {
-    fetch('/api/update-cart/' + id, {
+    fetch('/api/customer/cart/update/' + id, {
         method: 'put',
         headers: {
             'Content-Type': 'application/json'
@@ -57,7 +62,7 @@ function updateCart(id) {
     })
 }
 function deleteCart(id) {
-    fetch('/api/delete-cart/' + id, {
+    fetch('/api/customer/cart/delete/' + id, {
         method: 'delete',
         headers: {
             'Content-Type': 'application/json'
