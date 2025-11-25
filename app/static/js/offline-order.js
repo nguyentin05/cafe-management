@@ -1,153 +1,200 @@
-function updateUI(data) {
+let currentCounter = 0;
+
+document.addEventListener("DOMContentLoaded", function() {
+    renderDraftFromStorage();
+});
+
+function getNextId() {
+    return ++currentCounter;
+}
+function getDraft() {
+    const draft = localStorage.getItem('draft');
+
+    if (draft) {
+        return JSON.parse(draft);
+    }
+    return {};
+}
+function saveDraft(draft) {
+    localStorage.setItem('draft', JSON.stringify(draft));
+    updateUI(draft);
+}
+function updateUI(draft) {
+    const { totalQuantity, totalAmount } = countTotal(draft)
     let items = document.getElementsByClassName("draftCounter");
     for (let item of items)
-        item.innerText = data.total_quantity;
+        item.innerText = totalQuantity;
 
     let amounts = document.getElementsByClassName("draftAmount");
     for (let item of amounts)
-        item.innerText = data.total_amount.toLocaleString();
+        item.innerText = totalAmount.toLocaleString();
+}
+function countTotal(draft) {
+    let totalQuantity = 0;
+    let totalAmount = 0;
+
+    if (draft) {
+        Object.values(draft).forEach(item => {
+            totalQuantity += item.quantity;
+            totalAmount += item.quantity * item.price;
+        });
+    }
+    return { totalQuantity, totalAmount };
+}
+function renderDraftFromStorage() {
+    const draft = getDraft();
+    const entries = Object.entries(draft);
+
+    updateUI(draft);
+
+    if (entries.length > 0) {
+        const body = document.getElementById('order-items');
+        const firstRow = body.querySelector('.order-item');
+
+        body.innerHTML = '';
+
+        entries.forEach(([rowId, item]) => {
+        const row = firstRow.cloneNode(true);
+
+        row.dataset.rowId = rowId;
+
+        const select = row.querySelector('.dish-select');
+        const quantityInput = row.querySelector('.quantity');
+        const priceInput = row.querySelector('.price');
+        const amountInput = row.querySelector('.amount');
+
+        select.value = item.id;
+        quantityInput.value = item.quantity;
+        priceInput.value = item.price.toLocaleString();
+        amountInput.value = (item.price * item.quantity).toLocaleString();
+
+        body.appendChild(row);
+        });
+    }
 }
 function addItemRow() {
     const body = document.getElementById('order-items');
     const firstRow = body.querySelector('.order-item');
 
-    if (!firstRow) return;
+    if (!firstRow) {
+        location.reload();
+        return;
+    }
 
-    const newRow = firstRow.cloneNode(true);
-
-    const select = newRow.querySelector('.dish-select');
-    const qtyInput = newRow.querySelector('.quantity');
-    const priceInp = newRow.querySelector('.price');
-    const amtInp = newRow.querySelector('.amount');
-
-    if (select) select.selectedIndex = 0;
-    if (qtyInput) qtyInput.value = 1;
-    if (priceInp) priceInp.value = '';
-    if (amtInp) amtInp.value = '';
-
-    body.appendChild(newRow);
-}
-function getAndUpdateItem(obj) {
-    const row = obj.closest('tr');
-    if (!row) return null;
+    const row = firstRow.cloneNode(true);
 
     const select = row.querySelector('.dish-select');
-
-    if (!select || select.selectedIndex === 0) return null;
-
-    const option = select.selectedOptions[0];
-
-    if (!option.dataset.price) return null;
-
-    const qtyInput = row.querySelector('.quantity');
+    const quantityInput = row.querySelector('.quantity');
     const priceInput = row.querySelector('.price');
     const amountInput = row.querySelector('.amount');
 
-    const price = parseInt(option.dataset.price);
-    let qty = parseInt(qtyInput.value);
+    row.dataset.rowId = getNextId();
 
-    if (isNaN(qty) || qty < 1) {
-        qty = 1;
-        qtyInput.value = 1;
+    select.selectedIndex = 0;
+    quantityInput.value = 1;
+    priceInput.value = '';
+    amountInput.value = '';
+
+    body.appendChild(row);
+}
+function getAndUpdateItem(obj) {
+    const row = obj.closest('tr');
+
+    let rowId = row.dataset.rowId;
+    if (!rowId) {
+        rowId = getNextId();
+        row.dataset.rowId = rowId;
     }
 
+    const select = row.querySelector('.dish-select');
+    const quantityInput = row.querySelector('.quantity');
+    const priceInput = row.querySelector('.price');
+    const amountInput = row.querySelector('.amount');
+
+    const option = select.selectedOptions[0];
+
+    const price = parseInt(option.dataset.price);
+    let quantity = parseInt(quantityInput.value);
+
     priceInput.value = price.toLocaleString();
-    amountInput.value = (price * qty).toLocaleString();
+    amountInput.value = (price * quantity).toLocaleString();
 
     return {
-        id: option.value,
-        name: option.textContent.trim(),
-        price: price,
-        quantity: qty
+        rowId: rowId,
+        item: {
+            id: option.value,
+            name: option.textContent,
+            price: price,
+            quantity: quantity
+        }
     };
 }
 
 function addToDraft(obj) {
-    const itemData = getAndUpdateItem(obj);
-    if (!itemData) return;
+    const { rowId, item } = getAndUpdateItem(obj);
 
-    fetch('/api/add-draft', {
-        method: 'post',
-        body: JSON.stringify(itemData),
-        headers: {
-         'Content-Type': 'application/json'
-         }
-    })
-    .then(res => res.json())
-    .then(data => {
-        updateUI(data);
-    })
-    .catch(err => console.error('Error add-draft:', err));
+    if (rowId && item) {
+        const draft = getDraft();
+
+        draft[rowId] = item;
+
+        saveDraft(draft);
+    }
+
 }
-
 function updateToDraft(obj) {
-    const itemData = getAndUpdateItem(obj);
-    if (!itemData) return;
-
-    fetch('/api/update-draft', {
-        method: 'put',
-        body: JSON.stringify({
-            'id': itemData.id,
-            'quantity': itemData.quantity
-        }),
-        headers: {
-        'Content-Type': 'application/json'
-        }
-    })
-    .then(res => res.json())
-    .then(data => {
-        updateUI(data);
-    })
-    .catch(err => console.error('Error update-draft:', err));
+    addToDraft(obj);
 }
-
 function deleteToDraft(obj) {
-    if (!confirm("Bạn có chắc muốn xóa món này?")) return;
+    if (confirm("Bạn có chắc muốn xóa món này?") == True) {
+        const row = obj.closest('tr');
+        const rowId = row.dataset.rowId;
 
-    const row = obj.closest('.order-item');
-    const select = row.querySelector('.dish-select');
-    const idToRemove = select.value;
+        const draft = getDraft();
 
-    const body = document.getElementById('order-items');
-    const rows = body.querySelectorAll('.order-item');
+        if (rowId && rowId in draft) {
+            delete draft[rowId];
+            saveDraft(draft);
+        }
 
-    if (idToRemove) {
-        fetch('/api/delete-draft/' + idToRemove, {
-            method: 'delete',
-            headers: {
-            'Content-Type': 'application/json'
-            }
-        }).then(res => res.json()).then(data => {
-             updateUI(data);
-        }).catch(err => console.error(err));
-    }
+        const body = document.getElementById('order-items');
+        const rows = body.querySelectorAll('.order-item');
+        const select = body.querySelector('.dish-select');
 
-    if (rows.length > 1) {
-        row.remove();
-    }
-    else {
-        if (select) select.selectedIndex = 0;
-        const qtyInput = row.querySelector('.quantity');
-        const priceInp = row.querySelector('.price');
-        const amtInp = row.querySelector('.amount');
-        
-        if (qtyInput) qtyInput.value = 1;
-        if (priceInp) priceInp.value = '';
-        if (amtInp) amtInp.value = '';
+        if (rows.length > 1) {
+            row.remove();
+        } else {
+            select.selectedIndex = 0;
+            row.querySelector('.quantity').value = 1;
+            row.querySelector('.price').value = '';
+            row.querySelector('.amount').value = '';
+        }
     }
 }
-
 function complete() {
-    const addressInput = document.getElementById('table');
-    const table = addressInput.value;
+    const tableInput = document.getElementById('table');
+    const table = tableInput.value;
+
+    if (!table) {
+        alert("Vui lòng nhập số bàn!");
+        return;
+    }
 
     const orderNoteInput = document.getElementById('orderNote');
     const orderNote = orderNoteInput.value;
 
-    if (confirm('u sure?') == true) {
-        fetch('/api/complete', {
+    const draft = getDraft();
+
+    if (Object.keys(draft).length === 0) {
+        alert("Vui lòng chọn món ăn!");
+        return;
+    }
+
+    if (confirm('Xác nhận tạo đơn?') == true) {
+        fetch('/api/employee/complete', {
             method: 'post',
             body: JSON.stringify({
+                'draft': draft,
                 'table': table,
                 'note': orderNote
             }),
@@ -155,8 +202,13 @@ function complete() {
                 'Content-Type': 'application/json'
             }
         }).then(res => res.json()).then(data => {
-            if (data.code == 200)
-                location.reload()
-        })
+            if (data.code == 200) {
+                localStorage.removeItem('draft');
+                alert("Tạo đơn thành công!");
+                location.reload();
+            } else {
+                alert("Có lỗi xảy ra: " + (data.message || "Lỗi hệ thống"));
+            }
+        }).catch(err => console.error(err));
     }
 }

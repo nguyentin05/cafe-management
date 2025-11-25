@@ -1,5 +1,4 @@
 import cloudinary.uploader
-from app import app
 from flask import request
 from flask_admin.form import FileUploadField
 from wtforms import TextAreaField
@@ -19,7 +18,7 @@ class MyImage(FileUploadField):
         r = cloudinary.uploader.upload(request.files['image'])
         setattr(obj, name, r['secure_url'])
 
-def count_total(cart):
+def get_total_session(cart):
     total_quantity, total_amount = 0, 0
 
     if cart:

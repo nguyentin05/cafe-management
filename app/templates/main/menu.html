@@ -18,7 +18,7 @@
                 <li class="nav-item menu-title fs-4">{{ cg.name }}</li>
                 {% for dc in cg.categories %}
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('menu', dishCate=dc.id) }}">{{dc.name}}</a>
+                    <a class="nav-link" href="{{ url_for('main.menu', dishCate=dc.id) }}">{{dc.name}}</a>
                 </li>
                 {% endfor %}
                 {% endfor %}
@@ -28,7 +28,7 @@
             <div class="mb-3 text-muted">
                 {% if current_cate %}
                 <div class="mb-2 text-muted">
-                    <a class="text-decoration-none text-muted" href="{{ url_for('menu') }}">Menu</a>
+                    <a class="text-decoration-none text-muted" href="{{ url_for('main.menu') }}">Menu</a>
                     / <span class="fw-semibold">{{ current_cate.name }}</span>
                 </div>
                 {% else %}
