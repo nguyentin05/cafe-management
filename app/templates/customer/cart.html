@@ -23,15 +23,23 @@
             <div class="mb-4 fs-4 fw-bold">
                 Review order (<span class="cartCounter">{{ cart_stats.total_quantity }}</span>)
             </div>
-            <div class="cart-card mb-3">
-                <div class="fs-4 text-white mb-2">Address</div>
-                <form method="post">
-                    <input type="text"
-                           class="form-control form-control-sm address-input mb-3 fs-6 text-white"
-                           name="address"
-                           id="address"
-                           placeholder="type your address">
-                </form>
+                <div>
+                    <div class="cart-card mb-3">
+                    <div class="fs-4 text-white mb-2">Address</div>
+                    <form method="post">
+                        <input type="text"
+                               class="form-control form-control-sm address-input mb-3 fs-6 text-white"
+                               name="address"
+                               id="address"
+                               placeholder="type your address">
+                    </form>
+                </div>
+                <div class="cart-card mb-3">
+                    <div class="fs-4 text-white mb-2">Note</div>
+                    <form method="post">
+                        <textarea maxlength="200" id="orderNote" rows="4" class="form-control form-control-sm address-input mb-3 fs-6 text-white" name="orderNote" placeholder="type your note"></textarea>
+                    </form>
+                </div>
             </div>
             <div class="pay-button">
                 <div class="cart-card text-center fs-4 fw-bold" onclick="pay()">

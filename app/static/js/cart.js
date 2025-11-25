@@ -31,6 +31,9 @@ function pay() {
     const addressInput = document.getElementById('address');
     const address = addressInput.value.trim();
 
+    const noteInput = document.getElementById('orderNote');
+    const note = noteInput.value.trim();
+
     if (!address) {
         alert("Vui lòng nhập dia chi!");
         return;
@@ -40,7 +43,8 @@ function pay() {
         fetch('/api/customer/pay', {
             method: 'post',
             body: JSON.stringify({
-                'address': address
+                'address': address,
+                'orderNote': note
             }),
             headers: {
                 'Content-Type': 'application/json'
