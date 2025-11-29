@@ -51,7 +51,7 @@ def unique_graduation_certificate(form, field):
 
 class LoginForm(FlaskForm):
     username = StringField('Username', validators=[InputRequired(), length(min=4, max=20)])
-    password = PasswordField('Password', validators=[InputRequired(), length(min=4, max=20)])
+    password = PasswordField('Password', validators=[InputRequired()])
     submit = SubmitField('Sign In')
 
 class RegisterForm(FlaskForm):

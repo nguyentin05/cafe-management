@@ -88,19 +88,54 @@ document.addEventListener("DOMContentLoaded", function() {
     updateGrandTotal();
 });
 
-function updateOrder() {
-    fetch('api/', {
-        method: 'POST',
+function updateOrder(id) {
+    const tableInput = document.getElementById('tableNumber');
+    let table = null;
+    if (tableInput) {
+        table = tableInput.value;
+
+        if (!table) {
+            alert("Vui lòng nhập số bàn!");
+            return;
+        }
+    }
+
+    const orderNoteInput = document.getElementById('orderNote');
+    const orderNote = orderNoteInput.value;
+
+    const items = [];
+    const rows = document.querySelectorAll('#order-items-body tr');
+
+    if (rows.length === 0) {
+        alert("Đơn hàng phải có ít nhất 1 món!");
+        return;
+    }
+
+    rows.forEach(row => {
+        items.push({
+            id: row.dataset.id,
+            price: parseInt(row.dataset.price),
+            quantity: parseInt(row.querySelector('.quantity').value)
+        });
+    })
+
+    fetch('/api/employee/orders/update/' + id, {
+        method: 'PUT',
         headers: {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-            order_id: document.getElementById('order-id').value,
-            items: Array.from(document.querySelectorAll('#order-items-body tr'))
-                .map(row => ({
-                    dish_id: row.dataset.id,
-                    quantity: parseInt(row.querySelector('.quantity').value)
-                }))
+            'table': table,
+            'note': orderNote,
+            'items': items
         })
-    })
+    }).then(res => res.json()).then(data => {
+        if (data.code == 200) {
+            alert('Cập nhật thành công!');
+            location.reload();
+        }
+        else if (data.code == 400) {
+            alert(data.message);
+        }
+    }).catch(err => console.log(err));
 }

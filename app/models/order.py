@@ -13,6 +13,12 @@ class OrderType(Enums):
     ONLINE = "ONLINE"
     OFFLINE = "OFFLINE"
 
+class LogType(Enums):
+    CREATED = "CREATED"
+    CHANGED_STATUS = "CHANGED_STATUS"
+    EDITED = "EDITED"
+    CANCELED = "CANCELED"
+
 class OrderStatus(Enums):
     PENDING = 'PENDING'
     CONFIRMED = 'CONFIRMED'
@@ -45,12 +51,15 @@ class Order(BaseModel):
     # discount = Column(String(50), nullable=True, unique=True)
     payments = relationship('Payment', backref='order', lazy=True)
     order_type = Column(Enum(OrderType), nullable=False)
-    # updated_date = Column(DateTime, default=datetime.now, onupdate=datetime.now)
-    # updated_by_id = Column(Integer, ForeignKey('user.id'), nullable=True)
-    # deleted_at = Column(DateTime, nullable=True)
-    # deleted_by_id = Column(Integer, ForeignKey('waiter.id'), nullable=True)
-    # is_deleted = Column(Boolean, default=False)
     order_logs = relationship('OrderLog', backref='order', lazy=True)
+
+    @property
+    def is_editable(self):
+        return self.status in [
+            OrderStatus.PENDING,
+            OrderStatus.CONFIRMED,
+            OrderStatus.PREPARING
+        ]
 
     __mapper_args__ = {
         'polymorphic_on': order_type,
@@ -83,5 +92,12 @@ class OrderLog(BaseModel):
     order_id = Column(Integer, ForeignKey('order.id'), nullable=False)
     created_date = Column(DateTime, default=datetime.now)
     employee_id = Column(Integer, ForeignKey('employee.id'), nullable=False)
-    action_type = Column(String(50), nullable=False)
+    action_type = Column(Enum(LogType), nullable=False)
+    from_status = Column(Enum(OrderStatus), nullable=True)
+    to_status = Column(Enum(OrderStatus), nullable=True)
+    description = Column(Text, nullable=True)
+
+class Regulation(BaseModel):
+    key = Column(String(50), unique=True, nullable=False)
+    value = Column(String(200), nullable=False)
     description = Column(Text, nullable=True)

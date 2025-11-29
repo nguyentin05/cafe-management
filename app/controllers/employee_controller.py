@@ -28,11 +28,13 @@ def dashboard():
 @employee_required
 def order_detail(id):
     total_order = get_total_order(id=id)
-    return render_template('employee/order-detail.html', order=get_order_by_id(id=id), total_order=total_order)
+    order = get_order_by_id(id=id)
+    return render_template('employee/order-detail.html', order=order, total_order=total_order)
 
-@employee.route('/dashboard/orders/edit/<int:id>')
+@employee.route('/dashboard/orders/edit/<int:id>', methods=['get', 'post'])
 @login_required
 @employee_required
 def edit_order(id):
     dishes = load_dishes()
-    return render_template('employee/order-edit.html', order=get_order_by_id(id=id), dishes=dishes)
+    order = get_order_by_id(id=id)
+    return render_template('employee/order-edit.html', order=order, dishes=dishes)

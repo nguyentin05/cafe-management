@@ -3,10 +3,12 @@
 {% block css %}
 {{ super() }}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/pages/order-detail.css')}}">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
 {% endblock %}
 
 {% block js %}
 {{ super() }}
+<script src="{{ url_for('static', filename='js/order-detail.js') }}"></script>
 {% endblock %}
 
 {%block content%}
@@ -14,11 +16,17 @@
     <div class="row">
         {%include "layout/sidebar.html"%}
         <div class="col-md-9 col-lg-10">
-            <div class="mb-3 mt-5">
-                <h4 class="mb-1">Order #{{ order.id }}</h4>
-                <small class="text-muted">
-                    Tạo lúc: <strong>{{ order.created_date.strftime('%H:%M %d/%m/%Y') }}</strong>
-                </small>
+            <div class="d-flex justify-content-between mb-3 mt-5">
+                <div>
+                    <h4 class="mb-1">Order #{{ order.id }}</h4>
+                    <small class="text-muted">
+                        Tạo lúc: <strong>{{ order.created_date.strftime('%H:%M %d/%m/%Y') }}</strong>
+                    </small>
+                </div>
+                <button type="button" class="btn btn-outline-secondary btn-sm fs-4" data-bs-toggle="modal"
+                        data-bs-target="#logModal">
+                    <i class="bi bi-clock-history"></i> Lịch sử
+                </button>
             </div>
             <div class="row g-3 mb-4">
                 <div class="{{ 'col-lg-6' if order.order_type.name == 'OFFLINE' else 'col-lg-3' }}">
@@ -30,7 +38,7 @@
                                 <div class="col-5 text-muted">Mã order</div>
                                 <div class="col-7 fw-semibold">#{{ order.id }}</div>
                             </div>
-                            {% if order.order_type == 'OFFLINE' %}
+                            {% if order.order_type.name == 'OFFLINE' %}
                             <div class="row mb-2">
                                 <div class="col-5 text-muted">Bàn</div>
                                 <div class="col-7 fw-semibold">{{ order.table_number }}</div>
@@ -66,7 +74,7 @@
                             </div>
                             <div class="row mb-2">
                                 <div class="col-5 text-muted">So Dien Thoai</div>
-                                <div class="col-7 fw-semibold">123</div>
+                                <div class="col-7 fw-semibold">{{ order.customer.phone }}</div>
                             </div>
                             <div class="row mb-2">
                                 <div class="col-5 text-muted">Dia Chi</div>
@@ -91,19 +99,38 @@
                                 </div>
                             </div>
                             <div class="mt-3 d-flex flex-wrap gap-2 justify-content-end">
-                                <form method="post">
-                                    <button type="submit" class="btn btn-success">
-                                        Chuyển trạng thái tiếp theo
-                                    </button>
-                                </form>
-                                <a href="{{ url_for('employee_web.edit_order', id=order.id) }}" class="btn btn-outline-primary">
+                                {% if order.status.name not in ['COMPLETED', 'CANCELED'] %}
+                                {% if order.status.name == 'DELIVERING'%}
+                                {% if current_user.is_waiter %}
+                                <button type="submit" class="btn btn-success" onclick="nextStatus({{order.id}})">
+                                    Hoan thanh
+                                </button>
+                                {% endif %}
+                                {% elif order.status.name == 'READY_TO_PAY'%}
+                                {% if current_user.is_manager or current_user.is_cashier %}
+                                <button type="submit" class="btn btn-success" onclick="nextStatus({{order.id}})">
+                                    Thanh toan
+                                </button>
+                                {% endif %}
+                                {% else %}
+                                <button type="submit" class="btn btn-success" onclick="nextStatus({{order.id}})">
+                                    Chuyển trạng thái tiếp theo
+                                </button>
+                                {% endif %}
+                                {% if current_user.is_authenticated and current_user.is_manager %}
+                                <button type="submit" class="btn btn-outline-danger"
+                                        onclick="cancelStatus({{order.id}})">
+                                    Hủy order
+                                </button>
+                                {% endif %}
+                                {% endif %}
+                                {% if order.is_editable %}
+                                <a href="{{ url_for('employee_web.edit_order', id=order.id) }}"
+                                   class="btn btn-outline-primary">
                                     Chỉnh sửa đơn hàng
                                 </a>
-                                <form method="post">
-                                    <button type="submit" class="btn btn-outline-danger">
-                                        Hủy order
-                                    </button>
-                                </form>
+                                {% endif %}
+
                             </div>
                         </div>
                     </div>
@@ -144,6 +171,50 @@
                         </table>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="logModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">📜 Nhật ký Order #{{ order.id }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-0">
+                <div class="list-group list-group-flush">
+                    {% for log in order.order_logs %}
+                    <div class="list-group-item">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1 fw-bold text-primary">{{ log.employee.fullname }}</h6> <small class="text-muted">{{ log.created_date.strftime('%H:%M %d/%m') }}</small>
+                        </div>
+
+                        <p class="mb-1 small">
+                            {{ log.description }}
+                        </p>
+
+                        <small>
+                            {% if log.action_type.name == 'CHANGED_STATUS' %}
+                                <span class="badge bg-info text-dark">Chuyển trạng thái</span>
+                            {% elif log.action_type.name == 'EDITED' %}
+                                <span class="badge bg-warning text-dark">Chỉnh sửa</span>
+                            {% elif log.action_type.name == 'CANCELED' %}
+                                <span class="badge bg-danger">Hủy đơn</span>
+                            {% elif log.action_type.name == 'CREATED' %}
+                                <span class="badge bg-warning text-dark">Tao</span>
+                            {% else %}
+                                <span class="badge bg-secondary">System</span>
+                            {% endif %}
+                        </small>
+                    </div>
+                    {% else %}
+                    <div class="p-3 text-center text-muted">Chưa có lịch sử hoạt động</div>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Đóng</button>
             </div>
         </div>
     </div>

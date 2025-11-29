@@ -100,9 +100,13 @@
                         <span>Quantity</span>
                         <span>{{ cart_stats.total_quantity }}</span>
                     </div>
+                    <div class="total-row">
+                        <span>Service fee</span>
+                        <span>{{ "{:,.0f}".format(cart_stats.total_amount * service_fee) }}</span>
+                    </div>
                     <div class="d-flex justify-content-between fw-bold fs-3 mt-1">
                         <span>Total</span>
-                        <span>{{ "{:,.0f}".format(cart_stats.total_amount) }}</span>
+                        <span>{{ "{:,.0f}".format(cart_stats.total_amount * (1 + service_fee)) }}</span>
                     </div>
                 </div>
             </div>

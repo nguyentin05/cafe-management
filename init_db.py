@@ -1,6 +1,9 @@
 from app import create_app
 from app.extensions import db
 from app.models.dish import CategoryGroup, DishCategory, Dish, DishUnit
+from app.models.user import Waiter, Manager, Cashier, Admin, Customer, Gender, UserRole
+from app.models.order import Regulation
+from app.utils import hash_password
 
 app = create_app()
 
@@ -53,8 +56,67 @@ with app.app_context():
         unit=DishUnit.PIECE, dishCategory_id=3
     )
 
+    c1 = Customer(
+        fullname='Nguyen Trong Tin 1',
+        username='test1',
+        password=hash_password('1'),
+        phone='0123456789'
+    )
+
+    a1 = Admin(
+        fullname='Admin',
+        username='admin1',
+        password=hash_password('1'),
+        phone='0000000000'
+    )
+
+    w1 = Waiter(
+        fullname='Nguyen Trong Tin 2',
+        username='test2',
+        password=hash_password('2'),
+        phone='1123456789',
+        email='test2@gmail.com',
+        dob='2000-11-27',
+        gender=Gender.MALE,
+        address='123 Doc lap Quan Tan Phu',
+        identity_card='112233445566',
+        driver_license='112233445567',
+        user_role=UserRole.EMPLOYEE
+    )
+
+    cs1 = Cashier(
+        fullname='Nguyen Trong Tin 3',
+        username='test3',
+        password=hash_password('3'),
+        phone='1223456789',
+        email='test3@gmail.com',
+        dob='2000-11-24',
+        gender=Gender.FEMALE,
+        address='123 Luy Ban Bich Quan Tan Phu',
+        identity_card='112233445568',
+        user_role=UserRole.EMPLOYEE
+    )
+
+    m1 = Manager(
+        fullname='Nguyen Trong Tin 4',
+        username='test4',
+        password=hash_password('4'),
+        phone='1233456789',
+        email='test4@gmail.com',
+        dob='1991-11-24',
+        gender=Gender.FEMALE,
+        address='123 Binh Long Quan Tan Phu',
+        identity_card='112233445569',
+        graduation_certificate='112233445570',
+        user_role=UserRole.EMPLOYEE
+    )
+    r1 = Regulation(key='SERVICE_FEE_PERCENT',
+                    value='0.05')
+    r2 = Regulation(key='MAX_QUANTITY',
+                    value='10')
+
     db.session.add_all([cg1, cg2, dc1, dc2, dc3, dc4, dc5,
-                        d1, d2, d3, d4, d5, d6, d7])
+                        d1, d2, d3, d4, d5, d6, d7, c1, a1, w1, cs1, m1, r1, r2])
     db.session.commit()
 
     print("✅ Database initialized & seeded.")

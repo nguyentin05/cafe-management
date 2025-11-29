@@ -16,11 +16,13 @@
         <div class="col-md-9 col-lg-10 py-4">
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h4>Chỉnh sửa đơn hàng #{{ order.id }}</h4>
+                {% if order.is_editable %}
                 <div>
                     <a href="{{ url_for('employee_web.order_detail', id=order.id) }}" class="btn btn-outline-secondary me-2">Hủy
                         bỏ</a>
-                    <button class="btn btn-primary" onclick="saveOrder()">Lưu thay đổi</button>
+                    <button class="btn btn-primary" onclick="updateOrder({{order.id}})">Lưu thay đổi</button>
                 </div>
+                {% endif %}
             </div>
             <div class="row">
                 <div class="col-md-4">
@@ -40,6 +42,7 @@
                             </div>
                         </div>
                     </div>
+                    {% if order.is_editable %}
                     <div class="card">
                         <div class="card-header">Thêm món</div>
                         <div class="card-body">
@@ -52,6 +55,7 @@
                             <button class="btn btn-success w-100" onclick="addDish()">Thêm vào danh sách</button>
                         </div>
                     </div>
+                    {% endif %}
                 </div>
                 <div class="col-md-8">
                     <div class="card">
@@ -73,7 +77,8 @@
                                     <td>{{ item.dish.name }}</td>
                                     <td>
                                         <input type="number" class="form-control form-control-sm text-center quantity"
-                                               value="{{ item.quantity }}" min="1" onblur="updateRowTotal(this)">
+                                               value="{{ item.quantity }}" min="1" max="10" onblur="updateRowTotal(this)"
+                                        {% if not order.is_editable %}disable{% endif %}>
                                     </td>
                                     <td>
                                         <input type="text" class="form-control text-end price"
@@ -84,11 +89,13 @@
                                                placeholder="{{ '{:,.0f}'.format(item.unit_price *
                                         item.quantity) }}" disabled>
                                     </td>
+                                    {% if order.is_editable %}
                                     <td class="text-center">
                                         <button type="button" class="btn btn-sm btn-outline-danger"
                                                 onclick="removeRow(this)">X
                                         </button>
                                     </td>
+                                    {% endif %}
                                 </tr>
                                 {% endfor %}
                                 </tbody>

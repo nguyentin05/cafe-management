@@ -7,7 +7,6 @@ function updateUI(data) {
     for (let item of amounts)
         item.innerText = data.total_amount.toLocaleString();
 }
-
 function addToCart(id, name, price, image) {
     event.preventDefault()
 
@@ -26,7 +25,6 @@ function addToCart(id, name, price, image) {
         updateUI(data);
     }).catch(err => console.error(err));
 }
-
 function pay() {
     const addressInput = document.getElementById('address');
     const address = addressInput.value.trim();
