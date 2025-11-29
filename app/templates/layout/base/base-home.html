@@ -1,13 +1,17 @@
-{%extends "layout/base/base.html"%}
+{% extends "layout/base/base.html" %}
+
+{% block title %}CAFE - Trang Chủ{% endblock %} {# Tiêu đề cụ thể hơn #}
 
 {% block css %}
-    {{ super() }}
+    {{ super() }} {# Giữ lại Bootstrap CSS từ base.html #}
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital@1&family=Raleway:wght@100&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
     <link rel="stylesheet" href="{{ url_for('static', filename='css/pages/home.css')}}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/layout/footer/footer.css')}}">
 {% endblock %}
 
 {% block js %}
@@ -15,13 +19,13 @@
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 {% endblock %}
 
-{%block header%}
-    {%include "layout/header/header-home.html"%}
-{%endblock%}
+{% block header %}
+    {% include "layout/header/header-home.html" %}
+{% endblock %}
 
-{%block content required%}
-{%endblock%}
+{% block content required %}
+{% endblock %}
 
-{%block footer%}
-    {%include "layout/footer/footer.html"%}
-{%endblock%}
+{% block footer %}
+    {% include "layout/footer/footer.html" %}
+{% endblock %}

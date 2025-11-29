@@ -1,10 +1,99 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends "base.html" %}
 
-</body>
-</html>
+{% block title %}Quản lý Phiếu Nhập Kho{% endblock %}
+
+{% block css %}
+    {{ super() }} {# Giữ lại CSS của Bootstrap từ base.html #}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href=<link rel="stylesheet" href="{{ url_for('static', filename='ccs/GRN.css')}}">
+">
+{% endblock %}
+
+{% block js %}
+    {{ super() }}
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+<script src="{{ url_for('static', filename='js/GRN.js')}}"></script>{% endblock %}
+
+{% block content %}
+    <div class="grn-container p-4">
+        {# Header của trang #}
+        <div class="header-section d-flex justify-content-between align-items-center mb-4">
+            <h2 class="mb-0">Tạo Phiếu Nhập Kho</h2>
+            <button class="btn btn-primary main-action-btn" id="saveGRNBtn">Hoàn tất</button>
+        </div>
+
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <div class="row g-3 align-items-center">
+                    <div class="col-md-4">
+                        <label for="grnDate" class="form-label">Ngày nhập hàng</label>
+                        <input type="text" class="form-control datepicker" id="grnDate" placeholder="Chọn ngày">
+                    </div>
+                    <div class="col-md-4">
+                        <label for="grnCode" class="form-label">Mã GRN</label>
+                        <input type="text" class="form-control" id="grnCode" value="GRN-TEMP" readonly>
+                    </div>
+                     <div class="col-md-4">
+                        <label for="supplierName" class="form-label">Nhà cung cấp</label>
+                        <input type="text" class="form-control" id="supplierName" placeholder="Tên nhà cung cấp">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="card-title mb-0">Danh sách nguyên liệu</h5>
+                    <button class="btn btn-primary add-item-btn" id="addIngredientRowBtn">
+                        <i class="fas fa-plus"></i> Thêm nguyên liệu
+                    </button>
+                </div>
+
+                <div class="item-list-header d-flex text-muted fw-bold pb-2 border-bottom">
+                    <div style="width: 40%;">Nguyên liệu</div>
+                    <div style="width: 20%; text-align: center;">Số lượng</div>
+                    <div style="width: 20%; text-align: center;">Đơn vị</div>
+                    <div style="width: 20%; text-align: right;"></div>
+                </div>
+
+                <div id="ingredientRowsContainer" class="list-group list-group-flush mb-3">
+                    {# Dynamic ingredient rows will be inserted here #}
+                </div>
+
+                <div class="summary-area text-end pt-3 border-top">
+                    <p class="mb-1">Tổng số lượng: <span id="totalQuantity">0</span></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <h5 class="card-title mb-3">Xem GRN đã nhập</h5>
+                <div class="row g-3 align-items-end mb-3">
+                    <div class="col-md-4">
+                        <label for="filterStartDate" class="form-label">Từ ngày</label>
+                        <input type="text" class="form-control datepicker" id="filterStartDate" placeholder="Chọn ngày">
+                    </div>
+                    <div class="col-md-4">
+                        <label for="filterEndDate" class="form-label">Đến ngày</label>
+                        <input type="text" class="form-control datepicker" id="filterEndDate" placeholder="Chọn ngày">
+                    </div>
+                    <div class="col-md-4">
+                        <button class="btn btn-success w-100" id="filterGRNsBtn">Lọc GRN</button>
+                    </div>
+                </div>
+
+                <div id="grnResultsContainer">
+                    <div class="alert alert-info text-center mb-0">
+                        Chọn khoảng thời gian và nhấn "Lọc GRN" để hiển thị danh sách.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+{% endblock %}

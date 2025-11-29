@@ -1,23 +1,26 @@
-{%extends "layout/base/base.html"%}
+{% extends "layout/base/base.html" %}
+
+{% block title %}CAFE - Trang Chính{% endblock %} {# Tiêu đề cụ thể hơn #}
 
 {% block css %}
-    {{ super() }}
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600&display=swap" rel="stylesheet">
-
+    {{ super() }} {# Giữ lại Bootstrap CSS từ base.html #}
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"> {# Thêm Font Awesome #}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/pages/main.css')}}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/layout/footer/footer.css')}}"> {# CSS cho footer #}
 {% endblock %}
 
 {% block js %}
     {{ super() }}
 {% endblock %}
 
-{%block header%}
-    {%include "layout/header/header-main.html"%}
-{%endblock%}
+{% block header %}
+    {% include "layout/header/header-main.html" %}
+{% endblock %}
 
-{%block content required%}
-{%endblock%}
+{% block content required %}
+{% endblock %}
 
-{%block footer%}
-    {%include "layout/footer/footer.html"%}
-{%endblock%}
+{% block footer %}
+    {% include "layout/footer/footer.html" %}
+{% endblock %}
