@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+
+{% block title %}Quản Lý Nhân Viên{% endblock %}
+
+{% block css %}
+{{ super() }}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/pages/employee-info.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="employees-container p-4">
+    {# Header Section #}
+    <div class="header-section d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="mb-0">Nhân Viên</h2>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item"><a href="#" class="text-decoration-none text-success">Dashboard</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Nhân Viên</li>
+                </ol>
+            </nav>
+        </div>
+        <div class="action-buttons d-flex gap-2">
+            <button class="btn btn-outline-secondary rounded-pill"><i class="fas fa-file-pdf"></i></button>
+            <button class="btn btn-outline-secondary rounded-pill"><i class="fas fa-file-excel"></i></button>
+            <button class="btn btn-outline-secondary rounded-pill"><i class="fas fa-redo"></i></button>
+            <button class="btn btn-success add-employee-btn rounded-pill"><i class="fas fa-plus me-2"></i>Thêm Nhân Viên</button>
+        </div>
+    </div>
+
+    {# Filters and Search #}
+    <div class="card shadow-sm mb-4 rounded-card">
+        <div class="card-body">
+            <div class="row g-3 align-items-center">
+                <div class="col-md-5 col-lg-4">
+                    <div class="input-group search-main">
+                        <span class="input-group-text search-icon rounded-start-pill"><i class="fas fa-search"></i></span>
+                        <input type="text" id="searchInput" class="form-control search-input rounded-end-pill" placeholder="Tìm kiếm...">
+                    </div>
+                </div>
+                <div class="col-md-3 col-lg-2 ms-auto">
+                    <select id="statusFilter" class="form-select status-filter rounded-pill">
+                        <option value="">Trạng thái</option>
+                        <option value="true">Active</option>
+                        <option value="false">Inactive</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Employee Table #}
+    <div class="card shadow-sm rounded-card">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table employee-table mb-0">
+                    <thead>
+                        <tr>
+                            <th class="ps-4" style="width: 3%;">
+                                <input type="checkbox" class="form-check-input">
+                            </th>
+                            <th style="width: 5%;">ID</th>
+                            <th style="width: 12%;">Họ Tên</th>
+                            <th style="width: 8%;">Vai Trò</th>
+                            <th style="width: 15%;">Email</th>
+                            <th style="width: 9%;">Điện Thoại</th>
+                            <th style="width: 9%;">Ngày Tham Gia</th>
+                            <th style="width: 8%;">Trạng Thái</th>
+                            <th style="width: 8%;">Giới Tính</th>
+                            <th style="width: 15%;">Địa Chỉ</th>
+                            <th style="width: 8%;" class="text-center">Hành Động</th>
+                        </tr>
+                    </thead>
+                    <tbody id="employeeTableBody">
+                        {# Dữ liệu nhân viên sẽ được render bởi JavaScript #}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="card-footer d-flex justify-content-between align-items-center rounded-bottom-card">
+            <div class="d-flex align-items-center">
+                <span class="me-2">Số hàng trên mỗi trang:</span>
+                <select id="rowsPerPage" class="form-select form-select-sm me-3" style="width: auto;">
+                    <option value="5">5</option>
+                    <option value="10" selected>10</option>
+                    <option value="20">20</option>
+                </select>
+                <span id="entriesInfo">1-10 trên 15 mục</span>
+            </div>
+            <nav aria-label="Page navigation">
+                <ul class="pagination pagination-sm mb-0" id="pagination">
+                    {# Các nút phân trang sẽ được render bởi JavaScript #}
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+{{ super() }}
+<script src="{{ url_for('static', filename='app/static/js/employee-profile.js') }}"></script>
+{% endblock %}
