@@ -1,7 +1,12 @@
 from flask import Blueprint,jsonify,request
-from flask_login import login_required
-from app.daos.order_dao import add_offline_order
-from app.decorators import waiter_required
+from flask_login import login_required, current_user
+
+from app.utils import get_total_session
+from app.daos.order_dao import add_offline_order, get_order_by_id, update_offline_order, next_order_status, \
+    cancel_order_status, get_value
+from app.decorators import waiter_required, employee_required, manager_required
+from app.models import OrderStatus, OrderType
+from app.daos.dish_dao import count_dishes
 
 api_employee = Blueprint('api_employee', __name__)
 
@@ -14,11 +19,98 @@ def complete():
     note = data.get('note', '')
     draft = data.get('draft')
 
+    total_tats = get_total_session(cart=draft)
+    total_quantity = total_tats['total_quantity']
+
+    limit = int(get_value('MAX_QUANTITY'))
+
+    if total_quantity > limit:
+        return jsonify({
+            'code': 400,
+            'message': 'qua so luong cho phep'
+        })
+
     try:
         if not draft:
             return jsonify({'code': 400, 'message': 'Gio hang rong'})
 
         add_offline_order(draft, note=note, table=table)
+    except Exception as ex:
+        print(str(ex))
+        return jsonify({'code': 400})
+
+    return jsonify({'code': 200})
+
+
+@api_employee.route('/orders/update/<int:id>', methods=['put'])
+@login_required
+@employee_required
+def update_order(id):
+    order = get_order_by_id(id=id)
+
+    if not order.is_editable:
+        return jsonify({'code': 400})
+
+    data = request.json
+    note = data.get('note', '')
+    table = data.get('table')
+    items = data.get('items')
+
+    total_quantity = count_dishes(items)
+
+    if total_quantity > 10:
+        return jsonify({
+            'code': 400,
+            'message': 'qua so luong cho phep'
+        })
+
+    if order.order_type.name == OrderType.OFFLINE and table is None:
+        return jsonify({
+            'code': 400,
+            'message': 'chua co so ban'})
+
+    try:
+        update_offline_order(order=order, items=items, note=note, table=table)
+
+    except Exception as ex:
+        print(str(ex))
+        return jsonify({'code': 400})
+
+    return jsonify({'code': 200})
+
+@api_employee.route('/orders/next/<int:id>', methods=['put'])
+@login_required
+@employee_required
+def next_status(id):
+    order = get_order_by_id(id=id)
+
+    if order.status.name == OrderStatus.READY_TO_PAY:
+        if not (current_user.is_cashier or current_user.is_manager):
+            return jsonify({'code': 403})
+
+    try:
+        next_order_status(order=order)
+
+    except Exception as ex:
+        print(str(ex))
+        return jsonify({'code': 400})
+
+    return jsonify({'code': 200})
+
+@api_employee.route('/orders/cancel/<int:id>', methods=['put'])
+@login_required
+@manager_required
+def cancel_order(id):
+    order = get_order_by_id(id=id)
+
+    if not current_user.is_manager:
+        return jsonify({'code': 403})
+
+    if order.status in [OrderStatus.COMPLETED, OrderStatus.CANCELED]:
+        return jsonify({'code': 400,})
+
+    try:
+        cancel_order_status(order=order)
     except Exception as ex:
         print(str(ex))
         return jsonify({'code': 400})

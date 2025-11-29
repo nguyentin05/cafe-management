@@ -19,3 +19,10 @@ def get_dish_category_by_id(id):
 
 def load_category_groups():
     return CategoryGroup.query.all()
+
+def count_dishes(dishes):
+    total = 0
+    for d in dishes:
+        total += int(d.get('quantity'))
+
+    return total

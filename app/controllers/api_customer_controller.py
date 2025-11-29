@@ -44,10 +44,12 @@ def pay():
     data = request.json
     address = data.get('address')
     orderNote = data.get('orderNote', '')
+
     try:
         add_online_order(session.get('cart'), address=address, note=orderNote)
         session.pop('cart', None)
-    except:
+    except Exception as ex:
+        print(str(ex))
         return jsonify({'code': 400})
 
     return jsonify({'code': 200})

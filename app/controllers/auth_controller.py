@@ -1,47 +1,63 @@
 from flask import Blueprint, render_template, redirect, url_for, request
-from flask_login import login_user, logout_user, login_required
-from app.daos.user_dao import add_customer, check_login, get_user_by_id
+from flask_login import login_user, logout_user, login_required, current_user
+from app.daos.user_dao import add_customer, auth_user, get_user_by_id
 from app import login
+from app.forms import LoginForm, CustomerRegisterForm
 
 auth = Blueprint('auth', __name__)
 
 @auth.route('/register', methods = ['get', 'post'])
 def register():
-    err_msg = ""
+    if current_user.is_authenticated:
+        return redirect(url_for('main.menu'))
 
-    if request.method.__eq__('POST'):
-        fullname = request.form.get('fullname')
-        username = request.form.get('username')
-        password = request.form.get('password')
-        confirm = request.form.get('confirm')
-        email = request.form.get('email')
+    form = CustomerRegisterForm()
+    err_msg = ''
+
+    if form.validate_on_submit():
+        fullname = form.fullname.data
+        username = form.username.data
+        password = form.password.data
+        phone = form.phone.data
 
         try:
-            if password.strip().__eq__(confirm.strip()):
-                add_customer(fullname=fullname, username=username, password=password, email=email)
-                return redirect(url_for('auth.signin'))
-            else:
-                err_msg = 'Mat khau khong khop'
+            add_customer(fullname=fullname, username=username, password=password, phone=phone)
+            return redirect(url_for('auth.signin'))
         except Exception as ex:
-            err_msg = 'He thong loi' + str(ex)
+            err_msg = 'He thong loi ' + str(ex)
 
-    return render_template('auth/register.html', err_msg=err_msg)
+    return render_template('auth/register.html', form=form, err_msg=err_msg)
 
 @auth.route('/login', methods=['get', 'post'])
 def signin():
-    err_msg = ''
-    if request.method.__eq__('POST'):
-        username = request.form.get('username')
-        password = request.form.get('password')
+    if current_user.is_authenticated:
+        return redirect(url_for('main.menu'))
 
-        user = check_login(username=username, password=password)
+    form = LoginForm()
+    err_msg = ''
+
+    if form.validate_on_submit():
+        username = form.username.data
+        password = form.password.data
+
+        user = auth_user(username=username, password=password)
+
         if user:
             login_user(user=user)
-            return redirect(url_for('main.menu'))
+
+            next = request.args.get('next', 'main.menu')
+
+            if current_user.is_admin:
+                return redirect('/admin')
+
+            if current_user.is_employee:
+                return redirect(url_for('employee_web.dashboard'))
+
+            return redirect(url_for(next))
         else:
             err_msg = 'username hoac password ko chinh xac'
 
-    return render_template('auth/login.html', err_msg=err_msg)
+    return render_template('auth/login.html', form=form, err_msg=err_msg)
 
 
 @auth.route('/logout')

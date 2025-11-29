@@ -9,6 +9,10 @@ class BaseModel(db.Model):
     __abstract__ = True
     id = Column(Integer, primary_key=True, autoincrement=True)
 
+class Gender(Enums):
+    MALE = "MALE"
+    FEMALE = "FEMALE"
+
 class UserRole(Enums):
     ADMIN = "ADMIN"
     CUSTOMER = "CUSTOMER"
@@ -23,11 +27,15 @@ class User(BaseModel, UserMixin):
     fullname = Column(String(50), nullable=False)
     username = Column(String(50), nullable=False, unique=True)
     password = Column(String(50), nullable=False)
-    email = Column(String(100),nullable=True, unique=True)
-    avatar = Column(String(200))# cap nhat hinh nen mac dinh
+    email = Column(String(100), nullable=True, unique=True)
+    avatar = Column(String(200), default='https://res.cloudinary.com/dam6k8ezg/image/upload/v1764155710/defaultAvatar_l5nyci.jpg')
+    phone = Column(String(10), unique=True, nullable=False)
     active = Column(Boolean, default=True)
     joined_date = Column(Date, default=date.today())
     user_role = Column(Enum(UserRole), nullable=False)
+    dob = Column(Date, nullable=True)
+    gender = Column(Enum(Gender), nullable=True)
+    address = Column(String(100), nullable=True)
 
     @property
     def is_admin(self):
@@ -48,11 +56,25 @@ class User(BaseModel, UserMixin):
 
 class Employee(User):
     id = Column(Integer, ForeignKey('user.id'), primary_key=True)
+    identity_card = Column(String(12), unique=True)
     employee_role = Column(Enum(EmployeeRole), nullable=False)
+    order_logs = relationship('OrderLog', backref='employee', lazy=True)
 
     @property
     def employee_code(self):
         return f"{self.role.value[0]}{self.id:04d}"
+
+    @property
+    def is_manager(self):
+        return self.employee_role == EmployeeRole.MANAGER
+
+    @property
+    def is_cashier(self):
+        return self.employee_role == EmployeeRole.CASHIER
+
+    @property
+    def is_waiter(self):
+        return self.employee_role == EmployeeRole.WAITER
 
     __mapper_args__ = {
         'polymorphic_on': employee_role,
@@ -88,6 +110,7 @@ class Cashier(Employee):
 
 class Manager(Employee):
     id = Column(Integer, ForeignKey('employee.id'), primary_key=True)
+    graduation_certificate = Column(String(12), nullable=False)
 
     __mapper_args__ = {
         'polymorphic_identity': EmployeeRole.MANAGER
@@ -96,6 +119,7 @@ class Manager(Employee):
 class Waiter(Employee):
     id = Column(Integer, ForeignKey('employee.id'), primary_key=True)
     orders = relationship('Order', backref='waiter', lazy=True)
+    driver_license = Column(String(12), nullable=False)
 
     __mapper_args__ = {
         'polymorphic_identity': EmployeeRole.WAITER

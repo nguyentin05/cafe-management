@@ -1,3 +1,5 @@
+@import url("../components/back-button.css");
+
 .left-panel {
     background-color: #1e3932;
     color: #fff;
@@ -11,7 +13,7 @@
 .right-panel {
     background-color: #f5f5f5;
     padding: 2rem 2.5rem;
-    padding-bottom: 170px;
+    padding-bottom: 190px;
 }
 .address-input {
     background-color: #123026;

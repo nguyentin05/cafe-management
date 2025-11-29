@@ -1,5 +1,5 @@
 from enum import Enum as Enums
-from sqlalchemy import Column, Integer, DateTime, String, Float, ForeignKey, Enum, Text
+from sqlalchemy import Column, Integer, DateTime, String, Float, ForeignKey, Enum, Text, Boolean
 from sqlalchemy.orm import relationship
 from datetime import datetime
 from app.extensions import db
@@ -12,6 +12,12 @@ class BaseModel(db.Model):
 class OrderType(Enums):
     ONLINE = "ONLINE"
     OFFLINE = "OFFLINE"
+
+class LogType(Enums):
+    CREATED = "CREATED"
+    CHANGED_STATUS = "CHANGED_STATUS"
+    EDITED = "EDITED"
+    CANCELED = "CANCELED"
 
 class OrderStatus(Enums):
     PENDING = 'PENDING'
@@ -45,6 +51,16 @@ class Order(BaseModel):
     # discount = Column(String(50), nullable=True, unique=True)
     payments = relationship('Payment', backref='order', lazy=True)
     order_type = Column(Enum(OrderType), nullable=False)
+    order_logs = relationship('OrderLog', backref='order', lazy=True)
+
+    @property
+    def is_editable(self):
+        return self.status in [
+            OrderStatus.PENDING,
+            OrderStatus.CONFIRMED,
+            OrderStatus.PREPARING
+        ]
+
     __mapper_args__ = {
         'polymorphic_on': order_type,
         'polymorphic_identity': 'order'
@@ -71,3 +87,17 @@ class OrderDetails(BaseModel):
     unit_price = Column(Float, default=0.0)
     dish_id = Column(Integer, ForeignKey('dish.id'), nullable=False)
     order_id = Column(Integer, ForeignKey('order.id'), nullable=False)
+
+class OrderLog(BaseModel):
+    order_id = Column(Integer, ForeignKey('order.id'), nullable=False)
+    created_date = Column(DateTime, default=datetime.now)
+    employee_id = Column(Integer, ForeignKey('employee.id'), nullable=False)
+    action_type = Column(Enum(LogType), nullable=False)
+    from_status = Column(Enum(OrderStatus), nullable=True)
+    to_status = Column(Enum(OrderStatus), nullable=True)
+    description = Column(Text, nullable=True)
+
+class Regulation(BaseModel):
+    key = Column(String(50), unique=True, nullable=False)
+    value = Column(String(200), nullable=False)
+    description = Column(Text, nullable=True)

@@ -1,214 +1,191 @@
 let currentCounter = 0;
 
-document.addEventListener("DOMContentLoaded", function() {
-    renderDraftFromStorage();
-});
-
+function loadCounter() {
+    currentCounter = parseInt(localStorage.getItem("draftCounter")) || 0;
+}
+function saveCounter() {
+    localStorage.setItem("draftCounter", currentCounter);
+}
 function getNextId() {
-    return ++currentCounter;
+    currentCounter++;
+    saveCounter();
+    return currentCounter;
 }
 function getDraft() {
-    const draft = localStorage.getItem('draft');
-
-    if (draft) {
-        return JSON.parse(draft);
-    }
-    return {};
+    return JSON.parse(localStorage.getItem("draft") || "{}");
 }
+
 function saveDraft(draft) {
-    localStorage.setItem('draft', JSON.stringify(draft));
+    localStorage.setItem("draft", JSON.stringify(draft));
     updateUI(draft);
-}
-function updateUI(draft) {
-    const { totalQuantity, totalAmount } = countTotal(draft)
-    let items = document.getElementsByClassName("draftCounter");
-    for (let item of items)
-        item.innerText = totalQuantity;
-
-    let amounts = document.getElementsByClassName("draftAmount");
-    for (let item of amounts)
-        item.innerText = totalAmount.toLocaleString();
 }
 function countTotal(draft) {
     let totalQuantity = 0;
     let totalAmount = 0;
 
-    if (draft) {
-        Object.values(draft).forEach(item => {
-            totalQuantity += item.quantity;
-            totalAmount += item.quantity * item.price;
-        });
-    }
+    Object.values(draft).forEach(item => {
+        totalQuantity += item.quantity;
+        totalAmount += item.quantity * item.price;
+    });
+
     return { totalQuantity, totalAmount };
 }
-function renderDraftFromStorage() {
-    const draft = getDraft();
-    const entries = Object.entries(draft);
+function updateUI(draft) {
+    const { totalQuantity, totalAmount } = countTotal(draft);
 
-    updateUI(draft);
+    const sf = document.getElementById("service-fee");
 
-    if (entries.length > 0) {
-        const body = document.getElementById('order-items');
-        const firstRow = body.querySelector('.order-item');
+    const serviceFeeRate = parseFloat(sf.dataset.fee);
 
-        body.innerHTML = '';
+    const serviceFee = totalAmount * serviceFeeRate;
 
-        entries.forEach(([rowId, item]) => {
-        const row = firstRow.cloneNode(true);
+    const total = totalAmount + serviceFee;
 
-        row.dataset.rowId = rowId;
+    document.querySelectorAll(".subtotal").forEach(el => {
+        el.innerText = totalAmount.toLocaleString();
+    });
 
-        const select = row.querySelector('.dish-select');
-        const quantityInput = row.querySelector('.quantity');
-        const priceInput = row.querySelector('.price');
-        const amountInput = row.querySelector('.amount');
+    document.querySelectorAll(".quantity").forEach(el => {
+        el.innerText = totalQuantity;
+    });
 
-        select.value = item.id;
-        quantityInput.value = item.quantity;
-        priceInput.value = item.price.toLocaleString();
-        amountInput.value = (item.price * item.quantity).toLocaleString();
+    document.querySelectorAll(".serviceFee").forEach(el => {
+        el.innerText = serviceFee.toLocaleString();
+    });
 
-        body.appendChild(row);
-        });
-    }
+    document.querySelectorAll(".total").forEach(el => {
+        el.innerText = total.toLocaleString();
+    });
 }
-function addItemRow() {
-    const body = document.getElementById('order-items');
-    const firstRow = body.querySelector('.order-item');
-
-    if (!firstRow) {
-        location.reload();
-        return;
-    }
-
-    const row = firstRow.cloneNode(true);
-
-    const select = row.querySelector('.dish-select');
-    const quantityInput = row.querySelector('.quantity');
-    const priceInput = row.querySelector('.price');
-    const amountInput = row.querySelector('.amount');
+function createRow() {
+    const tpl = document.getElementById("row-template");
+    const row = tpl.content.firstElementChild.cloneNode(true);
 
     row.dataset.rowId = getNextId();
 
-    select.selectedIndex = 0;
-    quantityInput.value = 1;
-    priceInput.value = '';
-    amountInput.value = '';
+    row.querySelector(".dish-select").addEventListener("change", () => updateRowToDraft(row));
+    row.querySelector(".quantity").addEventListener("blur", () => updateRowToDraft(row));
+    row.querySelector(".btn-delete").addEventListener("click", () => deleteRow(row));
 
-    body.appendChild(row);
+    return row;
 }
-function getAndUpdateItem(obj) {
-    const row = obj.closest('tr');
+function addItemRow() {
+    const body = document.getElementById("order-items");
+    body.appendChild(createRow());
+}
+function updateRowToDraft(row) {
+    const rowId = row.dataset.rowId;
+    const select = row.querySelector(".dish-select");
+    const qty = row.querySelector(".quantity");
 
-    let rowId = row.dataset.rowId;
-    if (!rowId) {
-        rowId = getNextId();
-        row.dataset.rowId = rowId;
+    if (!select.value) {
+        return;
     }
 
-    const select = row.querySelector('.dish-select');
-    const quantityInput = row.querySelector('.quantity');
-    const priceInput = row.querySelector('.price');
-    const amountInput = row.querySelector('.amount');
+    const price = parseInt(select.selectedOptions[0].dataset.price);
+    const quantity = parseInt(qty.value);
 
-    const option = select.selectedOptions[0];
+    if (isNaN(quantity) || quantity < 1) {
+        quantity = 1;
+        input.value = 1;
+    }
 
-    const price = parseInt(option.dataset.price);
-    let quantity = parseInt(quantityInput.value);
+    row.querySelector(".price").value = price.toLocaleString();
+    row.querySelector(".amount").value = (price * quantity).toLocaleString();
 
-    priceInput.value = price.toLocaleString();
-    amountInput.value = (price * quantity).toLocaleString();
+    const draft = getDraft();
 
-    return {
-        rowId: rowId,
-        item: {
-            id: option.value,
-            name: option.textContent,
-            price: price,
-            quantity: quantity
-        }
+    draft[rowId] = {
+        id: select.value,
+        name: select.selectedOptions[0].textContent.trim(),
+        price: price,
+        quantity: quantity
     };
+    saveDraft(draft);
 }
+function deleteRow(row) {
+    if (!confirm("Bạn có chắc muốn xóa món này?")) return;
 
-function addToDraft(obj) {
-    const { rowId, item } = getAndUpdateItem(obj);
+    const rowId = row.dataset.rowId;
+    let draft = getDraft();
 
-    if (rowId && item) {
-        const draft = getDraft();
+    delete draft[rowId];
+    saveDraft(draft);
 
-        draft[rowId] = item;
+    row.remove();
 
-        saveDraft(draft);
+    if (document.querySelectorAll(".order-item").length === 0) {
+        addItemRow();
     }
-
 }
-function updateToDraft(obj) {
-    addToDraft(obj);
-}
-function deleteToDraft(obj) {
-    if (confirm("Bạn có chắc muốn xóa món này?") == True) {
-        const row = obj.closest('tr');
-        const rowId = row.dataset.rowId;
+function renderDraftFromStorage() {
+    const body = document.getElementById("order-items");
+    const draft = getDraft();
 
-        const draft = getDraft();
+    body.innerHTML = "";
 
-        if (rowId && rowId in draft) {
-            delete draft[rowId];
-            saveDraft(draft);
-        }
+    Object.entries(draft).forEach(([rowId, item]) => {
+        const row = createRow();
 
-        const body = document.getElementById('order-items');
-        const rows = body.querySelectorAll('.order-item');
-        const select = body.querySelector('.dish-select');
+        row.dataset.rowId = rowId;
 
-        if (rows.length > 1) {
-            row.remove();
-        } else {
-            select.selectedIndex = 0;
-            row.querySelector('.quantity').value = 1;
-            row.querySelector('.price').value = '';
-            row.querySelector('.amount').value = '';
-        }
+        row.querySelector(".dish-select").value = item.id;
+        row.querySelector(".quantity").value = item.quantity;
+        row.querySelector(".price").value = item.price.toLocaleString();
+        row.querySelector(".amount").value = (item.price * item.quantity).toLocaleString();
+
+        body.appendChild(row);
+    });
+
+    updateUI(draft);
+
+    if (Object.keys(draft).length === 0) {
+        addItemRow();
     }
 }
 function complete() {
-    const tableInput = document.getElementById('table');
-    const table = tableInput.value;
+    const table = document.getElementById("table").value;
+    const note = document.getElementById("orderNote").value;
+    const draft = getDraft();
 
     if (!table) {
         alert("Vui lòng nhập số bàn!");
         return;
     }
 
-    const orderNoteInput = document.getElementById('orderNote');
-    const orderNote = orderNoteInput.value;
-
-    const draft = getDraft();
-
     if (Object.keys(draft).length === 0) {
-        alert("Vui lòng chọn món ăn!");
+        alert("Vui lòng chọn ít nhất 1 món!");
         return;
     }
 
-    if (confirm('Xác nhận tạo đơn?') == true) {
-        fetch('/api/employee/complete', {
-            method: 'post',
-            body: JSON.stringify({
-                'draft': draft,
-                'table': table,
-                'note': orderNote
-            }),
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        }).then(res => res.json()).then(data => {
-            if (data.code == 200) {
-                localStorage.removeItem('draft');
+    if (!confirm("Xác nhận tạo đơn?")) {
+        return;
+    }
+
+    fetch("/api/employee/complete", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            table: table,
+            note: note,
+            draft: draft
+        })
+    })
+        .then(res => res.json())
+        .then(data => {
+            if (data.code === 200) {
+                localStorage.removeItem("draft");
                 alert("Tạo đơn thành công!");
                 location.reload();
-            } else {
-                alert("Có lỗi xảy ra: " + (data.message || "Lỗi hệ thống"));
             }
-        }).catch(err => console.error(err));
-    }
+            else if (data.code === 400) {
+                alert(data.message);
+                location.reload();
+            }
+        })
+        .catch(err => console.error("Error:", err));
 }
+document.addEventListener("DOMContentLoaded", () => {
+    loadCounter();
+    renderDraftFromStorage();
+});

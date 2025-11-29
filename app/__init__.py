@@ -2,6 +2,8 @@ import os
 
 from cloudinary.utils import cloudinary_url
 from flask import Flask, session
+
+from .daos.order_dao import get_value
 from .extensions import db, login, admin as admin_ext
 
 from dotenv import load_dotenv
@@ -25,7 +27,9 @@ def create_app():
         return {
             'dish_categories': load_dish_categories(),
             'category_groups': load_category_groups(),
-            'cart_stats': get_total_session(session.get('cart'))
+            'cart_stats': get_total_session(session.get('cart')),
+            'service_fee': float(get_value(key='SERVICE_FEE_PERCENT')),
+            'max_quantity': int(get_value(key='MAX_QUANTITY'))
         }
 
     login.init_app(app)

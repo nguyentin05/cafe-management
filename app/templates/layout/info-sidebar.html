@@ -1,0 +1,42 @@
+<div class="col-lg-4">
+    <div class="card shadow h-100 overflow-hidden" style="border-radius: 16px">
+        <div class="card-header p-3 primary-bg">
+            <div class="d-flex align-items-center gap-3">
+                <img src="{{ current_user.avatar }}" alt="Avatar" class="rounded-circle"
+                     style="width: 60px; height: 60px; object-fit: cover;">
+                <div>
+                    <h5 class="mb-1 text-white">{{ current_user.fullname }}</h5>
+                    <p class="mb-0 text-white-50">{{ current_user.user_role }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="card-body d-flex flex-column p-0">
+            <ul class="list-group w-100">
+                <li class="list-group-item border-0 p-0">
+                    <a href="{{ url_for('customer.info') }}"
+                       class="nav-link-item d-flex align-items-center px-4 py-3 text-decoration-none text-black">
+                        <i class="fa-solid fa-user nav-icon me-3 text-secondary"></i> Thông tin ca nhan
+                    </a>
+                </li>
+                <li class="list-group-item border-0 p-0">
+                    <a href="{{ url_for('customer.edit_info') }}"
+                       class="nav-link-item d-flex align-items-center px-4 py-3 text-decoration-none text-black">
+                        <i class="fa fa-pencil-alt nav-icon me-3 text-secondary"></i> Chỉnh sửa thông tin
+                    </a>
+                </li>
+                <li class="list-group-item border-0 p-0">
+                    <a href="#"
+                       class="nav-link-item d-flex align-items-center px-4 py-3 text-decoration-none text-black">
+                        <i class="fa-solid fa-file-lines nav-icon me-3 text-secondary"></i> Lich su don hang
+                    </a>
+                </li>
+                <li class="list-group-item border-0 p-0">
+                    <a href="#"
+                       class="nav-link-item logout-link d-flex align-items-center px-4 py-3 text-decoration-none text-danger">
+                        <i class="fas fa-sign-out-alt nav-icon me-3 text-danger"></i> Log Out
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>

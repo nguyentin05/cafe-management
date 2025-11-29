@@ -7,7 +7,6 @@ function updateUI(data) {
     for (let item of amounts)
         item.innerText = data.total_amount.toLocaleString();
 }
-
 function addToCart(id, name, price, image) {
     event.preventDefault()
 
@@ -24,9 +23,8 @@ function addToCart(id, name, price, image) {
         }
     }).then(res => res.json()).then(data => {
         updateUI(data);
-    })
+    }).catch(err => console.error(err));
 }
-
 function pay() {
     const addressInput = document.getElementById('address');
     const address = addressInput.value.trim();
@@ -51,8 +49,9 @@ function pay() {
             }
         }).then(res => res.json()).then(data => {
             if (data.code == 200)
+                alert("Tạo đơn thành công!");
                 location.reload()
-        })
+        }).catch(err => console.error(err));
     }
 }
 function updateCart(id) {
@@ -63,7 +62,7 @@ function updateCart(id) {
         }
     }).then(res => res.json()).then(data => {
         updateUI(data);
-    })
+    }).catch(err => console.error(err));
 }
 function deleteCart(id) {
     fetch('/api/customer/cart/delete/' + id, {
@@ -73,5 +72,5 @@ function deleteCart(id) {
         }
     }).then(res => res.json()).then(data => {
         updateUI(data);
-    })
+    }).catch(err => console.error(err));
 }
