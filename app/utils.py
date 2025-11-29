@@ -1,5 +1,4 @@
 import cloudinary.uploader
-from app import app
 from flask import request
 from flask_admin.form import FileUploadField
 from wtforms import TextAreaField
@@ -7,16 +6,7 @@ from wtforms.widgets import TextArea
 
 class CKTextAreaWidget(TextArea):
     def __call__(self, field, *args, **kwargs):
-        # if kwargs.get('class'):
-        #     kwargs['class'] += ' ckeditor'
-        # else:
-        #     kwargs.setdefault('class', 'ckeditor')
-        #
-        # return super().__call__(field=field, **kwargs)
-
-        # CKEditor 5 sẽ tìm theo class này
         kwargs['class'] = (kwargs.get('class', '') + ' ckeditor5').strip()
-        # nên đặt id để init nhiều editor
         kwargs.setdefault('id', f'ck5_{field.id}')
         return super().__call__(field, *args, **kwargs)
 
@@ -28,7 +18,7 @@ class MyImage(FileUploadField):
         r = cloudinary.uploader.upload(request.files['image'])
         setattr(obj, name, r['secure_url'])
 
-def count_cart(cart):
+def get_total_session(cart):
     total_quantity, total_amount = 0, 0
 
     if cart:

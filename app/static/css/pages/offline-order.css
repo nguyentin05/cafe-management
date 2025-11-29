@@ -1,0 +1,24 @@
+.total-part {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    padding: 0 2.5rem 1rem 2.5rem;
+    left: 16.666%;
+}
+.total-card {
+    background-color: #ffffff;
+    border-radius: 1rem;
+    padding: 1rem 1.5rem;
+    box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.2);
+}
+.total-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.3rem;
+    font-size: 1.2rem;
+}
+.cart-card {
+    background-color: #123026;
+    border-radius: 18px;
+    padding: 10px 10px;
+}

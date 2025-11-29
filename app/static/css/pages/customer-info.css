@@ -1,0 +1,31 @@
+@import url("../components/back-button.css");
+
+.dashboard-wrapper {
+    background-color: #f5f5dc;
+    font-family: 'Inter', sans-serif;
+}
+.primary-bg {
+    background-color: #176438;
+}
+.nav-link-item {
+    transition: background-color 0.2s ease, color 0.2s ease;
+    font-weight: 500;
+}
+.nav-link-item:hover {
+    background-color: #f5f5f5;
+    color: #176438;
+}
+.nav-link-item:hover .nav-icon {
+    color: #176438 !important;
+}
+.logout-link:hover {
+    background-color: #fde0e0;
+}
+
+.label {
+    font-family: 'Roboto', sans-serif;
+}
+.label-value {
+    font-family: 'Open Sans', sans-serif;
+    border-color: #e0e0e0;
+}

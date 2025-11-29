@@ -7,7 +7,7 @@
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav">
         <li class="nav-item">
-          <a class="nav-link fs-4" style="font-family: 'Raleway'" href="{{ url_for('menu') }}">MENU</a>
+          <a class="nav-link fs-4" style="font-family: 'Raleway'" href="{{ url_for('main.menu') }}">MENU</a>
         </li>
           <li class="nav-item">
           <a class="nav-link fs-4" style="font-family: 'Raleway'" href="#">STORIES</a>
@@ -19,7 +19,7 @@
 
       <ul class="navbar-nav ms-auto">
         <li class="nav-item">
-        <a class="nav-link fs-2 px-3" href="/user-login"> <i class="bi bi-person"></i> </a>
+        <a class="nav-link fs-2 px-3" href="{{ url_for('auth.signin') }}"> <i class="bi bi-person"></i> </a>
         </li>
       </ul>
     </div>
