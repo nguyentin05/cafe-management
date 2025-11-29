@@ -1,4 +1,4 @@
-from flask import Blueprint,jsonify,request
+from flask import Blueprint, jsonify, request, session
 from flask_login import login_required, current_user
 
 from app.utils import get_total_session
@@ -9,6 +9,7 @@ from app.models import OrderStatus, OrderType
 from app.daos.dish_dao import count_dishes
 
 api_employee = Blueprint('api_employee', __name__)
+
 
 @api_employee.route('/complete', methods=['post'])
 @login_required
@@ -78,6 +79,7 @@ def update_order(id):
 
     return jsonify({'code': 200})
 
+
 @api_employee.route('/orders/next/<int:id>', methods=['put'])
 @login_required
 @employee_required
@@ -97,6 +99,7 @@ def next_status(id):
 
     return jsonify({'code': 200})
 
+
 @api_employee.route('/orders/cancel/<int:id>', methods=['put'])
 @login_required
 @manager_required
@@ -107,12 +110,55 @@ def cancel_order(id):
         return jsonify({'code': 403})
 
     if order.status in [OrderStatus.COMPLETED, OrderStatus.CANCELED]:
-        return jsonify({'code': 400,})
+        return jsonify({'code': 400, })
 
     try:
         cancel_order_status(order=order)
     except Exception as ex:
         print(str(ex))
         return jsonify({'code': 400})
+
+    return jsonify({'code': 200})
+
+
+@api_employee.route('/goods-receipt/add', methods=['post'])
+@login_required
+@waiter_required
+def add_to_note():
+    data = request.json
+    id = str(data.get('id'))
+    name = data.get('name')
+    unit = data.get('unit')
+    price = data.get('price')
+    quantity = int(data.get('quantity'))
+    note = session.get('note')
+
+    if not note:
+        note = {}
+
+    if id in note:
+        note[id]['quantity'] += quantity
+    else:
+        note[id] = {
+            'id': id,
+            'name': name,
+            'price': price,
+            'unit': unit,
+            'quantity': quantity
+        }
+
+    session['note'] = note
+
+    return jsonify({'code': 200})
+
+@api_employee.route('/goods-receipt/delete/<id>', methods=['delete'])
+@login_required
+@waiter_required
+def delete_from_note(id):
+    note = session.get('note')
+
+    if note and id in note:
+        del note[id]
+        session['note'] = note
 
     return jsonify({'code': 200})
