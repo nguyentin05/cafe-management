@@ -1,4 +1,5 @@
-from app.models.order import Order, OrderStatus, OrderDetails, OfflineOrder, OnlineOrder
+from app.models import UserRole
+from app.models.order import Order, OrderStatus, OrderDetails, OfflineOrder, OnlineOrder, OrderLog
 from flask_login import current_user
 from app.extensions import db
 
@@ -90,3 +91,21 @@ def get_total_order(id):
         'total_quantity': total_quantity,
         'total_amount': total_amount
     }
+
+def add_order_log(order_id, action_type, description):
+    try:
+        if(current_user.is_authenticated and current_user.is_employee()):
+            customer_id = current_user.id
+        else:
+            customer_id = None
+
+        log = OrderLog(order_id=order_id,
+                       action_type=action_type,
+                       description=description,
+                       customer_id=customer_id)
+
+        db.session.add(log)
+
+    except Exception as e:
+        db.session.rollback()
+        print('ERROR in add_order_log:', e)

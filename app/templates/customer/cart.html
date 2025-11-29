@@ -1,6 +1,7 @@
 {%extends "layout/base/base.html"%}
 {% block css %}
 {{ super() }}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/pages/cart.css')}}">
 {% endblock %}
 
@@ -13,11 +14,8 @@
 <div class="row g-0">
     <div class="col-lg-4 col-md-5">
         <div class="left-panel">
-            <a href="{{ url_for('main.menu') }}"
-               class="d-flex align-items-center gap-2 text-white text-decoration-none mb-4 fw-bold">
-                <svg viewBox="0 0 24 24" style="width: 24px; height: 24px; overflow: visible; fill: currentcolor;">
-                    <path d="M13.4801 5.42385C13.1619 5.15868 12.689 5.20167 12.4238 5.51988L7.69058 11.1998C7.30428 11.6633 7.30428 12.3367 7.69058 12.8002L12.4238 18.4802C12.689 18.7984 13.1619 18.8414 13.4801 18.5762C13.7983 18.311 13.8413 17.8381 13.5762 17.5199L8.97628 12L13.5762 6.48016C13.8413 6.16195 13.7983 5.68903 13.4801 5.42385Z"></path>
-                </svg>
+            <a href="{{ url_for('main.menu') }}" class="back-button text-white">
+                <i class="fa-solid fa-angle-left"></i>
                 <span>Back to menu</span>
             </a>
             <div class="mb-4 fs-4 fw-bold">

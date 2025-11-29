@@ -1,7 +1,7 @@
 from flask import Blueprint,jsonify,request
 from flask_login import login_required
 from app.daos.order_dao import add_offline_order
-from app.decorators import waiter_required
+from app.decorators import waiter_required, employee_required
 
 api_employee = Blueprint('api_employee', __name__)
 
@@ -24,3 +24,12 @@ def complete():
         return jsonify({'code': 400})
 
     return jsonify({'code': 200})
+
+
+@api_employee.route('/dashboard/orders/update/<int:id>', methods=['put'])
+@login_required
+@employee_required
+def update_order(id):
+    return Order.query.filter_by(id=order_id).update(
+        {Order.status: status}, synchronize_session=False
+    )

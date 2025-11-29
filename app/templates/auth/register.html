@@ -1,31 +1,66 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-{% if err_msg %}
-    <h1>
-        {{err_msg}}
-    </h1>
-{% endif %}
+{% extends "layout/base/base.html" %}
+{% block css %}
+{{ super() }}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/pages/register.css') }}">
+{% endblock %}
 
-<h1>dang ki</h1>
-<form method="post" action="{{ url_for('auth.register') }}">
-    <p>full name</p>
-    <input type="text" name="fullname" required>
-    <p>email</p>
-    <input type="email" name="email">
-    <p>username</p>
-    <input type="text" name="username" required>
-    <p>password</p>
-    <input type="password" name="password" required>
-    <p>confirm</p>
-    <input type="password" name="confirm" required>
-    <br>
-    <br>
-    <input type="submit">
-</form>
-</body>
-</html>
+{% block js %}
+{{ super() }}
+{% endblock %}
+
+{% block content %}
+<div class="signup-container">
+    <div class="signup-form-section">
+        <div class="signup-content-wrapper">
+            <h1 class="welcome-heading">Get Started Now</h1>
+            {% if err_msg %}
+                <div class="alert alert-danger">{{ err_msg }}</div>
+            {% endif %}
+            <form method="post" novalidate>
+                {{ form.hidden_tag() }}
+
+                <div class="mb-3">
+                    {{ form.fullname.label(class='form-label') }}
+                    {{ form.fullname(class='form-control', id='fullname', placeholder='nhap ho va ten') }}
+                    {% for err in form.fullname.errors %}
+                        <div class="text-danger small">{{ err }}</div>
+                    {% endfor %}
+                </div>
+                <div class="mb-3">
+                    {{ form.phone.label(class='form-label') }}
+                    {{ form.phone(class='form-control', id='phone', placeholder='nhap sdt') }}
+                    {% for err in form.phone.errors %}
+                        <div class="text-danger small">{{ err }}</div>
+                    {% endfor %}
+                </div>
+                <div class="mb-3">
+                    {{ form.username.label(class='form-label') }}
+                    {{ form.username(class='form-control', id='username', placeholder='nhap username') }}
+                    {% for err in form.username.errors %}
+                        <div class="text-danger small">{{ err }}</div>
+                    {% endfor %}
+                </div>
+                <div class="mb-4">
+                    {{ form.password.label(class='form-label') }}
+                    {{ form.password(class='form-control', id='password', placeholder='nhap mat khau') }}
+                    {% for err in form.password.errors %}
+                        <div class="text-danger small">{{ err }}</div>
+                    {% endfor %}
+                </div>
+                <div class="mb-4">
+                    {{ form.confirm.label(class='form-label') }}
+                    {{ form.confirm(class='form-control', id='confirm', placeholder='nhap lai mat khau') }}
+                    {% for err in form.confirm.errors %}
+                        <div class="text-danger small">{{ err }}</div>
+                    {% endfor %}
+                </div>
+                {{ form.submit(class='btn btn-signup w-100 mb-3') }}
+            </form>
+            <p class="login-text mt-4">
+                Have an account? <a href="#" class="login-link">Sign In</a>
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

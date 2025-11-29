@@ -146,7 +146,7 @@ function updateToDraft(obj) {
     addToDraft(obj);
 }
 function deleteToDraft(obj) {
-    if (confirm("Bạn có chắc muốn xóa món này?") == True) {
+    if (confirm("Bạn có chắc muốn xóa món này?") == true) {
         const row = obj.closest('tr');
         const rowId = row.dataset.rowId;
 
@@ -206,8 +206,6 @@ function complete() {
                 localStorage.removeItem('draft');
                 alert("Tạo đơn thành công!");
                 location.reload();
-            } else {
-                alert("Có lỗi xảy ra: " + (data.message || "Lỗi hệ thống"));
             }
         }).catch(err => console.error(err));
     }
