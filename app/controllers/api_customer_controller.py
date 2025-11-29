@@ -35,7 +35,7 @@ def add_to_cart():
 
     session['cart'] = cart
 
-    return jsonify(get_total_session(cart=cart))
+    return jsonify({'code': 200})
 
 @api_customer.route('/pay', methods=['post'])
 @login_required
