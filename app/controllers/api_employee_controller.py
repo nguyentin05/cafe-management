@@ -1,12 +1,16 @@
 from flask import Blueprint, jsonify, request, session
 from flask_login import login_required, current_user
 
+from app import redis_client
 from app.utils import get_total_session
 from app.daos.order_dao import add_offline_order, get_order_by_id, update_offline_order, next_order_status, \
     cancel_order_status, get_value
 from app.decorators import waiter_required, employee_required, manager_required
-from app.models import OrderStatus, OrderType
+from app.models.order import OrderType, OrderStatus
 from app.daos.dish_dao import count_dishes
+from app.daos.inventory_dao import add_note, add_report
+from datetime import date
+import json
 
 api_employee = Blueprint('api_employee', __name__)
 
@@ -129,7 +133,7 @@ def add_to_note():
     id = str(data.get('id'))
     name = data.get('name')
     unit = data.get('unit')
-    price = data.get('price')
+    cost = data.get('cost')
     quantity = int(data.get('quantity'))
     note = session.get('note')
 
@@ -142,7 +146,7 @@ def add_to_note():
         note[id] = {
             'id': id,
             'name': name,
-            'price': price,
+            'cost': cost,
             'unit': unit,
             'quantity': quantity
         }
@@ -160,5 +164,63 @@ def delete_from_note(id):
     if note and id in note:
         del note[id]
         session['note'] = note
+
+    return jsonify({'code': 200})
+
+
+@api_employee.route('/goods-receipt/save', methods=['post'])
+@login_required
+@waiter_required
+def save_note():
+    try:
+        add_note(session.get('note'))
+        session.pop('note', None)
+
+    except Exception as ex:
+        print(str(ex))
+        return jsonify({'code': 400})
+
+    return jsonify({'code': 200})
+
+@api_employee.route('/report-inventory/add', methods=['post'])
+@login_required
+@waiter_required
+def add_to_report():
+    data = request.json
+    id = str(data.get('id'))
+    name = data.get('name')
+    cost = data.get('cost')
+    quantity = float(data.get('quantity'))
+
+    today = date.today().isoformat()
+    key = f'inventory_report:{today}:{current_user.id}'
+
+    report = redis_client.hget(key, id)
+
+    if report:
+        obj = json.loads(report)
+        obj['quantity'] = quantity
+        obj['cost'] = cost
+        obj['name'] = name
+    else:
+        obj = {
+            'id': int(id),
+            'name': name,
+            'cost': cost,
+            'quantity': quantity
+        }
+
+    redis_client.hset(key, id, json.dumps(obj))
+
+    return jsonify({'code': 200})
+
+@api_employee.route('/report-inventory/delete/<id>', methods=['delete'])
+@login_required
+@waiter_required
+def delete_from_report(id):
+    today = date.today().isoformat()
+    key = f'inventory_report:{today}:{current_user.id}'
+
+    redis_client.hdel(key, str(id))
 
     return jsonify({'code': 200})

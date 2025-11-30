@@ -25,9 +25,8 @@ def add_offline_order(draft, note, table):
         order = OfflineOrder(
             status=OrderStatus.CONFIRMED,
             note=note,
-            waiter_id=int(current_user.id),
+            waiter_id=current_user.id,
             table_number=int(table)
-
         )
         db.session.add(order)
         db.session.flush()

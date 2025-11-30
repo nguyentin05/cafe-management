@@ -14,18 +14,18 @@ function updateMaterialInfo(value) {
 
             const name = selectedOption.textContent;
             const unit = selectedOption.dataset.unit;
-            const price = parseInt(selectedOption.dataset.price);
+            const cost = parseInt(selectedOption.dataset.cost);
 
             elements.name.value = name;
             elements.unit.value = unit;
-            elements.price.value = price;
+            elements.cost.value = cost.toLocaleString();
 
             elements.quantity.focus();
         }
     } else {
         elements.name.value = '';
         elements.unit.value = '';
-        elements.price.value = '';
+        elements.cost.value = '';
     }
 }
 
@@ -53,7 +53,7 @@ function getElements(obj) {
         select: row.querySelector('#materialSelect'),
         name : row.querySelector('#materialName'),
         unit: row.querySelector('#unitInput'),
-        price: row.querySelector('#priceInput'),
+        cost: row.querySelector('#costInput'),
         quantity: row.querySelector('#quantityInput ')
     }
 }
@@ -76,10 +76,10 @@ function addToSession(obj) {
         method: 'post',
         body: JSON.stringify({
             'id': elements.select.value,
-            'quantity': parseInt(elements.quantity.value),
-            'price': parseInt(elements.price.value),
             'name': elements.name.value,
-            'unit': elements.unit.value
+            'unit': elements.unit.value,
+            'cost': parseInt(elements.cost.value.replace(/,/g,'')),
+            'quantity': parseInt(elements.quantity.value)
         }),
         headers: {
             'Content-Type': 'application/json'
@@ -90,8 +90,8 @@ function addToSession(obj) {
             if(elements.select.tomselect) {
             elements.select.tomselect.clear();
             }
-              elements.quantity.value = '';
-              location.reload();
+            elements.quantity.value = '';
+            location.reload();
         }
     })
 }
@@ -104,13 +104,23 @@ function deleteSession(id) {
             }
         }).then(res => res.json()).then(data => {
             if (data.code == 200) {
-                alert('xoa thanh cong')
                 location.reload();
             }
         }).catch(err => console.error(err));
     }
 }
-
 function saveGoodsReceipt() {
-
+    if(confirm('Are you sure?')) {
+        fetch('/api/employee/goods-receipt/save', {
+        method: 'post',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+        }).then(res => res.json()).then(data => {
+        if (data.code == 200) {
+            alert("Tạo đơn thành công!");
+            location.reload();
+        }
+        }).catch(err => console.error(err));
+    }
 }

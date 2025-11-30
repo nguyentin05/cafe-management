@@ -4,7 +4,7 @@ from cloudinary.utils import cloudinary_url
 from flask import Flask, session
 
 from .daos.order_dao import get_value
-from .extensions import db, login, admin as admin_ext
+from .extensions import db, login, admin as admin_ext, redis_client
 
 from dotenv import load_dotenv
 import cloudinary

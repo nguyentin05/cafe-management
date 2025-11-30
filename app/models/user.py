@@ -118,7 +118,7 @@ class Manager(Employee):
 
 class Waiter(Employee):
     id = Column(Integer, ForeignKey('employee.id'), primary_key=True)
-    orders = relationship('Order', backref='waiter', lazy=True)
+    notes = relationship('Note', backref='waiter', lazy=True)
     driver_license = Column(String(12), nullable=False)
 
     __mapper_args__ = {
