@@ -47,7 +47,6 @@ class Order(BaseModel):
     status = Column(Enum(OrderStatus), nullable=False)
     note = Column(Text, nullable=True)
     details = relationship('OrderDetails', backref='order', lazy=True)
-    waiter_id = Column(Integer, ForeignKey('waiter.id'), nullable=True)
     # discount = Column(String(50), nullable=True, unique=True)
     payments = relationship('Payment', backref='order', lazy=True)
     order_type = Column(Enum(OrderType), nullable=False)

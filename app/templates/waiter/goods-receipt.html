@@ -17,7 +17,7 @@
 <div class="container-fluid bg-light min-vh-100">
     <div class="row">
         {%include "layout/sidebar.html"%}
-        <div class="col-md-9 col-lg-10 px-md-3 pt-4">
+        <div class="col-lg-10 px-md-3 pt-4">
             <div class="d-flex justify-content-between align-items-center pb-2 mb-3 border-bottom">
                 <h1 class="fs-2 text-primary fw-bold">Phiếu Nhập Nguyên Liệu</h1>
                 <div>
@@ -35,9 +35,9 @@
                                 LIEU</label>
                             <select id="materialSelect" autocomplete="off">
                                 <option value="">Chọn nguyên liệu...</option>
-                                {% for dish in dishes %}
-                                <option value="{{ dish.id }}" data-unit="{{ dish.unit }}" data-price="{{ dish.price }}">
-                                    {{ dish.name }}
+                                {% for ingredient in ingredients %}
+                                <option value="{{ ingredient.id }}" data-unit="{{ ingredient.unit }}" data-cost="{{ ingredient.cost }}">
+                                    {{ ingredient.name }}
                                 </option>
                                 {% endfor %}
                             </select>
@@ -49,7 +49,7 @@
                         </div>
                         <div class="col-md-2">
                             <label class="text-secondary fs-6 fw-bold pb-1">GIA NHAP</label>
-                            <input type="text" class="form-control bg-light" id="priceInput" value="0" readonly>
+                            <input type="text" class="form-control bg-light" id="costInput" value="0" readonly>
                         </div>
                         <div class="col-md-2">
                             <label for="quantityInput" class="text-secondary fs-6 fw-bold pb-1">SO LUONG</label>
@@ -91,10 +91,10 @@
                                 <td class="ps-4 fw-bold text-muted">01</td>
                                 <td>
                                     <span class="d-block fw-bold text-dark">{{ c.name }}</span>
-                                    <small class="text-muted">Mã: {{ c.id }}</small>
+                                    <small class="text-muted">Mã NL: {{ c.id }}</small>
                                 </td>
                                 <td><span class="text-black">{{ c.unit }}</span></td>
-                                <td class="text-muted">{{ "{:,.0f}".format(c.price)}}</td>
+                                <td class="text-muted">{{ "{:,.0f}".format(c.cost)}}</td>
                                 <td class="fw-bold fs-6">{{ c.quantity }}</td>
                                 <td class="text-center">
                                     <button class="btn btn-sm btn-link text-danger p-0 btn-delete-row" onclick="deleteSession({{c.id}})">
