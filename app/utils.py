@@ -1,8 +1,10 @@
 import cloudinary.uploader
-from flask import request
+from flask import request, current_app
 from flask_admin.form import FileUploadField
 from wtforms import TextAreaField
 from wtforms.widgets import TextArea
+
+import hmac
 
 class CKTextAreaWidget(TextArea):
     def __call__(self, field, *args, **kwargs):
@@ -35,3 +37,6 @@ import hashlib
 
 def hash_password(raw_password: str) -> str:
     return hashlib.md5(raw_password.strip().encode('utf-8')).hexdigest()
+
+def momo_sign(secret_key, raw_signature):
+    return hmac.new(secret_key.encode('utf-8'), raw_signature.encode('utf-8'), hashlib.sha256).hexdigest()

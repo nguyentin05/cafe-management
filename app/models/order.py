@@ -9,6 +9,10 @@ class BaseModel(db.Model):
     __abstract__ = True
     id = Column(Integer, primary_key=True, autoincrement=True)
 
+class RegulationKey(Enums):
+    MAX_QUANTITY = "MAX_QUANTITY"
+    SERVICE_FEE_PERCENT = "SERVICE_FEE_PERCENT"
+
 class OrderType(Enums):
     ONLINE = "ONLINE"
     OFFLINE = "OFFLINE"
@@ -20,6 +24,7 @@ class LogType(Enums):
     CANCELED = "CANCELED"
 
 class OrderStatus(Enums):
+    UNPAID = 'UNPAID'
     PENDING = 'PENDING'
     CONFIRMED = 'CONFIRMED'
     PREPARING = 'PREPARING'
@@ -47,7 +52,7 @@ class Order(BaseModel):
     status = Column(Enum(OrderStatus), nullable=False)
     note = Column(Text, nullable=True)
     details = relationship('OrderDetails', backref='order', lazy=True)
-    # discount = Column(String(50), nullable=True, unique=True)
+    discount = Column(String(50), nullable=True, unique=True)
     payments = relationship('Payment', backref='order', lazy=True)
     order_type = Column(Enum(OrderType), nullable=False)
     order_logs = relationship('OrderLog', backref='order', lazy=True)
@@ -59,6 +64,23 @@ class Order(BaseModel):
             OrderStatus.CONFIRMED,
             OrderStatus.PREPARING
         ]
+
+    @property
+    def total_amount(self):
+        total = 0
+
+        for d in self.details:
+            total += d.unit_price * d.quantity
+
+        return total
+
+    @property
+    def total_quantity(self):
+        total = 0
+        for d in self.details:
+            total += d.quantity
+        return total
+
 
     __mapper_args__ = {
         'polymorphic_on': order_type,
@@ -97,6 +119,6 @@ class OrderLog(BaseModel):
     description = Column(Text, nullable=True)
 
 class Regulation(BaseModel):
-    key = Column(String(50), unique=True, nullable=False)
+    key = Column(Enum(RegulationKey), nullable=False)
     value = Column(String(200), nullable=False)
     description = Column(Text, nullable=True)

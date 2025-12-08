@@ -7,6 +7,7 @@
                     <span class="icon-wrap">🏠</span>
                     <span>Dashboard</span>
                 </a>
+                {% if current_user.is_authenticated and current_user.is_waiter %}
                 <a class="nav-link" href="{{ url_for('waiter_web.offline_order') }}">
                     <span class="icon-wrap">📝</span>
                     <span>Create Order</span>
@@ -23,6 +24,13 @@
                     <span class="icon-wrap">📖</span>
                     <span>Recipe</span>
                 </a>
+                {% endif %}
+                {% if current_user.is_authenticated and current_user.is_manager %}
+                <a class="nav-link" href="{{ url_for('manager.revenue_stats') }}">
+                    <span class="icon-wrap">📖</span>
+                    <span>bao cao tai chinh</span>
+                </a>
+                {% endif %}
                 <a class="nav-link" href="{{ url_for('auth.signout') }}">
                     logout
                 </a>

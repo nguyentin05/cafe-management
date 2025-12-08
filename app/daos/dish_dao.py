@@ -1,3 +1,7 @@
+from sqlalchemy import func
+
+from app import db
+from app.models.order import OrderDetails, Order
 from app.models.dish import Dish, DishCategory, CategoryGroup
 
 def load_dish_categories():
@@ -26,3 +30,18 @@ def count_dishes(dishes):
         total += int(d.get('quantity'))
 
     return total
+
+def dish_stats(from_date=None, to_date=None):
+    query = db.session.query(Dish.name, func.sum(OrderDetails.quantity), func.sum(OrderDetails.quantity * OrderDetails.unit_price), func.count(Order.id))\
+                      .join(OrderDetails, OrderDetails.dish_id.__eq__(Dish.id), isouter=True)\
+                      .join(Order, Order.id.__eq__(OrderDetails.order_id))\
+                      .group_by(Dish.name)
+
+    if from_date:
+        query = query.filter(Order.created_date.__ge__(from_date))
+
+    if to_date:
+        query = query.filter(Order.created_date.__le__(to_date))
+
+    return query.all()
+

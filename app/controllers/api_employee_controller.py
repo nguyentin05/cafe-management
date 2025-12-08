@@ -1,14 +1,16 @@
-from flask import Blueprint, jsonify, request, session
+from flask import Blueprint, jsonify, request, session, flash, redirect, url_for
 from flask_login import login_required, current_user
 
 from app import redis_client
+from app.daos.payment_dao import MomoStrategy, process_order_payment
+from app.models import MomoPayment
 from app.utils import get_total_session
 from app.daos.order_dao import add_offline_order, get_order_by_id, update_offline_order, next_order_status, \
-    cancel_order_status, get_value
-from app.decorators import waiter_required, employee_required, manager_required
+    cancel_order_status, get_value, get_offline_order_by_id
+from app.decorators import waiter_required, employee_required, manager_required, cashier_required
 from app.models.order import OrderType, OrderStatus
 from app.daos.dish_dao import count_dishes
-from app.daos.inventory_dao import add_note, add_report
+from app.daos.inventory_dao import add_note
 from datetime import date
 import json
 
@@ -224,3 +226,32 @@ def delete_from_report(id):
     redis_client.hdel(key, str(id))
 
     return jsonify({'code': 200})
+
+
+@api_employee.route('/orders/<int:order_id>/payment/create', methods=['get'])
+@login_required
+@cashier_required
+def create_offline_payment(order_id):
+    order = get_offline_order_by_id(order_id)
+
+    if not order:
+        flash("Đơn hàng không tồn tại", "danger")
+        return redirect(url_for('employee_web.dashboard'))
+
+    if order.status != OrderStatus.READY_TO_PAY:
+        flash("Đơn hàng này ko thể thanh toán", "warning")
+        return redirect(url_for('employee_web.dashboard'))
+
+    strategy = MomoStrategy()
+
+    try:
+        payment = process_order_payment(order, strategy)
+
+        if payment.pay_url:
+            return redirect(payment.pay_url)
+
+    except Exception as e:
+        print(e)
+        flash("Lỗi kết nối cổng thanh toán.", "danger")
+
+    return redirect(url_for('employee_web.dashboard'))

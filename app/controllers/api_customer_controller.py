@@ -1,10 +1,16 @@
-from flask import Blueprint, jsonify, request, session
-from flask_login import login_required
+from flask import Blueprint, jsonify, request, session, current_app, flash, redirect, url_for
+from flask_login import login_required, current_user
 
+from app import db
+from app.daos.payment_dao import PaymentStrategy, MomoStrategy, process_order_payment
 from app.decorators import customer_required
-from app.utils import get_total_session
+from app.models import OnlineOrder, OrderStatus, MomoPayment
+from app.utils import get_total_session, momo_sign
 from app.daos.dish_dao import get_dish_by_id
-from app.daos.order_dao import add_online_order
+from app.daos.order_dao import add_online_order, get_online_order_by_id
+
+import requests
+import uuid
 
 
 api_customer = Blueprint('api_customer', __name__)
@@ -12,7 +18,7 @@ api_customer = Blueprint('api_customer', __name__)
 @api_customer.route('/cart/add', methods=['post'])
 @login_required
 @customer_required
-def add_to_cart():
+def add_cart():
     data = request.json
     id = str(data.get('id'))
     name = data.get('name')
@@ -35,12 +41,12 @@ def add_to_cart():
 
     session['cart'] = cart
 
-    return jsonify({'code': 200})
+    return jsonify(get_total_session(cart=cart))
 
 @api_customer.route('/pay', methods=['post'])
 @login_required
 @customer_required
-def pay():
+def pay_cart():
     data = request.json
     address = data.get('address')
     orderNote = data.get('orderNote', '')
@@ -78,3 +84,32 @@ def delete_cart(dish_id):
         session['cart'] = cart
 
     return jsonify(get_total_session(cart=cart))
+
+@api_customer.route('/<order_id>/payment/create', methods=['GET'])
+@login_required
+@customer_required
+def create_payment(order_id):
+    order = get_online_order_by_id(id=order_id, customer_id=current_user.id)
+
+    if not order:
+        flash("Đơn hàng không ton tai", "danger")
+        return redirect(url_for('main.menu'))
+
+    if order.status != OrderStatus.UNPAID:
+        flash("Đơn hàng da dc thanh toan", "danger")
+        return redirect(url_for('customer.cart'))
+
+    strategy = MomoStrategy()
+
+    try:
+        payment = process_order_payment(order, strategy)
+
+        if payment.pay_url:
+            return redirect(payment.pay_url)
+
+    except Exception as e:
+        print(e)
+        flash("Lỗi kết nối cổng thanh toán.", "danger")
+        return redirect(url_for('customer.checkout', order_id=order.id))
+
+    return redirect(url_for('customer.checkout', order_id=order.id))

@@ -1,7 +1,11 @@
-from app.models import LogType
+from datetime import datetime
+
+from app.models import LogType, OrderType
 from app.models.order import Order, OrderStatus, OrderDetails, OfflineOrder, OnlineOrder, OrderLog, ORDER_STATUS_MAP, Regulation
 from flask_login import current_user
 from app.extensions import db
+from sqlalchemy.sql import extract
+from sqlalchemy import func
 
 def load_orders(order_type, order_status):
     query = Order.query
@@ -15,7 +19,10 @@ def load_orders(order_type, order_status):
     return query.all()
 
 def get_order_by_id(id):
-    return Order.query.get(id)
+    return Order.query.filter_by(id=id).first()
+
+def get_online_order_by_id(id, customer_id):
+    return OnlineOrder.query.filter_by(id=id, customer_id=customer_id).first()
 
 def add_offline_order(draft, note, table):
     if not draft:
@@ -25,7 +32,6 @@ def add_offline_order(draft, note, table):
         order = OfflineOrder(
             status=OrderStatus.CONFIRMED,
             note=note,
-            waiter_id=current_user.id,
             table_number=int(table)
         )
         db.session.add(order)
@@ -104,6 +110,54 @@ def add_online_order(cart, address, note):
         print('ERROR in add_online_order:', e)
         raise e
 
+def get_online_order_by_status(status, customer_id):
+    return OnlineOrder.query.filter_by(customer_id=customer_id, status=status).first()
+
+def get_offline_order_by_id(id):
+    return OfflineOrder.query.get(id)
+
+def update_online_order(cart, customer_id, address, note):
+    if not cart:
+        raise ValueError("Giỏ hàng trống")
+
+    order = get_online_order_by_status(status=OrderStatus.UNPAID, customer_id=customer_id)
+    #phát triển thêm ràng buộc 1 Kh có nhiều order pending nhưng chỉ có 1 order pending trong trạng thái chưa thanh toán
+
+    try:
+        if order:
+            order.customer_address = address
+            order.note = note
+
+            for d in order.details:
+                db.session.delete(d)
+        else:
+            order = OnlineOrder(
+                customer_id=customer_id,
+                customer_address=address,
+                status=OrderStatus.UNPAID,
+                note=note
+            )
+            db.session.add(order)
+
+        db.session.flush()
+
+        for c in cart.values():
+            d = OrderDetails(
+                order_id=order.id,
+                dish_id=c['id'],
+                quantity=c['quantity'],
+                unit_price=c['price']
+            )
+            db.session.add(d)
+
+        db.session.commit()
+        return order.id
+
+    except Exception as e:
+        db.session.rollback()
+        print("Lỗi Sync Order:", e)
+        raise e
+
 def get_total_order(id):
     total_quantity, total_amount = 0, 0
 
@@ -175,5 +229,41 @@ def cancel_order_status(order):
         raise e
 
 def get_value(key):
-    r = Regulation.query.filter(Regulation.key == key).first()
+    r = Regulation.query.filter(Regulation.key.__eq__(key)).first()
     return r.value
+
+def count_order_by_time(from_date=None, to_date=None):
+    query = db.session.query(func.count(Order.id))
+
+    if from_date:
+        query = query.filter(Order.created_date.__ge__(from_date))
+
+    if to_date:
+        query = query.filter(Order.created_date.__le__(to_date))
+
+    return query.scalar()
+
+def revenue_by_time(from_date=None, to_date=None):
+    query = db.session.query(func.sum(OrderDetails.quantity * OrderDetails.unit_price))
+
+    if from_date:
+        query = query.filter(Order.created_date.__ge__(from_date))
+
+    if to_date:
+        query = query.filter(Order.created_date.__le__(to_date))
+
+    return query.scalar()
+
+
+def stats_order(year):
+    return db.session.query(extract('month', Order.created_date), func.sum(OrderDetails.quantity * OrderDetails.unit_price))\
+                     .join(OrderDetails.order_id.__eq__(Order.id))\
+                     .filter(extract('year', Order.created_date).__eq__(year))\
+                     .group_by(extract('month', Order.created_date)).all()
+
+def stats_revenue_by_hour(day):
+    return db.session.query(extract('hour', Order.created_date), func.sum(OrderDetails.quantity * OrderDetails.unit_price))\
+                     .join(OrderDetails, OrderDetails.order_id.__eq__(Order.id))\
+                     .filter(extract('day', Order.created_date).__eq__(day))\
+                     .group_by(extract('hour', Order.created_date))\
+                     .order_by(extract('hour', Order.created_date)).all()

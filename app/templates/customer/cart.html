@@ -3,6 +3,28 @@
 {{ super() }}
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/pages/cart.css')}}">
+<style>
+    /* CSS cho khung thông báo nổi */
+    .flash-overlay {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 9999; /* Đảm bảo nó nổi lên trên cùng */
+        width: 350px;  /* Độ rộng vừa phải */
+        max-width: 90%;
+    }
+
+    /* Hiệu ứng trượt vào nhẹ nhàng */
+    .alert {
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        animation: slideIn 0.5s ease-out;
+    }
+
+    @keyframes slideIn {
+        from { transform: translateX(100%); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+    }
+</style>
 {% endblock %}
 
 {% block js %}
@@ -11,82 +33,107 @@
 {% endblock %}
 
 {%block content%}
+<div class="flash-overlay">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show mb-2" role="alert">
+
+                    {% if category == 'danger' %}
+                        <i class="fas fa-exclamation-circle me-2"></i>
+                    {% elif category == 'success' %}
+                        <i class="fas fa-check-circle me-2"></i>
+                    {% endif %}
+
+                    <span>{{ message }}</span>
+
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+</div>
 <div class="row g-0">
     <div class="col-lg-4 col-md-5">
         <div class="left-panel">
-            <a href="{{ url_for('main.menu') }}" class="back-button text-white">
-                <i class="fa-solid fa-angle-left"></i>
-                <span>Back to menu</span>
-            </a>
-            <div class="mb-4 fs-4 fw-bold">
-                Review order (<span class="cartCounter">{{ cart_stats.total_quantity }}</span>)
+            <div>
+                <a href="{{ url_for('main.menu') }}" class="back-button text-white">
+                    <i class="fa-solid fa-angle-left"></i>
+                    <span>Back to menu</span>
+                </a>
+                <div class="mb-4 fs-4 fw-bold">
+                    Review order (<span class="cartCounter">{{ cart_stats.total_quantity }}</span>)
+                </div>
             </div>
+            <form action="{{ url_for('customer.cart') }}" method="post"
+                  class="d-flex flex-column justify-content-between flex-grow-1" novalidate>
+
+                {{ form.hidden_tag() }}
                 <div>
                     <div class="cart-card mb-3">
-                    <div class="fs-4 text-white mb-2">Address</div>
-                    <form method="post">
-                        <input type="text"
-                               class="form-control form-control-sm address-input mb-3 fs-6 text-white"
-                               name="address"
-                               id="address"
-                               placeholder="type your address">
-                    </form>
+                        {{ form.address.label(class='form-label fs-4 text-white mb-2') }}
+                        {{ form.address(class='form-control form-control-sm address-input mb-3 fs-6 text-white', id='address', placeholder='nhap dia chi') }}
+                        {% for err in form.address.errors %}
+                            <div class="text-danger small">{{ err }}</div>
+                        {% endfor %}
+                    </div>
+                    <div class="cart-card mb-3">
+                        {{ form.note.label(class='form-label fs-4 text-white mb-2') }}
+                        {{ form.note(class='form-control form-control-sm address-input mb-3 fs-6 text-white', id='note', placeholder='nhap ghi chu', rows='4') }}
+                        {% for err in form.note.errors %}
+                            <div class="text-danger small">{{ err }}</div>
+                        {% endfor %}
+                    </div>
                 </div>
-                <div class="cart-card mb-3">
-                    <div class="fs-4 text-white mb-2">Note</div>
-                    <form method="post">
-                        <textarea maxlength="200" id="orderNote" rows="4" class="form-control form-control-sm address-input mb-3 fs-6 text-white" name="orderNote" placeholder="type your note"></textarea>
-                    </form>
+                <div class="mt-auto pb-3">
+                    <div class="cart-card text-center">
+                        {{ form.submit(class='btn fs-4 fw-bold text-decoration-none text-white bg-transparent border-0') }}
+                    </div>
                 </div>
-            </div>
-            <div class="pay-button">
-                <div class="cart-card text-center fs-4 fw-bold" onclick="pay()">
-                    Thanh toán
-                </div>
-            </div>
+            </form>
         </div>
     </div>
     <div class="col-lg-8 col-md-7" style="background-color: #f5f5f5;">
         <div class="right-panel">
             {% if 'cart' in session and session['cart'] %}
-                {% for c in session['cart'].values() %}
-                <div class="cart-item-card">
-                    <div class="item-image">
-                        <img src="{{ c.image }}" alt="{{ c.image }}">
-                    </div>
-                    <div class="flex-grow-1">
-                        <div class="mb-1 fw-bold fs-3">{{ c.name }}</div>
-                        <div class="mt-2 d-flex gap-2">
-                            <a href="" onclick="updateCart({{ c.id }})">
-                                <svg viewBox="0 0 24 24"
-                                     style="width: 24px; height: 24px; overflow: visible; fill: currentcolor;">
-                                    <path d="M10 2.5c1.366 0 2.646.365 3.75 1.003a10.524 10.524 0 0 1 2.781.304A9 9 0 1 0 3.807 16.53a10.523 10.523 0 0 1-.305-2.78A7.5 7.5 0 0 1 10 2.5ZM14 9a.5.5 0 0 1 .5.5v4h4a.5.5 0 0 1 0 1h-4v4a.5.5 0 0 1-1 0v-4h-4a.5.5 0 0 1 0-1h4v-4A.5.5 0 0 1 14 9Z"></path>
-                                    <path d="M14 23a9 9 0 1 0 0-18 9 9 0 0 0 0 18Zm0-1.5a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15Z"></path>
-                                </svg>
-                            </a>
-                            <a href="" onclick="deleteCart({{ c.id }})">
-                                <svg aria-hidden="true" class="valign-middle color-greenAccent" focusable="false"
-                                     preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"
-                                     style="width: 24px; height: 24px; overflow: visible; fill: currentcolor;">
-                                    <path d="M8.734 9.5a.5.5 0 0 1 .516.484l.25 8a.5.5 0 0 1-1 .032l-.25-8a.5.5 0 0 1 .484-.516ZM15.266 9.5a.5.5 0 0 1 .484.516l-.25 8a.5.5 0 0 1-1-.032l.25-8a.5.5 0 0 1 .516-.484ZM12 9.5a.5.5 0 0 1 .5.5v8a.5.5 0 0 1-1 0v-8a.5.5 0 0 1 .5-.5Z"></path>
-                                    <path d="M10 1a1.75 1.75 0 0 0-1.75 1.75V4H5a2 2 0 0 0-.728 3.863l.414 11.479A2.75 2.75 0 0 0 7.434 22h9.132a2.75 2.75 0 0 0 2.748-2.658l.414-11.479A2 2 0 0 0 19 4h-3.25V2.75A1.75 1.75 0 0 0 14 1h-4Zm4.25 3h-4.5V2.75A.25.25 0 0 1 10 2.5h4a.25.25 0 0 1 .25.25V4ZM5 5.5h14a.5.5 0 0 1 0 1H5a.5.5 0 0 1 0-1ZM5.778 8h12.444l-.407 11.292a1.25 1.25 0 0 1-1.25 1.208h-9.13a1.25 1.25 0 0 1-1.25-1.208L5.778 8Z"></path>
-                                </svg>
-                            </a>
-                        </div>
-                    </div>
-                    <div class="fs-4 text-end">
-                        <div>
-                            {{ c.quantity }}
-                        </div>
-                        <div>
-                            {{ "{:,.0f}".format(c.price) }}
-                        </div>
-                        <div>
-                            {{ "{:,.0f}".format(c.price * c.quantity)}}
-                        </div>
+            {% for c in session['cart'].values() %}
+            <div class="cart-item-card">
+                <div class="item-image">
+                    <img src="{{ c.image }}" alt="{{ c.image }}">
+                </div>
+                <div class="flex-grow-1">
+                    <div class="mb-1 fw-bold fs-3">{{ c.name }}</div>
+                    <div class="mt-2 d-flex gap-2">
+                        <a href="" onclick="updateCart({{ c.id }})">
+                            <svg viewBox="0 0 24 24"
+                                 style="width: 24px; height: 24px; overflow: visible; fill: currentcolor;">
+                                <path d="M10 2.5c1.366 0 2.646.365 3.75 1.003a10.524 10.524 0 0 1 2.781.304A9 9 0 1 0 3.807 16.53a10.523 10.523 0 0 1-.305-2.78A7.5 7.5 0 0 1 10 2.5ZM14 9a.5.5 0 0 1 .5.5v4h4a.5.5 0 0 1 0 1h-4v4a.5.5 0 0 1-1 0v-4h-4a.5.5 0 0 1 0-1h4v-4A.5.5 0 0 1 14 9Z"></path>
+                                <path d="M14 23a9 9 0 1 0 0-18 9 9 0 0 0 0 18Zm0-1.5a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15Z"></path>
+                            </svg>
+                        </a>
+                        <a href="" onclick="deleteCart({{ c.id }})">
+                            <svg aria-hidden="true" class="valign-middle color-greenAccent" focusable="false"
+                                 preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"
+                                 style="width: 24px; height: 24px; overflow: visible; fill: currentcolor;">
+                                <path d="M8.734 9.5a.5.5 0 0 1 .516.484l.25 8a.5.5 0 0 1-1 .032l-.25-8a.5.5 0 0 1 .484-.516ZM15.266 9.5a.5.5 0 0 1 .484.516l-.25 8a.5.5 0 0 1-1-.032l.25-8a.5.5 0 0 1 .516-.484ZM12 9.5a.5.5 0 0 1 .5.5v8a.5.5 0 0 1-1 0v-8a.5.5 0 0 1 .5-.5Z"></path>
+                                <path d="M10 1a1.75 1.75 0 0 0-1.75 1.75V4H5a2 2 0 0 0-.728 3.863l.414 11.479A2.75 2.75 0 0 0 7.434 22h9.132a2.75 2.75 0 0 0 2.748-2.658l.414-11.479A2 2 0 0 0 19 4h-3.25V2.75A1.75 1.75 0 0 0 14 1h-4Zm4.25 3h-4.5V2.75A.25.25 0 0 1 10 2.5h4a.25.25 0 0 1 .25.25V4ZM5 5.5h14a.5.5 0 0 1 0 1H5a.5.5 0 0 1 0-1ZM5.778 8h12.444l-.407 11.292a1.25 1.25 0 0 1-1.25 1.208h-9.13a1.25 1.25 0 0 1-1.25-1.208L5.778 8Z"></path>
+                            </svg>
+                        </a>
                     </div>
                 </div>
-                {% endfor %}
+                <div class="fs-4 text-end">
+                    <div>
+                        {{ c.quantity }}
+                    </div>
+                    <div>
+                        {{ "{:,.0f}".format(c.price) }}
+                    </div>
+                    <div>
+                        {{ "{:,.0f}".format(c.price * c.quantity)}}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
             {% else %}
             <p>Hien ko co san pham nao trong gio</p>
             {% endif %}

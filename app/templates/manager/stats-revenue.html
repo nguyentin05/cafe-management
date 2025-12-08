@@ -1,0 +1,180 @@
+{%extends "layout/base/base-waiter.html"%}
+
+{% block css %}
+{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/pages/stats-revenue.css') }}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+{% endblock %}
+
+{% block js %}
+{{ super() }}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    let labels = []
+    let info = []
+    let colors = []
+    let borderColors = []
+    let r, g, b;
+
+    {% for a in another %}
+        labels.push({{ a[0] }})
+        info.push({{ a[1] }})
+
+        r = parseInt(Math.random() * 255)
+        g = parseInt(Math.random() * 255)
+        b = parseInt(Math.random() * 255)
+
+        colors.push(`rgba(${r}, ${g}, ${b}, 0.2)`)
+        borderColors.push(`rgba(${r}, ${g}, ${b}, 1)`)
+    {% endfor %}
+
+    window.onload = function() {
+    const ctx = document.getElementById('revenueChart').getContext('2d');
+
+    const myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Thong ke',
+                    data: info,
+                    backGroundColor: colors,
+                    borderColor: borderColors,
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                      beginAtZero: true
+                    }
+                }
+            }
+        });
+    }
+</script>
+<script src="{{ url_for('static', filename='js/stats-revenue.js') }}"></script>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        {% include "layout/sidebar.html" %}
+        <div class="col-md-9 col-lg-10 py-4 px-3 d-flex flex-column vh-100">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <p class="fw-bold fs-3 text-dark mb-0">Thống kê doanh thu</p>
+                <div class="d-flex gap-2">
+                    <a href="#" class="btn btn-light border shadow-sm fw-bold">
+                        <i class="fas fa-file-invoice me-2 text-muted"></i>DS Hóa đơn
+                    </a>
+                    <a href="#" class="btn btn-primary border shadow-sm fw-bold">
+                        <i class="fas fa-chart-pie me-2"></i>Báo cáo tài chính
+                    </a>
+                </div>
+            </div>
+
+            <div class="row g-3 flex-grow-1">
+                <div class="col-lg-8 d-flex flex-column">
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-4">
+                            <div class="bg-white p-4 rounded shadow-sm">
+                                <p class="text-muted fw-bold mb-1 fs-5">TONG DOANH THU</p>
+                                <div class="d-flex justify-content-between align-items-center mt-2">
+                                    <h4 class="fw-bold mb-0">{{ "{:,.0f}".format(revenue) }}</h4>
+                                    <small class="text-success fw-semibold"><i class="fas fa-arrow-up"></i>
+                                        12.5%</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="bg-white p-4 rounded shadow-sm">
+                                <p class="text-muted fw-bold mb-1 fs-5">TONG DON HANG</p>
+                                <div class="d-flex justify-content-between align-items-center mt-2">
+                                    <h4 class="fw-bold mb-0">{{ order_count }}</h4>
+                                    <small class="text-success fw-semibold"><i class="fas fa-arrow-up"></i>
+                                        2.5%</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="bg-white p-4 rounded shadow-sm">
+                                <p class="text-muted fw-bold mb-1 fs-5">TRUNG BINH DON</p>
+                                <div class="d-flex justify-content-between align-items-center mt-2">
+                                    <h4 class="fw-bold mb-0">{{ "{:,.0f}".format(revenue / order_count) }}</h4>
+                                    <small class="text-danger fw-bold"><i class="fas fa-arrow-down"></i> 2.1%</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card shadow-sm border-0 py-3 px-1 flex-grow-1">
+                        <div class="card-header bg-white border-0 d-flex justify-content-between align-items-center">
+                            <h5 class="fw-bold mb-0">BIEU DO DOANH THU</h5>
+                            <button class="btn btn-sm btn-light"><i class="fas fa-ellipsis-h"></i></button>
+                        </div>
+                        <div class="card-body position-relative">
+                            <div class="w-100 h-100">
+                                <canvas id="revenueChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 d-flex flex-column gap-3">
+                    <div class="card shadow-sm border-0 p-2">
+                        <div class="card-header bg-white border-0">
+                            <h6 class="fw-bold mb-0"><i class="far fa-calendar-alt me-2"></i>Tuỳ chọn thời gian</h6>
+                        </div>
+                        <div class="card-body">
+                            <form>
+                                <div class="mb-3">
+                                    <label class="form-label small text-muted fw-bold">Từ ngày</label>
+                                    <input type="date" class="form-control" name="from_date">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label small text-muted fw-bold">Đến ngày</label>
+                                    <input type="date" class="form-control" name="to_date">
+                                </div>
+                                <button type="submit" class="btn btn-primary w-100">
+                                    Xem báo cáo
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="card shadow-sm border-0 flex-grow-1 d-flex flex-column pt-2">
+                        <div class="card-header bg-white border-0">
+                            <h5 class="fw-bold mb-0">Danh sach mon da ban</h5>
+                        </div>
+                        <div class="py-2 px-3 bg-light border-bottom d-flex text-muted fw-bold fs-6">
+                            <div style="width: 45%">Tên món</div>
+                            <div style="width: 20%" class="text-center">SL</div>
+                            <div style="width: 35%" class="text-end">D.Thu</div>
+                        </div>
+                        <div class="card-body p-0 custom-scroll position-relative flex-grow-1">
+                            <div class="position-absolute top-0 start-0 w-100 h-100 custom-scroll">
+                                <ul class="list-group list-group-flush">
+                                    {% for s in stats %}
+                                    <li class="list-group-item py-3 d-flex align-items-center border-0 border-bottom">
+                                        <div style="width: 45%" class="text-start">
+                                            <h6 class="mb-0 fw-bold text-black">{{ s[0] }}</h6>
+                                        </div>
+                                        <div style="width: 20%" class="text-center">
+                                            <span class="text-black">{{ s[1] }}</span>
+                                        </div>
+                                        <div style="width: 35%" class="text-end">
+                                            {% if s[2] %}
+                                            <span class="text-black fw-bold mb-0">{{ "{:,.0f}".format(s[2]) }}</span>
+                                            {% else %}
+                                            0
+                                            {% endif %}
+                                        </div>
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

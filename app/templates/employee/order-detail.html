@@ -108,9 +108,10 @@
                                 {% endif %}
                                 {% elif order.status.name == 'READY_TO_PAY'%}
                                 {% if current_user.is_manager or current_user.is_cashier %}
-                                <button type="submit" class="btn btn-success" onclick="nextStatus({{order.id}})">
-                                    Thanh toan
-                                </button>
+                                <a href="{{ url_for('api_employee.create_offline_payment', order_id=order.id) }}"
+                                   class="btn btn-success text-decoration-none">
+                                    Thanh toán MoMo
+                                </a>
                                 {% endif %}
                                 {% else %}
                                 <button type="submit" class="btn btn-success" onclick="nextStatus({{order.id}})">
@@ -187,7 +188,8 @@
                     {% for log in order.order_logs %}
                     <div class="list-group-item">
                         <div class="d-flex w-100 justify-content-between">
-                            <h6 class="mb-1 fw-bold text-primary">{{ log.employee.fullname }}</h6> <small class="text-muted">{{ log.created_date.strftime('%H:%M %d/%m') }}</small>
+                            <h6 class="mb-1 fw-bold text-primary">{{ log.employee.fullname }}</h6> <small
+                                class="text-muted">{{ log.created_date.strftime('%H:%M %d/%m') }}</small>
                         </div>
 
                         <p class="mb-1 small">
@@ -196,15 +198,15 @@
 
                         <small>
                             {% if log.action_type.name == 'CHANGED_STATUS' %}
-                                <span class="badge bg-info text-dark">Chuyển trạng thái</span>
+                            <span class="badge bg-info text-dark">Chuyển trạng thái</span>
                             {% elif log.action_type.name == 'EDITED' %}
-                                <span class="badge bg-warning text-dark">Chỉnh sửa</span>
+                            <span class="badge bg-warning text-dark">Chỉnh sửa</span>
                             {% elif log.action_type.name == 'CANCELED' %}
-                                <span class="badge bg-danger">Hủy đơn</span>
+                            <span class="badge bg-danger">Hủy đơn</span>
                             {% elif log.action_type.name == 'CREATED' %}
-                                <span class="badge bg-warning text-dark">Tao</span>
+                            <span class="badge bg-warning text-dark">Tao</span>
                             {% else %}
-                                <span class="badge bg-secondary">System</span>
+                            <span class="badge bg-secondary">System</span>
                             {% endif %}
                         </small>
                     </div>
