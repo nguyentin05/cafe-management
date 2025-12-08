@@ -1,7 +1,8 @@
 import re
 
 from wtforms.fields.choices import SelectField
-from wtforms.validators import ValidationError, InputRequired, length, DataRequired, EqualTo, Email, Optional
+from wtforms.fields.simple import TextAreaField
+from wtforms.validators import ValidationError, InputRequired, length, DataRequired, EqualTo, Email, Optional, Length
 
 from app.models.user import User, Employee, Waiter, Manager, Cashier, Gender
 from flask_wtf import FlaskForm
@@ -18,9 +19,11 @@ def unique_email(form, field):
     if query.first():
         raise ValidationError('Email already exists.')
 
+
 def unique_identity_card(form, field):
     if Employee.query.filter(Employee.identity_card == field.data, Employee.id != form.user_id.data).first():
         raise ValidationError('Identity Card already exists.')
+
 
 def unique_phone(form, field):
     query = User.query.filter(User.phone == field.data)
@@ -29,6 +32,7 @@ def unique_phone(form, field):
         query = query.filter(User.id != user_id_field.data)
     if query.first():
         raise ValidationError('Phone already exists.')
+
 
 def unique_username(form, field):
     query = User.query.filter(User.username == field.data)
@@ -41,38 +45,47 @@ def unique_username(form, field):
     if query.first():
         raise ValidationError('Username already exists.')
 
+
 def unique_driver_license(form, field):
     if Waiter.query.filter(Waiter.driver_license == field.data, Waiter.id != form.user_id.data).first():
         raise ValidationError('Driver license already exists.')
 
+
 def unique_graduation_certificate(form, field):
     if Manager.query.filter_by(Manager.graduation_certificate == field.data, User.id != form.user_id.data).first():
         raise ValidationError('Graduation certificate already exists.')
+
 
 class LoginForm(FlaskForm):
     username = StringField('Username', validators=[InputRequired(), length(min=4, max=20)])
     password = PasswordField('Password', validators=[InputRequired()])
     submit = SubmitField('Sign In')
 
+
 class RegisterForm(FlaskForm):
     fullname = StringField('Fullname', validators=[InputRequired()])
     username = StringField('Username', validators=[InputRequired(), length(min=4, max=20), unique_username])
     phone = StringField('Phone', validators=[InputRequired(), length(min=10, max=10), unique_phone])
     password = PasswordField('Password', validators=[InputRequired(), length(min=4, max=20)])
-    confirm = PasswordField('Confirm Password', validators=[InputRequired(), EqualTo('password', message='Passwords must match.')])
+    confirm = PasswordField('Confirm Password',
+                            validators=[InputRequired(), EqualTo('password', message='Passwords must match.')])
     submit = SubmitField('Register')
+
 
 class CustomerRegisterForm(RegisterForm):
     pass
+
 
 class ResetPasswordForm(FlaskForm):
     email = StringField('Email', validators=[InputRequired()])
     submit = SubmitField('Reset Password')
 
+
 class ChangePasswordForm(FlaskForm):
     old_password = PasswordField('Old Password', validators=[DataRequired()])
     new_password = PasswordField('New Password', validators=[DataRequired()])
-    confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('new_password', message='Passwords must match.')])
+    confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('new_password',
+                                                                                             message='Passwords must match.')])
     submit = SubmitField('Change Password')
 
     def validate_new_password(self, field):
@@ -88,6 +101,7 @@ class ChangePasswordForm(FlaskForm):
         if not re.search(r'[\W_]', password):
             raise ValidationError('Password must contain at least one special character.')
 
+
 class EmployeeRegisterForm(RegisterForm):
     email = StringField('Email', validators=[InputRequired(), unique_email])
     dob = DateField('Date of Birth', validators=[DataRequired()], format="%Y-%m-%d")
@@ -96,11 +110,15 @@ class EmployeeRegisterForm(RegisterForm):
     address = StringField('Address')
     identity_card = StringField('Identity Card', validators=[InputRequired(), unique_identity_card])
 
+
 class WaiterRegisterForm(EmployeeRegisterForm):
     driver_license = StringField('Driver License', validators=[InputRequired(), unique_driver_license])
 
+
 class ManagerRegisterForm(EmployeeRegisterForm):
-    graduation_certificates = StringField('Graduation Certificate', validators=[InputRequired(), unique_graduation_certificate])
+    graduation_certificates = StringField('Graduation Certificate',
+                                          validators=[InputRequired(), unique_graduation_certificate])
+
 
 class EditForm(FlaskForm):
     user_id = HiddenField()
@@ -109,20 +127,30 @@ class EditForm(FlaskForm):
     dob = DateField('Date of Birth', validators=[Optional()], format="%Y-%m-%d")
     email = StringField('Email', validators=[Optional(), Email(), unique_email])
     gender = SelectField('Gender', choices=[('', 'Chọn giới tính')] + [(g.name, g.value) for g in Gender],
-        validators=[Optional()])
+                         validators=[Optional()])
     address = StringField('Address', validators=[Optional()])
     submit = SubmitField('Save')
 
+
 class CustomerEditForm(EditForm):
     pass
+
 
 class ChangeAvatarForm(FlaskForm):
     avatar = StringField('Avatar', validators=[DataRequired()])
     submit = SubmitField('Save')
 
+
 class EmployeeEditForm(EditForm):
     identity_card = StringField('Identity Card', validators=[DataRequired(), unique_identity_card])
     submit = SubmitField('Save')
 
+
 class WaiterEditForm(EmployeeEditForm):
     driver_license = StringField('Driver license', validators=[DataRequired(), unique_driver_license])
+
+
+class OrderForm(FlaskForm):
+    address = StringField('Address', validators=[DataRequired(message="Vui lòng nhập địa chỉ nhận hàng.")])
+    note = TextAreaField('Note', validators=[Length(max=200, message="Ghi chú không được quá 200 ký tự.")])
+    submit = SubmitField('Thanh Toan')

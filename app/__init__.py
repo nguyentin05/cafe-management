@@ -22,14 +22,25 @@ def create_app():
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = True
     app.config["PAGE_SIZE"] = 3
 
+
+    app.config["MOMO_PARTNER_CODE"] = os.getenv("MOMO_PARTNER_CODE")
+    app.config["MOMO_ACCESS_KEY"] = os.getenv("MOMO_ACCESS_KEY")
+    app.config["MOMO_SECRET_KEY"] = os.getenv("MOMO_SECRET_KEY")
+    app.config["MOMO_ENDPOINT"] = os.getenv("MOMO_ENDPOINT")
+    app.config["MOMO_REDIRECT_URL"] = os.getenv("MOMO_REDIRECT_URL")
+    app.config["MOMO_IPN_URL"] = os.getenv("MOMO_IPN_URL")
+    app.config["MOMO_REQUEST_TYPE"] = os.getenv("MOMO_REQUEST_TYPE")
+
+    from .models .order import RegulationKey
+
     @app.context_processor
     def common_attributes():
         return {
             'dish_categories': load_dish_categories(),
             'category_groups': load_category_groups(),
             'cart_stats': get_total_session(session.get('cart')),
-            'service_fee': float(get_value(key='SERVICE_FEE_PERCENT')),
-            'max_quantity': int(get_value(key='MAX_QUANTITY'))
+            'service_fee': float(get_value(key=RegulationKey.SERVICE_FEE_PERCENT)),
+            'max_quantity': int(get_value(key=RegulationKey.MAX_QUANTITY))
         }
 
     login.init_app(app)
@@ -47,6 +58,7 @@ def create_app():
     from .controllers.employee_controller import employee
     from .controllers.main_controller import main
     from .controllers.waiter_controller import waiter
+    from .controllers.manager_controller import manager
 
     app.register_blueprint(auth, url_prefix='/auth')
     app.register_blueprint(api_customer, url_prefix='/api/customer')
@@ -55,6 +67,7 @@ def create_app():
     app.register_blueprint(employee, url_prefix='/employee')
     app.register_blueprint(main)
     app.register_blueprint(waiter, url_prefix='/waiter')
+    app.register_blueprint(manager, url_prefix='/manager')
 
     cloudinary.config(cloudinary_url=os.getenv('CLOUDINARY_URL'), secure=True)
 

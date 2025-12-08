@@ -1,9 +1,5 @@
 @import url("../components/back-button.css");
 
-.dashboard-wrapper {
-    background-color: #f5f5dc;
-    font-family: 'Inter', sans-serif;
-}
 .primary-bg {
     background-color: #176438;
 }
