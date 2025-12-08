@@ -7,13 +7,11 @@
     display: flex;
     align-items: center;
 }
-
 #mainNav .nav-link, #mainNav .navbar-brand {
     color: #e0f2f1 !important;
     font-weight: 500;
     transition: color 0.3s ease;
 }
-
 #mainNav .navbar-brand {
     font-size: 1.6rem;
     font-weight: 700;

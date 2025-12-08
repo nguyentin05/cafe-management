@@ -10,6 +10,33 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
 
+                {% if current_user.is_authenticated and current_user.is_customer %}
+                <li>
+                    <a class="nav-link" href="">Thong bao</a>
+                </li>
+                <li>
+                    <a class="nav-link " href="{{ url_for('customer.cart') }}">Gio Hang <span class="cartCounter">{{ cart_stats.total_quantity }}</span></a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link" href="#" role="button" data-bs-toggle="dropdown">{{ current_user.fullname }}</a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{{ url_for('customer.info') }}">information</a></li>
+                        <li><a class="dropdown-item" href="#">history</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('auth.signout') }}">log out</a></li>
+                    </ul>
+                </li>
+                {% endif %}
+                {% if current_user.is_authenticated and current_user.is_employee %}
+                <li>
+                    <a class="nav-link " href="{{ url_for('employee_web.dashboard') }}">Dashboard</a>
+                </li>
+                {% endif %}
+                {% if not current_user.is_authenticated %}
+                <li>
+                    <a class="nav-link " href="{{ url_for('auth.signin') }}">Dang Nhap</a>
+                </li>
+                {% endif %}
+            </ul>
             <div class="collapse navbar-collapse" id="mynavbar">
 
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
