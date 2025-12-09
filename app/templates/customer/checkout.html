@@ -50,7 +50,7 @@
                             </div>
                             <h5 class="fw-bold mb-2">Thanh toán bằng Ví MoMo</h5>
                             <p class="text-muted small mb-0" style="max-width: 300px;">
-                                Sau khi bấm <strong>Confirm order</strong>, hệ thống sẽ chuyển bạn sang cổng thanh toán
+                                Sau khi bấm <strong>Confirm order</strong>, Hệ thống sẽ chuyển bạn sang cổng thanh toán
                                 MoMo
                                 để quét mã QR hoặc xác nhận trên ứng dụng.
                             </p>
@@ -66,25 +66,25 @@
                             <button class="accordion-button fw-semibold" type="button" data-bs-toggle="collapse"
                                     data-bs-target="#info"
                                     aria-expanded="true" aria-controls="info">
-                                Thong Tin Don Hang
+                                Thông Tin Đơn Hàng
                             </button>
                         </h2>
                         <div id="info" class="accordion-collapse collapse show" data-bs-parent="#orderAccordion">
                             <div class="accordion-body pt-2">
                                 <div class="d-flex justify-content-between fs-6 small mb-2" style="color: #666666">
-                                    <span>Ten Khach Hang</span>
+                                    <span>Tên Khách Hàng</span>
                                     <span class="fw-bold">{{ current_user.fullname }}</span>
                                 </div>
                                 <div class="d-flex justify-content-between fs-6 mb-2" style="color: #666666">
-                                    <span>Dia Chi</span>
+                                    <span>Địa chỉ</span>
                                     <span class="fw-bold">{{ order.customer_address }}</span>
                                 </div>
                                 <div class="d-flex justify-content-between fs-6 mb-2" style="color: #666666">
-                                    <span>Thoi gian du kien</span>
-                                    <span class="fw-bold">20-30 phut</span>
+                                    <span>Thời gian dự kiến</span>
+                                    <span class="fw-bold">20-30 phút</span>
                                 </div>
                                 <div class="d-flex justify-content-between fw-bold fs-5 mt-2">
-                                    <span>Ma don hang</span>
+                                    <span>Mã đơn hàng</span>
                                     <span>{{ order.id }}</span>
                                 </div>
                             </div>

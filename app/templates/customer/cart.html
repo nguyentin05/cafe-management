@@ -4,17 +4,14 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/pages/cart.css')}}">
 <style>
-    /* CSS cho khung thông báo nổi */
     .flash-overlay {
         position: fixed;
         top: 20px;
         right: 20px;
-        z-index: 9999; /* Đảm bảo nó nổi lên trên cùng */
-        width: 350px;  /* Độ rộng vừa phải */
+        z-index: 9999;
+        width: 350px;
         max-width: 90%;
     }
-
-    /* Hiệu ứng trượt vào nhẹ nhàng */
     .alert {
         box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         animation: slideIn 0.5s ease-out;
@@ -72,14 +69,14 @@
                 <div>
                     <div class="cart-card mb-3">
                         {{ form.address.label(class='form-label fs-4 text-white mb-2') }}
-                        {{ form.address(class='form-control form-control-sm address-input mb-3 fs-6 text-white', id='address', placeholder='nhap dia chi') }}
+                        {{ form.address(class='form-control form-control-sm address-input mb-3 fs-6 text-white', id='address', placeholder='Nhập địa chỉ') }}
                         {% for err in form.address.errors %}
                             <div class="text-danger small">{{ err }}</div>
                         {% endfor %}
                     </div>
                     <div class="cart-card mb-3">
                         {{ form.note.label(class='form-label fs-4 text-white mb-2') }}
-                        {{ form.note(class='form-control form-control-sm address-input mb-3 fs-6 text-white', id='note', placeholder='nhap ghi chu', rows='4') }}
+                        {{ form.note(class='form-control form-control-sm address-input mb-3 fs-6 text-white', id='note', placeholder='Ghi chú', rows='4') }}
                         {% for err in form.note.errors %}
                             <div class="text-danger small">{{ err }}</div>
                         {% endfor %}
@@ -135,7 +132,7 @@
             </div>
             {% endfor %}
             {% else %}
-            <p>Hien ko co san pham nao trong gio</p>
+            <p>Hiện không có món nào trong giỏ hàng</p>
             {% endif %}
             <div class="total-part">
                 <div class="total-card">
