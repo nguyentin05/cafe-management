@@ -28,7 +28,7 @@
                 {% if current_user.is_authenticated and current_user.is_manager %}
                 <a class="nav-link" href="{{ url_for('manager.revenue_stats') }}">
                     <span class="icon-wrap">📖</span>
-                    <span>bao cao tai chinh</span>
+                    <span>Báo cáo tài chính</span>
                 </a>
                 {% endif %}
                 <a class="nav-link" href="{{ url_for('auth.signout') }}">

@@ -35,12 +35,12 @@
                             <h6 class="card-title mb-3">Thông tin đơn hàng</h6>
 
                             <div class="row mb-2">
-                                <div class="col-5 text-muted">Mã order</div>
+                                <div class="col-5 text-muted">Mã đơn hàng</div>
                                 <div class="col-7 fw-semibold">#{{ order.id }}</div>
                             </div>
                             {% if order.order_type.name == 'OFFLINE' %}
                             <div class="row mb-2">
-                                <div class="col-5 text-muted">Bàn</div>
+                                <div class="col-5 text-muted">Số bàn</div>
                                 <div class="col-7 fw-semibold">{{ order.table_number }}</div>
                             </div>
                             {% endif %}
@@ -49,7 +49,7 @@
                                 <div class="col-7">{{ order.created_date.strftime('%H:%M %d/%m/%Y') }}</div>
                             </div>
                             <div class="row mb-2">
-                                <div class="col-5 text-muted">Trạng thái</div>
+                                <div class="col-5 text-muted">Trạng thái đơn hàng</div>
                                 <div class="col-7">
                              <span class="badge order-status-badge status-{{ order.status.name|lower }}">
                                 {{ order.status.value }}
@@ -67,17 +67,17 @@
                 <div class="col-lg-4">
                     <div class="card order-info-card h-100">
                         <div class="card-body">
-                            <h6 class="card-title mb-3">Thông tin khach Hang</h6>
+                            <h6 class="card-title mb-3">Thông tin khách hàng</h6>
                             <div class="row mb-2">
-                                <div class="col-5 text-muted">Ho ten</div>
+                                <div class="col-5 text-muted">Họ và tên</div>
                                 <div class="col-7 fw-semibold">{{ order.customer.fullname }}</div>
                             </div>
                             <div class="row mb-2">
-                                <div class="col-5 text-muted">So Dien Thoai</div>
+                                <div class="col-5 text-muted">Số điện thoại</div>
                                 <div class="col-7 fw-semibold">{{ order.customer.phone }}</div>
                             </div>
                             <div class="row mb-2">
-                                <div class="col-5 text-muted">Dia Chi</div>
+                                <div class="col-5 text-muted">Địa chỉ</div>
                                 <div class="col-7">{{ order.customer_address }}</div>
                             </div>
                         </div>

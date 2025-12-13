@@ -22,35 +22,35 @@
 
                 <div class="mb-3">
                     {{ form.fullname.label(class='form-label') }}
-                    {{ form.fullname(class='form-control', id='fullname', placeholder='nhap ho va ten') }}
+                    {{ form.fullname(class='form-control', id='fullname', placeholder='Nhập họ và tên') }}
                     {% for err in form.fullname.errors %}
                         <div class="text-danger small">{{ err }}</div>
                     {% endfor %}
                 </div>
                 <div class="mb-3">
                     {{ form.phone.label(class='form-label') }}
-                    {{ form.phone(class='form-control', id='phone', placeholder='nhap sdt') }}
+                    {{ form.phone(class='form-control', id='phone', placeholder='Nhập số điện thoại') }}
                     {% for err in form.phone.errors %}
                         <div class="text-danger small">{{ err }}</div>
                     {% endfor %}
                 </div>
                 <div class="mb-3">
                     {{ form.username.label(class='form-label') }}
-                    {{ form.username(class='form-control', id='username', placeholder='nhap username') }}
+                    {{ form.username(class='form-control', id='username', placeholder='Nhâp Username') }}
                     {% for err in form.username.errors %}
                         <div class="text-danger small">{{ err }}</div>
                     {% endfor %}
                 </div>
                 <div class="mb-4">
                     {{ form.password.label(class='form-label') }}
-                    {{ form.password(class='form-control', id='password', placeholder='nhap mat khau') }}
+                    {{ form.password(class='form-control', id='password', placeholder='Nhập mật khẩu') }}
                     {% for err in form.password.errors %}
                         <div class="text-danger small">{{ err }}</div>
                     {% endfor %}
                 </div>
                 <div class="mb-4">
                     {{ form.confirm.label(class='form-label') }}
-                    {{ form.confirm(class='form-control', id='confirm', placeholder='nhap lai mat khau') }}
+                    {{ form.confirm(class='form-control', id='confirm', placeholder='Nhập lại mật khẩu') }}
                     {% for err in form.confirm.errors %}
                         <div class="text-danger small">{{ err }}</div>
                     {% endfor %}

@@ -17,7 +17,7 @@
     <div class="ps-2">
         <a href="{{ url_for('main.menu') }}" class="back-button text-black">
             <i class="fa-solid fa-angle-left"></i>
-            <span>Back to menu</span>
+            <span>Về trang chủ</span>
         </a>
     </div>
     <div class="container">
@@ -53,7 +53,7 @@
                                 {% endfor %}
                             </div>
                             <div class="mb-3">
-                                <div class="label text-secondary fw-bold small">Joined Date</div>
+                                <div class="label text-secondary fw-bold small">Ngày tham gia</div>
                                 <p class="label-value border-bottom pb-2">
                                     {{ current_user.joined_date.strftime('%d/%m/%Y') }}
                                 </p>

@@ -3,8 +3,9 @@
 {% block css %}
     {{ super() }}
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600&display=swap" rel="stylesheet">
-
+<link rel="stylesheet" href="{{ url_for('static', filename='css/layout/footer.css')}}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/pages/main.css')}}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/pages/header-main.css')}}">
 {% endblock %}
 
 {% block js %}

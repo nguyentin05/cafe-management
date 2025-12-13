@@ -1,0 +1,82 @@
+#mainNav {
+    background-color: #004d40 !important;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+#mainNav .navbar-nav .nav-item {
+    display: flex;
+    align-items: center;
+}
+#mainNav .nav-link, #mainNav .navbar-brand {
+    color: #e0f2f1 !important;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+#mainNav .navbar-brand {
+    font-size: 1.6rem;
+    font-weight: 700;
+}
+#mainNav .menu-link {
+    position: relative;
+    text-decoration: none;
+    padding-bottom: 5px;
+    transition: color 0.3s ease, transform 0.2s ease;
+    margin: 0 5px;
+}
+.menu-link:hover {
+    color: #c5e1a5 !important;
+    background-color: transparent !important;
+    transform: translateY(-1px);
+}
+
+.menu-link::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 3px;
+    bottom: 0;
+    left: 50%;
+    background-color: #c5e1a5;
+    visibility: hidden;
+    transition: all 0.3s ease-in-out;
+    transform: translateX(-50%);
+}
+
+.menu-link:hover::after {
+    visibility: visible;
+    width: 100%;
+}
+.signin-btn {
+    background-color: #1b5e20 !important;
+    border: none !important;
+    font-weight: 600;
+    color: #ffffff !important;
+    padding: 8px 20px !important;
+    transition: all 0.2s ease-in-out;
+}
+.signin-btn:hover {
+    background-color: #2e7d32 !important;
+    transform: translateY(-1px);
+}
+.user-icon-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #4db6ac;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    cursor: pointer;
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.5);
+    transition: all 0.2s ease-in-out;
+}
+.icon-hover:hover {
+    opacity: 0.8;
+    transform: scale(1.05);
+    transition: all 0.2s ease-in-out;
+    cursor: pointer;
+}
+.notification-badge, .cartCounter {
+    display: none !important;
+}
