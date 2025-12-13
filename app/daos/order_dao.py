@@ -1,6 +1,4 @@
-from datetime import datetime
-
-from app.models import LogType, OrderType
+from app.models import LogType
 from app.models.order import Order, OrderStatus, OrderDetails, OfflineOrder, OnlineOrder, OrderLog, ORDER_STATUS_MAP, Regulation
 from flask_login import current_user
 from app.extensions import db
@@ -236,34 +234,27 @@ def count_order_by_time(from_date=None, to_date=None):
     query = db.session.query(func.count(Order.id))
 
     if from_date:
-        query = query.filter(Order.created_date.__ge__(from_date))
+        query = query.filter(extract('day', Order.created_date).__ge__(from_date))
 
     if to_date:
-        query = query.filter(Order.created_date.__le__(to_date))
+        query = query.filter(extract('day', Order.created_date).__le__(to_date))
 
     return query.scalar()
 
-def revenue_by_time(from_date=None, to_date=None):
-    query = db.session.query(func.sum(OrderDetails.quantity * OrderDetails.unit_price))
+def revenue_by_day(from_date=None, to_date=None):
+    query = db.session.query(func.sum(OrderDetails.quantity * OrderDetails.unit_price))\
+                      .join(Order, OrderDetails.order_id.__eq__(Order.id))
 
     if from_date:
-        query = query.filter(Order.created_date.__ge__(from_date))
+        query = query.filter(extract('day', Order.created_date).__ge__(from_date))
 
     if to_date:
-        query = query.filter(Order.created_date.__le__(to_date))
+        query = query.filter(extract('day', Order.created_date).__le__(to_date))
 
     return query.scalar()
 
-
-def stats_order(year):
+def revenue_month_stats(year):
     return db.session.query(extract('month', Order.created_date), func.sum(OrderDetails.quantity * OrderDetails.unit_price))\
-                     .join(OrderDetails.order_id.__eq__(Order.id))\
-                     .filter(extract('year', Order.created_date).__eq__(year))\
+                     .join(Order, Order.id.__eq__(OrderDetails.order_id))\
+                     .filter(extract('year', Order.created_date) == year)\
                      .group_by(extract('month', Order.created_date)).all()
-
-def stats_revenue_by_hour(day):
-    return db.session.query(extract('hour', Order.created_date), func.sum(OrderDetails.quantity * OrderDetails.unit_price))\
-                     .join(OrderDetails, OrderDetails.order_id.__eq__(Order.id))\
-                     .filter(extract('day', Order.created_date).__eq__(day))\
-                     .group_by(extract('hour', Order.created_date))\
-                     .order_by(extract('hour', Order.created_date)).all()
