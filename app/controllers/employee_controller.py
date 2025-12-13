@@ -22,6 +22,11 @@ def dashboard():
                            order_types=list(OrderType),
                            current_order_type=current_order_type,
                            status_map=ORDER_STATUS_MAP)
+@employee.route('/recipe')
+@login_required
+@employee_required
+def recipe():
+    return render_template('employee/recipe.html')
 
 @employee.route('/dashboard/orders/<int:id>')
 @login_required

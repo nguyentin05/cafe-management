@@ -1,4 +1,4 @@
-from sqlalchemy import func
+from sqlalchemy import func, extract
 
 from app import db
 from app.models.order import OrderDetails, Order
@@ -38,10 +38,10 @@ def dish_stats(from_date=None, to_date=None):
                       .group_by(Dish.name)
 
     if from_date:
-        query = query.filter(Order.created_date.__ge__(from_date))
+        query = query.filter(extract('day', Order.created_date).__ge__(from_date))
 
     if to_date:
-        query = query.filter(Order.created_date.__le__(to_date))
+        query = query.filter(extract('day', Order.created_date).__le__(to_date))
 
     return query.all()
 
