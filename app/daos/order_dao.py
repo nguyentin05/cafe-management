@@ -3,7 +3,8 @@ from app.models.order import Order, OrderStatus, OrderDetails, OfflineOrder, Onl
 from flask_login import current_user
 from app.extensions import db
 from sqlalchemy.sql import extract
-from sqlalchemy import func
+from sqlalchemy import func, cast, Date
+
 
 def load_orders(order_type, order_status):
     query = Order.query
@@ -234,10 +235,10 @@ def count_order_by_time(from_date=None, to_date=None):
     query = db.session.query(func.count(Order.id))
 
     if from_date:
-        query = query.filter(extract('day', Order.created_date).__ge__(from_date))
+        query = query.filter(Order.created_date.__ge__(from_date))
 
     if to_date:
-        query = query.filter(extract('day', Order.created_date).__le__(to_date))
+        query = query.filter(cast(Order.created_date, Date).__le__(to_date))
 
     return query.scalar()
 
@@ -246,10 +247,10 @@ def revenue_by_day(from_date=None, to_date=None):
                       .join(Order, OrderDetails.order_id.__eq__(Order.id))
 
     if from_date:
-        query = query.filter(extract('day', Order.created_date).__ge__(from_date))
+        query = query.filter(Order.created_date.__ge__(from_date))
 
     if to_date:
-        query = query.filter(extract('day', Order.created_date).__le__(to_date))
+        query = query.filter(cast(Order.created_date, Date).__le__(to_date))
 
     return query.scalar()
 
@@ -257,4 +258,5 @@ def revenue_month_stats(year):
     return db.session.query(extract('month', Order.created_date), func.sum(OrderDetails.quantity * OrderDetails.unit_price))\
                      .join(Order, Order.id.__eq__(OrderDetails.order_id))\
                      .filter(extract('year', Order.created_date) == year)\
-                     .group_by(extract('month', Order.created_date)).all()
+                     .group_by(extract('month', Order.created_date))\
+                     .order_by(extract('month', Order.created_date)).all()
