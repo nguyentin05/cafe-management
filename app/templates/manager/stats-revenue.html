@@ -11,15 +11,15 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     let labels = []
-    let info = []
+    let data = []
     let colors = []
     let borderColors = []
-    let r, g, b;
+    let r, g, b
 
     {% for s in stats %}
-        {% if s[2] %}
+        {% if s[1] %}
         labels.push('{{ s[0] }}')
-        info.push({{ s[2] }})
+        data.push({{ s[1] }})
         {% endif %}
 
         r = parseInt(Math.random() * 255)
@@ -31,31 +31,37 @@
     {% endfor %}
 
     function toggleInputs() {
-        const isYearMode = document.getElementById('opt_year').checked;
+        const mode = document.getElementById('opt_year').checked;
 
-        const customArea = document.getElementById('custom');
-        const yearArea = document.getElementById('year');
+        const custom = document.getElementById('custom');
+        const year = document.getElementById('year');
 
-        if (isYearMode) {
-            customArea.classList.add('d-none');
-            yearArea.classList.remove('d-none');
+        if (mode) {
+            custom.classList.add('d-none');
+            year.classList.remove('d-none');
         } else {
-            customArea.classList.remove('d-none');
-            yearArea.classList.add('d-none');
+            custom.classList.remove('d-none');
+            year.classList.add('d-none');
         }
     }
 
     window.onload = function() {
         toggleInputs();
         const ctx = document.getElementById('revenueChart').getContext('2d');
-
+        {% if option == 'year' %}
+        loadChart(ctx, 'Thong ke doanh thu nam {{ year }}', labels, data, 'line', colors, borderColors)
+        {% else %}
+        loadChart(ctx, 'Thong ke doanh thu mon an', labels, data, 'bar', colors, borderColors)
+        {% endif %}
+    }
+    function loadChart(ctx, label, labels, data, type, colors, borderColors) {
         const myChart = new Chart(ctx, {
-            type: 'bar',
+            type: type,
             data: {
                 labels: labels,
                 datasets: [{
-                    label: 'Thong ke',
-                    data: info,
+                    label: label,
+                    data: data,
                     backgroundColor: colors,
                     borderColor: borderColors,
                     borderWidth: 1
@@ -77,7 +83,7 @@
 <div class="container-fluid">
     <div class="row">
         {% include "layout/sidebar.html" %}
-        <div class="col-md-9 col-lg-10 py-4 px-3 d-flex flex-column vh-100">
+        <div class="col-lg-10 px-md-3 pt-4 d-flex flex-column vh-100">
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <p class="fw-bold fs-3 text-dark mb-0">Thống kê doanh thu</p>
                 <div class="d-flex gap-2">
@@ -98,8 +104,6 @@
                                 <p class="text-muted fw-bold mb-1 fs-5">TONG DOANH THU</p>
                                 <div class="d-flex justify-content-between align-items-center mt-2">
                                     <h4 class="fw-bold mb-0">{{ "{:,.0f}".format(revenue) if revenue else 0}}</h4>
-                                    <small class="text-success fw-semibold"><i class="fas fa-arrow-up"></i>
-                                        12.5%</small>
                                 </div>
                             </div>
                         </div>
@@ -108,8 +112,6 @@
                                 <p class="text-muted fw-bold mb-1 fs-5">TONG DON HANG</p>
                                 <div class="d-flex justify-content-between align-items-center mt-2">
                                     <h4 class="fw-bold mb-0">{{ order_count }}</h4>
-                                    <small class="text-success fw-semibold"><i class="fas fa-arrow-up"></i>
-                                        2.5%</small>
                                 </div>
                             </div>
                         </div>
@@ -119,7 +121,6 @@
                                 <div class="d-flex justify-content-between align-items-center mt-2">
                                     <h4 class="fw-bold mb-0">{{ "{:,.0f}".format(revenue / order_count) if order_count
                                         else 0 }}</h4>
-                                    <small class="text-danger fw-bold"><i class="fas fa-arrow-down"></i> 2.1%</small>
                                 </div>
                             </div>
                         </div>
@@ -172,13 +173,13 @@
                                 <div id="year" class="d-none">
                                     <div class="mb-3">
                                         <label class="form-label small text-muted fw-bold">Chọn năm</label>
-                                        <select class="form-select" name="selected_year">
+                                        <select class="form-select" name="year">
                                             <option value="2024" {{
-                                            'selected' if selected_year|int == 2024 else '' }}>
+                                            'selected' if year|int == 2024 else '' }}>
                                             Năm 2024
                                             </option>
                                             <option value="2025" {{
-                                            'selected' if selected_year|int == 2025 else '' }}>
+                                            'selected' if year|int == 2025 else '' }}>
                                             Năm 2025
                                             </option>
                                         </select>
@@ -192,11 +193,19 @@
                     </div>
                     <div class="card shadow-sm border-0 flex-grow-1 d-flex flex-column pt-2">
                         <div class="card-header bg-white border-0">
+                            {% if option == 'custom' %}
                             <h5 class="fw-bold mb-0">Danh sach mon da ban</h5>
+                            {% else %}
+                            <h5 class="fw-bold mb-0">Doanh thu theo thang</h5>
+                            {% endif %}
                         </div>
                         <div class="py-2 px-3 bg-light border-bottom d-flex text-muted fw-bold fs-6">
+                            {% if option == 'custom' %}
                             <div style="width: 45%">Tên món</div>
                             <div style="width: 20%" class="text-center">SL</div>
+                            {% else %}
+                            <div style="width: 65%" class="text-start">Tháng</div>
+                            {% endif %}
                             <div style="width: 35%" class="text-end">D.Thu</div>
                         </div>
                         <div class="card-body p-0 custom-scroll position-relative flex-grow-1">
@@ -207,12 +216,14 @@
                                         <div style="width: 45%" class="text-start">
                                             <h6 class="mb-0 fw-bold text-black">{{ s[0] }}</h6>
                                         </div>
+                                        {% if option == 'custom' %}
                                         <div style="width: 20%" class="text-center">
-                                            <span class="text-black">{{ s[1] }}</span>
+                                            <span class="text-black">{{ s[2] }}</span>
                                         </div>
-                                        <div style="width: 35%" class="text-end">
-                                            {% if s[2] %}
-                                            <span class="text-black fw-bold mb-0">{{ "{:,.0f}".format(s[2]) }}</span>
+                                        {% endif %}
+                                        <div style="width: {{ '35%' if option == 'custom' else '55%' }}" class="text-end">
+                                            {% if s[1] %}
+                                            <span class="text-black fw-bold mb-0">{{ "{:,.0f}".format(s[1]) }}</span>
                                             {% else %}
                                             0
                                             {% endif %}

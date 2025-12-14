@@ -1,79 +1,85 @@
-    <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
-        <div class="container-fluid">
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav" style="background-color: #004d40;">
+    <div class="container-fluid">
+        <a class="navbar-brand fw-bold fs-3" href="{{ url_for('main.home') }}">CAFE</a>
 
-            <a class="navbar-brand text-uppercase fw-bold" href="{{ url_for('index') }}">
-                <i class="fas fa-seedling"></i> CAFE X
-            </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mynavbar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mynavbar" aria-controls="mynavbar" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-
-                {% if current_user.is_authenticated and current_user.is_customer %}
-                <li>
-                    <a class="nav-link" href="">Thong bao</a>
+        <div class="collapse navbar-collapse py-1" id="mynavbar">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link fs-4" href="{{ url_for('main.menu') }}">Menu</a>
                 </li>
-                <li>
-                    <a class="nav-link " href="{{ url_for('customer.cart') }}">Gio Hang <span class="cartCounter">{{ cart_stats.total_quantity }}</span></a>
-                </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link" href="#" role="button" data-bs-toggle="dropdown">{{ current_user.fullname }}</a>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="{{ url_for('customer.info') }}">information</a></li>
-                        <li><a class="dropdown-item" href="#">history</a></li>
-                        <li><a class="dropdown-item" href="{{ url_for('auth.signout') }}">log out</a></li>
-                    </ul>
-                </li>
-                {% endif %}
                 {% if current_user.is_authenticated and current_user.is_employee %}
-                <li>
-                    <a class="nav-link " href="{{ url_for('employee_web.dashboard') }}">Dashboard</a>
-                </li>
-                {% endif %}
-                {% if not current_user.is_authenticated %}
-                <li>
-                    <a class="nav-link " href="{{ url_for('auth.signin') }}">Dang Nhap</a>
+                <li class="nav-item fs-4">
+                    <a class="nav-link" href="{{ url_for('employee_web.dashboard') }}">Dashboard</a>
                 </li>
                 {% endif %}
             </ul>
-            <div class="collapse navbar-collapse" id="mynavbar">
+            <ul class="navbar-nav ms-auto align-items-center gap-3">
 
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <a class="nav-link menu-link" href="{{ url_for('menu') }}">Menu</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link menu-link" href="{{ url_for('news') }}">Tin Tức</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link menu-link" href="{{ url_for('about') }}">Giới Thiệu</a>
-                    </li>
-                </ul>
+                {% if current_user.is_authenticated and current_user.is_customer %}
+                <li class="nav-item">
+                    <a class="nav-link icon-hover position-relative" href="#" title="Thông báo">
+                        <i class="fas fa-bell fa-lg text-light"></i>
+                    </a>
+                </li>
 
-                <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-lg-center">
+                <li class="nav-item">
+                    <a class="nav-link icon-hover" href="{{ url_for('customer.cart') }}" title="Giỏ Hàng">
+                        <i class="fas fa-shopping-cart fa-lg text-light"></i>
+                    </a>
+                </li>
 
-                    <li class="nav-item nav-icon-item me-2">
-                        <a class="nav-link icon-hover p-2" href="{{ url_for('notifications') }}" title="Thông báo">
-                            <i class="fas fa-bell"></i>
-                        </a>
-                    </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link p-0 text-decoration-none" href="#" id="userDropdown" role="button"
+                       data-bs-toggle="dropdown" aria-expanded="false">
+                        <div class="user-pill d-flex align-items-center px-3 py-2 rounded-pill bg-light text-black">
+                            <span class="fw-bold me-2 fs-5">
+                                {{ current_user.username }}
+                            </span>
 
-                    <li class="nav-item me-lg-4 nav-icon-item">
-                        <a class="nav-link icon-hover p-2" href="{{ url_for('cart') }}" title="Giỏ Hàng">
-                            <i class="fas fa-shopping-cart"></i>
-                        </a>
-                    </li>
+                            <div class="bg-dark text-white rounded-circle me-1 overflow-hidden">
+                                <img src="{{ current_user.avatar }}" width="40px" height="40px" alt="{{ current_user.avatar }}">
+                            </div>
 
-                    <li class="nav-item">
-                        <a class="btn btn-primary rounded-pill px-4 signin-btn" href="{{ url_for('login') }}">Đăng Nhập</a>
-                    </li>
-
-                    <li class="nav-item ms-3 nav-icon-item">
-                        <div class="user-icon-circle icon-hover" onclick="alert('Chức năng Tài khoản')">
-                            <i class="fas fa-user text-light"></i>
+                            <i class="fas fa-chevron-down ms-1 text-secondary fs-5"></i>
                         </div>
-                    </li>
-                </ul>
-            </div>
+                    </a>
+
+                    <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2" aria-labelledby="userDropdown">
+                        <li>
+                            <div class="dropdown-header text-muted small">Tài khoản</div>
+                        </li>
+                        <li>
+                            <a class="dropdown-item py-2"
+                               href="{{ url_for('customer.info') }}">
+                                <i class="fas fa-id-card me-2 text-primary w-20"></i> Thông tin
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item py-2"
+                               href="{{ url_for('customer.orders') if 'customer.orders' in url_for.__globals__ else '#' }}">
+                                <i class="fas fa-history me-2 text-info w-20"></i> Lịch sử đơn
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item py-2 text-danger fw-bold" href="{{ url_for('auth.signout') }}">
+                                <i class="fas fa-sign-out-alt me-2 w-20"></i> Đăng xuất
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                {% endif %}
+
+                {% if not current_user.is_authenticated %}
+                <li class="nav-item">
+                    <a class="btn btn-light rounded-pill px-4 text-success fw-bold fs-4" href="{{ url_for('auth.signin') }}">
+                        Đăng Nhập</a>
+                </li>
+                {% endif %}
+            </ul>
         </div>
-    </nav>
+    </div>
+</nav>

@@ -1,4 +1,4 @@
-from sqlalchemy import func, extract
+from sqlalchemy import func, extract, cast, Date
 
 from app import db
 from app.models.order import OrderDetails, Order
@@ -31,17 +31,31 @@ def count_dishes(dishes):
 
     return total
 
-def dish_stats(from_date=None, to_date=None):
-    query = db.session.query(Dish.name, func.sum(OrderDetails.quantity), func.sum(OrderDetails.quantity * OrderDetails.unit_price), func.count(Order.id))\
+def dish_stat_by_day(from_date=None, to_date=None):
+    query = db.session.query(Dish.name, func.sum(OrderDetails.quantity * OrderDetails.unit_price), func.sum(OrderDetails.quantity))\
                       .join(OrderDetails, OrderDetails.dish_id.__eq__(Dish.id), isouter=True)\
                       .join(Order, Order.id.__eq__(OrderDetails.order_id))\
                       .group_by(Dish.name)
 
     if from_date:
-        query = query.filter(extract('day', Order.created_date).__ge__(from_date))
+        query = query.filter(Order.created_date.__ge__(from_date))
 
     if to_date:
-        query = query.filter(extract('day', Order.created_date).__le__(to_date))
+        query = query.filter(cast(Order.created_date, Date).__le__(to_date))
 
     return query.all()
 
+def dish_stats_by_month(month, year):
+    return db.session.query(Dish.name, func.sum(OrderDetails.quantity))\
+                      .join(OrderDetails, OrderDetails.dish_id.__eq__(Dish.id), isouter=True)\
+                      .join(Order, Order.id.__eq__(OrderDetails.order_id))\
+                      .filter(extract('month', Order.created_date) == month,
+                              extract('year', Order.created_date) == year)\
+                      .group_by(Dish.name).all()
+
+def dish_count_by_month(month, year):
+    return db.session.query(func.sum(OrderDetails.quantity))\
+                     .join(Order, OrderDetails.order_id.__eq__(Order.id))\
+                     .filter(extract('month', Order.created_date) == month,
+                             extract('year', Order.created_date) == year)\
+                     .scalar() or 0
