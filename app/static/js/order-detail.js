@@ -1,40 +1,40 @@
 function nextStatus(id) {
-    if (confirm("Are you sure?")==true) {
-        fetch('/api/employee/orders/next/' + id, {
+    if (confirm("Bạn có chắc chắn muốn chuyển trạng thái đơn hàng?")==true) {
+        fetch('/api/employee/orders/' + id + '/next', {
             method: 'put',
             headers: {
                 'Content-Type': 'application/json'
             }
         }).then(res => res.json()).then(data => {
             if (data.code == 200) {
-                alert("Chuyen trang thai thành công!");
+                alert("Chuyển trạng thái thành công");
                 location.reload();
             }
             if (data.code == 403) {
-                alert("Ban khong co quyen thanh toan");
+                alert("Không có quyền thanh toán");
                 location.reload();
             }
         }).catch(err => console.log(err))
     }
 }
 function cancelStatus(id) {
-    if (confirm('Are you sure?') == true) {
-        fetch('/api/employee/orders/cancel/' + id, {
+    if (confirm('Bạn có chắc chắn muốn hủy đơn hàng?') == true) {
+        fetch('/api/employee/orders/' + id + '/cancel', {
             method: 'put',
             headers: {
                 'Content-Type': 'application/json'
             }
         }).then(res => res.json()).then(data => {
             if (data.code == 200) {
-                alert("Huy don hang thanh cong");
+                alert('Hủy đơn hàng thành công');
                 location.reload();
             }
             if (data.code == 403) {
-                alert('Không thể hủy đơn hàng đã Hoàn thành hoặc đã Hủy trước đó!');
+                alert('Không thể hủy đơn hàng đã Hoàn thành hoặc đã Hủy trước đó');
                 location.reload();
             }
             if (data.code == 400) {
-                alert("Khong co quyen huy don hang");
+                alert("Không có quyền hủy đơn hàng");
                 location.reload();
             }
         }).catch(err => console.log(err))

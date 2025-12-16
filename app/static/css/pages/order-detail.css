@@ -1,32 +1,7 @@
-.order-info-card,
-.order-summary-card,
+@import url("../components/status-color.css");
+
 .card {
     border: none;
-    border-radius: 18px;
-    box-shadow: 0 4px 18px rgba(15, 23, 42, 0.08);
-}
-.order-status-badge {
     border-radius: 16px;
-    padding: 0.35rem 0.8rem;
-    font-size: 0.75rem;
-    font-weight: 600;
-}
-.order-status-badge.status-confirmed {
-    background-color: #facc15;
-    color: #1f2933;
-}
-.order-status-badge.status-preparing {
-    background-color: #38bdf8;
-}
-.order-status-badge.status-ready_to_pay {
-    background-color: #22c55e;
-}
-.order-status-badge.status-completed {
-    background-color: #16a34a;
-}
-.order-status-badge.status-canceled {
-    background-color: #ef4444;
-}
-.order-status-badge.status-delivering {
-    background-color: #f57207;
+    box-shadow: 0 4px 18px rgba(15, 23, 42, 0.2);
 }

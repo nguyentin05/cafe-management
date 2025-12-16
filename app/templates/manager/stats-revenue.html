@@ -1,4 +1,4 @@
-{%extends "layout/base/base-waiter.html"%}
+{%extends "layout/base/base-employee.html"%}
 
 {% block css %}
 {{ super() }}
@@ -49,9 +49,9 @@
         toggleInputs();
         const ctx = document.getElementById('revenueChart').getContext('2d');
         {% if option == 'year' %}
-        loadChart(ctx, 'Thong ke doanh thu nam {{ year }}', labels, data, 'line', colors, borderColors)
+        loadChart(ctx, 'Thống kê doanh thu năm {{ year }}', labels, data, 'line', colors, borderColors)
         {% else %}
-        loadChart(ctx, 'Thong ke doanh thu mon an', labels, data, 'bar', colors, borderColors)
+        loadChart(ctx, 'Thông kê doanh thu món ăn', labels, data, 'bar', colors, borderColors)
         {% endif %}
     }
     function loadChart(ctx, label, labels, data, type, colors, borderColors) {
@@ -79,160 +79,155 @@
 </script>
 {% endblock %}
 
-{% block content %}
-<div class="container-fluid">
-    <div class="row">
-        {% include "layout/sidebar.html" %}
-        <div class="col-lg-10 px-md-3 pt-4 d-flex flex-column vh-100">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <p class="fw-bold fs-3 text-dark mb-0">Thống kê doanh thu</p>
-                <div class="d-flex gap-2">
-                    <a href="#" class="btn btn-light border shadow-sm fw-bold">
-                        <i class="fas fa-file-invoice me-2 text-muted"></i>DS Hóa đơn
-                    </a>
-                    <a href="#" class="btn btn-primary border shadow-sm fw-bold">
-                        <i class="fas fa-chart-pie me-2"></i>Báo cáo tài chính
-                    </a>
+{% block main %}
+<div class="col-lg-10 px-md-3 pt-4 d-flex flex-column">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <p class="fw-bold fs-3 text-dark mb-0">Thống Kê Doanh Thu</p>
+        <div class="d-flex gap-2">
+            <a href="#" class="btn btn-light border shadow-sm fw-bold" onclick="alert('Sắp ra mắt...')">
+                <i class="fas fa-file-invoice me-2 text-muted"></i>DS Hóa đơn
+            </a>
+            <a href="#" class="btn btn-primary border shadow-sm fw-bold" onclick="alert('Sắp ra mắt...')">
+                <i class="fas fa-chart-pie me-2"></i>Báo cáo doanh thu
+            </a>
+        </div>
+    </div>
+
+    <div class="row g-3 flex-grow-1">
+        <div class="col-lg-8 d-flex flex-column">
+            <div class="row g-3 mb-3">
+                <div class="col-md-4">
+                    <div class="bg-white p-4 rounded shadow">
+                        <p class="text-muted fw-bold mb-1 fs-5">TỔNG DOANH THU</p>
+                        <div class="d-flex justify-content-between align-items-center mt-2">
+                            <h4 class="fw-bold mb-0">{{ "{:,.0f}".format(revenue) if revenue else 0}}</h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="bg-white p-4 rounded shadow">
+                        <p class="text-muted fw-bold mb-1 fs-5">TỔNG ĐƠN HÀNG</p>
+                        <div class="d-flex justify-content-between align-items-center mt-2">
+                            <h4 class="fw-bold mb-0">{{ order_count }}</h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="bg-white p-4 rounded shadow">
+                        <p class="text-muted fw-bold mb-1 fs-5">TRUNG BÌNH ĐƠN</p>
+                        <div class="d-flex justify-content-between align-items-center mt-2">
+                            <h4 class="fw-bold mb-0">{{ "{:,.0f}".format(revenue / order_count) if order_count
+                                else 0 }}</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card shadow border-0 py-3 px-1 flex-grow-1 mb-4">
+                <div class="card-header bg-white border-0 d-flex align-items-center">
+                    <h5 class="fw-bold mb-0">BIỂU ĐỒ DOANH THU</h5>
+                </div>
+                <div class="card-body position-relative">
+                    <div class="w-100 h-100 d-flex align-items-center">
+                        <canvas id="revenueChart"></canvas>
+                    </div>
                 </div>
             </div>
+        </div>
+        <div class="col-lg-4 d-flex flex-column gap-3">
+            <div class="card shadow border-0 p-2">
+                <div class="card-body">
+                    <form>
+                        <div class="mb-4">
+                            <div class="btn-group w-100" role="group">
+                                <input type="radio" class="btn-check" name="option" id="opt_custom"
+                                       value="custom" autocomplete="off"
+                                       {{ 'checked' if (option == 'custom' or not option) else '' }}
+                                onchange="toggleInputs()">
+                                <label class="btn btn-outline-primary fw-bold" for="opt_custom">Theo
+                                    ngày</label>
 
-            <div class="row g-3 flex-grow-1">
-                <div class="col-lg-8 d-flex flex-column">
-                    <div class="row g-3 mb-3">
-                        <div class="col-md-4">
-                            <div class="bg-white p-4 rounded shadow-sm">
-                                <p class="text-muted fw-bold mb-1 fs-5">TONG DOANH THU</p>
-                                <div class="d-flex justify-content-between align-items-center mt-2">
-                                    <h4 class="fw-bold mb-0">{{ "{:,.0f}".format(revenue) if revenue else 0}}</h4>
-                                </div>
+                                <input type="radio" class="btn-check" name="option" id="opt_year"
+                                       value="year" autocomplete="off"
+                                       {{ 'checked' if option == 'year' else '' }}
+                                onchange="toggleInputs()">
+                                <label class="btn btn-outline-primary fw-bold" for="opt_year">Theo năm</label>
                             </div>
                         </div>
-                        <div class="col-md-4">
-                            <div class="bg-white p-4 rounded shadow-sm">
-                                <p class="text-muted fw-bold mb-1 fs-5">TONG DON HANG</p>
-                                <div class="d-flex justify-content-between align-items-center mt-2">
-                                    <h4 class="fw-bold mb-0">{{ order_count }}</h4>
-                                </div>
+
+                        <div id="custom">
+                            <div class="mb-3">
+                                <label class="form-label small text-muted fw-bold">Từ ngày</label>
+                                <input type="date" class="form-control" name="from_date"
+                                       value="{{ from_date }}">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label small text-muted fw-bold">Đến ngày</label>
+                                <input type="date" class="form-control" name="to_date"
+                                       value="{{ to_date }}">
                             </div>
                         </div>
-                        <div class="col-md-4">
-                            <div class="bg-white p-4 rounded shadow-sm">
-                                <p class="text-muted fw-bold mb-1 fs-5">TRUNG BINH DON</p>
-                                <div class="d-flex justify-content-between align-items-center mt-2">
-                                    <h4 class="fw-bold mb-0">{{ "{:,.0f}".format(revenue / order_count) if order_count
-                                        else 0 }}</h4>
-                                </div>
+
+                        <div id="year" class="d-none">
+                            <div class="mb-3">
+                                <label class="form-label small text-muted fw-bold">Chọn năm</label>
+                                <select class="form-select" name="year">
+                                    <option value="2024" {{
+                                    'selected' if year|int == 2024 else '' }}>
+                                    Năm 2024
+                                    </option>
+                                    <option value="2025" {{
+                                    'selected' if year|int == 2025 else '' }}>
+                                    Năm 2025
+                                    </option>
+                                </select>
                             </div>
                         </div>
-                    </div>
-                    <div class="card shadow-sm border-0 py-3 px-1 flex-grow-1">
-                        <div class="card-header bg-white border-0 d-flex align-items-center">
-                            <h5 class="fw-bold mb-0">BIEU DO DOANH THU</h5>
-                        </div>
-                        <div class="card-body position-relative">
-                            <div class="w-100 h-100 d-flex align-items-center">
-                                <canvas id="revenueChart"></canvas>
-                            </div>
-                        </div>
-                    </div>
+                        <button type="submit" class="btn btn-primary w-100 mt-2">
+                            <i class="fas fa-filter me-2"></i>Xem báo cáo
+                        </button>
+                    </form>
                 </div>
-                <div class="col-lg-4 d-flex flex-column gap-3">
-                    <div class="card shadow-sm border-0 p-2">
-                        <div class="card-body">
-                            <form>
-                                <div class="mb-4">
-                                    <div class="btn-group w-100" role="group">
-                                        <input type="radio" class="btn-check" name="option" id="opt_custom"
-                                               value="custom" autocomplete="off"
-                                               {{ 'checked' if (option == 'custom' or not option) else '' }}
-                                        onchange="toggleInputs()">
-                                        <label class="btn btn-outline-primary fw-bold" for="opt_custom">Tùy chọn
-                                            ngày</label>
-
-                                        <input type="radio" class="btn-check" name="option" id="opt_year"
-                                               value="year" autocomplete="off"
-                                               {{ 'checked' if option == 'year' else '' }}
-                                        onchange="toggleInputs()">
-                                        <label class="btn btn-outline-primary fw-bold" for="opt_year">Theo năm</label>
-                                    </div>
+            </div>
+            <div class="card shadow border-0 flex-grow-1 d-flex flex-column pt-2 mb-4">
+                <div class="card-header bg-white border-0">
+                    {% if option == 'custom' %}
+                    <h5 class="fw-bold mb-0">Danh sách món đã bán</h5>
+                    {% else %}
+                    <h5 class="fw-bold mb-0">Doanh thu theo tháng</h5>
+                    {% endif %}
+                </div>
+                <div class="py-2 px-3 bg-light border-bottom d-flex text-muted fw-bold fs-6">
+                    {% if option == 'custom' %}
+                    <div style="width: 45%">Tên món</div>
+                    <div style="width: 20%" class="text-center">SL</div>
+                    {% else %}
+                    <div style="width: 65%" class="text-start">Tháng</div>
+                    {% endif %}
+                    <div style="width: 35%" class="text-end">D.Thu</div>
+                </div>
+                <div class="card-body p-0 custom-scroll position-relative flex-grow-1">
+                    <div class="position-absolute top-0 start-0 w-100 h-100 custom-scroll">
+                        <ul class="list-group list-group-flush">
+                            {% for s in stats %}
+                            <li class="list-group-item py-3 d-flex align-items-center border-0 border-bottom">
+                                <div style="width: 45%" class="text-start">
+                                    <h6 class="mb-0 fw-bold text-black">{{ s[0] }}</h6>
                                 </div>
-
-                                <div id="custom">
-                                    <div class="mb-3">
-                                        <label class="form-label small text-muted fw-bold">Từ ngày</label>
-                                        <input type="date" class="form-control" name="from_date"
-                                               value="{{ from_date }}">
-                                    </div>
-                                    <div class="mb-3">
-                                        <label class="form-label small text-muted fw-bold">Đến ngày</label>
-                                        <input type="date" class="form-control" name="to_date"
-                                               value="{{ to_date }}">
-                                    </div>
+                                {% if option == 'custom' %}
+                                <div style="width: 20%" class="text-center">
+                                    <span class="text-black">{{ s[2] }}</span>
                                 </div>
-
-                                <div id="year" class="d-none">
-                                    <div class="mb-3">
-                                        <label class="form-label small text-muted fw-bold">Chọn năm</label>
-                                        <select class="form-select" name="year">
-                                            <option value="2024" {{
-                                            'selected' if year|int == 2024 else '' }}>
-                                            Năm 2024
-                                            </option>
-                                            <option value="2025" {{
-                                            'selected' if year|int == 2025 else '' }}>
-                                            Năm 2025
-                                            </option>
-                                        </select>
-                                    </div>
+                                {% endif %}
+                                <div style="width: {{ '35%' if option == 'custom' else '55%' }}" class="text-end">
+                                    {% if s[1] %}
+                                    <span class="text-black fw-bold mb-0">{{ "{:,.0f}".format(s[1]) }}</span>
+                                    {% else %}
+                                    0
+                                    {% endif %}
                                 </div>
-                                <button type="submit" class="btn btn-primary w-100 mt-2">
-                                    <i class="fas fa-filter me-2"></i>Xem báo cáo
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                    <div class="card shadow-sm border-0 flex-grow-1 d-flex flex-column pt-2">
-                        <div class="card-header bg-white border-0">
-                            {% if option == 'custom' %}
-                            <h5 class="fw-bold mb-0">Danh sach mon da ban</h5>
-                            {% else %}
-                            <h5 class="fw-bold mb-0">Doanh thu theo thang</h5>
-                            {% endif %}
-                        </div>
-                        <div class="py-2 px-3 bg-light border-bottom d-flex text-muted fw-bold fs-6">
-                            {% if option == 'custom' %}
-                            <div style="width: 45%">Tên món</div>
-                            <div style="width: 20%" class="text-center">SL</div>
-                            {% else %}
-                            <div style="width: 65%" class="text-start">Tháng</div>
-                            {% endif %}
-                            <div style="width: 35%" class="text-end">D.Thu</div>
-                        </div>
-                        <div class="card-body p-0 custom-scroll position-relative flex-grow-1">
-                            <div class="position-absolute top-0 start-0 w-100 h-100 custom-scroll">
-                                <ul class="list-group list-group-flush">
-                                    {% for s in stats %}
-                                    <li class="list-group-item py-3 d-flex align-items-center border-0 border-bottom">
-                                        <div style="width: 45%" class="text-start">
-                                            <h6 class="mb-0 fw-bold text-black">{{ s[0] }}</h6>
-                                        </div>
-                                        {% if option == 'custom' %}
-                                        <div style="width: 20%" class="text-center">
-                                            <span class="text-black">{{ s[2] }}</span>
-                                        </div>
-                                        {% endif %}
-                                        <div style="width: {{ '35%' if option == 'custom' else '55%' }}" class="text-end">
-                                            {% if s[1] %}
-                                            <span class="text-black fw-bold mb-0">{{ "{:,.0f}".format(s[1]) }}</span>
-                                            {% else %}
-                                            0
-                                            {% endif %}
-                                        </div>
-                                    </li>
-                                    {% endfor %}
-                                </ul>
-                            </div>
-                        </div>
+                            </li>
+                            {% endfor %}
+                        </ul>
                     </div>
                 </div>
             </div>

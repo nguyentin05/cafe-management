@@ -1,0 +1,31 @@
+.status {
+    border-radius: 16px;
+}
+.preparing {
+    background-color: #e6fff1;
+    color: #037a3a;
+}
+.delivering {
+    background-color: #fff7e6;
+    color: #b26b00;
+}
+.cancelled {
+    background-color: #ffe6e6;
+    color: #b20000;
+}
+.ready_to_pay {
+    background-color: #e6f3ff;
+    color: #0050b3;
+}
+.pending {
+    background-color: #fff7e6;
+    color: #b26b00;
+}
+.confirmed {
+    background-color: #e6f3ff;
+    color: #0050b3;
+}
+.completed {
+    background-color: #e6fff1;
+    color: #037a3a;
+}

@@ -1,7 +1,7 @@
-from flask import render_template, Blueprint, flash, redirect, url_for, request, session
+from flask import render_template, Blueprint, flash, redirect, url_for, request, session, jsonify
 from flask_login import login_required, current_user
 
-from app import db
+from app import db, get_total_session, get_value
 from app.daos.order_dao import update_online_order, get_online_order_by_status, get_online_order_by_id, \
     get_offline_order_by_id
 from app.daos.payment_dao import get_payment_by_id_and_method_and_status
@@ -42,6 +42,15 @@ def cart():
         cart = {}
 
     if form.validate_on_submit():
+        total_stats = get_total_session(cart=cart)
+        total_quantity = total_stats['total_quantity']
+
+        MAX_QUANTITY = int(get_value('MAX_QUANTITY'))
+
+        if total_quantity > MAX_QUANTITY:
+            flash(f'Giỏ hàng vượt quá {MAX_QUANTITY} món!', 'danger')
+            return render_template('customer/cart.html', form=form)
+
         try:
             id = update_online_order(
                 cart=cart,

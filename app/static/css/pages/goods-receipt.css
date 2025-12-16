@@ -1,7 +1,3 @@
-body {
-    background-color: #f5f7fb;
-    font-family: 'Segoe UI', Roboto, "Helvetica Neue", Arial, sans-serif;
-}
 .input-bar {
     border-left: 4px solid #0d6efd;
 }
@@ -9,21 +5,18 @@ body {
     box-shadow: none;
     border-color: #86b7fe;
 }
-.btn-add-row {
-    height: 38px;
-    border-radius: 5px;
+.btn-add {
+    border-radius: 8px;
 }
 .table th {
     background-color: #e8e9eb;
     border-bottom: 2px solid #cacccf;
-    letter-spacing: 0.5px;
 }
-.btn-delete-row {
-    font-size: 1.1rem;
+.btn-delete {
     opacity: 0.7;
     transition: all 0.2s;
 }
-.btn-delete-row:hover {
+.btn-delete:hover {
     opacity: 1;
     background-color: #ffeaea;
     border-radius: 4px;

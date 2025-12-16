@@ -12,4 +12,4 @@ redis_client = Redis(
     host='localhost', port=6379, db=0, decode_responses=True
 )
 
-admin = Admin(name='Cafe Administration', theme=Bootstrap4Theme(swatch='cerulean'))
+admin = Admin(name='Cafe Administration', theme=Bootstrap4Theme())

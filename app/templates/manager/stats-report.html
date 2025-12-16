@@ -1,0 +1,79 @@
+{% extends "layout/base/base-employee.html" %}
+
+{% block title %}Báo Cáo Nguyên Vật Liệu{% endblock %}
+
+{% block css %}
+{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/pages/stats-report.css') }}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+{% endblock %}
+
+{% block main %}
+<div class="col-lg-10 px-4 pt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold text-dark">Báo Cáo Nguyên Vật Liệu</h2>
+            <p class="text-muted mb-0">Quản lý nhập xuất tồn kho theo ngày</p>
+        </div>
+        <form>
+            <div class="d-flex gap-2 bg-white p-2 rounded shadow">
+                <input type="date" id="reportDate" class="form-control border-0 bg-light fw-bold"
+                       style="width: 160px;" name="date" value="{{ date }}">
+                <button class="btn btn-primary px-4"><i class="fas fa-filter me-2"></i>Xem</button>
+                <button class="btn btn-outline-success" onclick="alert('Sắp ra mắt...')"><i class="fas fa-file-excel"></i></button>
+            </div>
+        </form>
+    </div>
+
+    <div class="card card-custom bg-white">
+        <div class="card-body p-0">
+            <table class="table table-custom mb-0">
+                <thead>
+                <tr>
+                    <th class="text-center" style="width= 5%">STT</th>
+                    <th class="text-start" style="width= 5%">Mã NVL</th>
+                    <th class="text-start" style="width= 15%">Tên Nguyên Liệu</th>
+                    <th class="text-center" style="width= 5%">Don vi</th>
+                    <th class="text-center" style="width= 10%">Đơn giá</th>
+                    <th class="text-center" style="width= 10%">Tồn Đầu</th>
+                    <th class="text-center text-success" style="width= 10%">SL Nhập</th>
+                    <th class="text-center text-danger" style="width= 10%">SL Xuất</th>
+                    <th class="text-center fw-bold" style="width= 10%">SL Thực Tế</th>
+                    <th class="text-center" style="width= 15%">Ghi Chú</th>
+                    <th class="text-center" style="width= 5%"></th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for r in rows %}
+                <tr>
+                    <td class="text-center">{{ r.index }}</td>
+                    <td class="text-start fw-bold">#{{ r.id }}</td>
+                    <td class="text-start text-black">{{ r.name }}</td>
+                    <td class="text-center text-black">{{ r.unit }}</td>
+                    <td class="text-center fs-6">{{ "{:,.0f}".format(r.cost) }}</td>
+                    <td class="text-center fs-6">{{ r.tonDau }}</td>
+                    <td class="text-center text-success fs-6">{{ r.tonNhap }}</td>
+                    <td class="text-center text-danger fs-6">{{ r.tonXuat }}</td>
+                    <td class="text-center fw-bold text-dark fs-6">{{ r.tonCuoi }}</td>
+                    <td class="text-center fw-bold text-dark">
+                        {% if r.tonCuoi < min_ingredient %}
+                        <p class="text-danger mb-0">Sắp hết hàng!</p>
+                        {% elif r.tonXuat < 0 %}
+                        <p class="text-danger mb-0">Chênh lệch thừa!</p>
+                        {% else %}
+                        {% endif%}
+                    </td>
+                    <td class="text-center ps-0">
+                        <button class="btn btn-outline-primary me-1" onclick="alert('Sắp ra mắt...')"><i class="fas fa-pen"></i>
+                        </button>
+                        <button class="btn btn-outline-danger" onclick="alert('Sắp ra mắt...')" ><i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

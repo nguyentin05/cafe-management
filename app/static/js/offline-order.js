@@ -157,7 +157,6 @@ function complete() {
         alert("Vui lòng chọn ít nhất 1 món!");
         return;
     }
-
     if (!confirm("Xác nhận tạo đơn?")) {
         return;
     }

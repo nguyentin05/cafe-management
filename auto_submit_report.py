@@ -13,12 +13,11 @@ if __name__ == "__main__":
         keys = redis_client.keys(pattern)
 
         for key in keys:
-            _, date, waiter_id = key.split(':')
-            report_date = date.fromisoformat(date)
+            _, date_str, waiter_id = key.split(':')
+            report_date = date.fromisoformat(date_str)
 
             report = InventoryReport(
-                created_date=report_date,
-                waiter_id=int(waiter_id)
+                created_date=report_date
             )
 
             db.session.add(report)
@@ -31,7 +30,8 @@ if __name__ == "__main__":
                 detail = InventoryReportDetail(
                     quantity=obj['quantity'],
                     inventoryReport_id=report.id,
-                    ingredient_id=obj['id']
+                    ingredient_id=obj['id'],
+                    unit_cost=obj['cost']
                 )
                 db.session.add(detail)
 

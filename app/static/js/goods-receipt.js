@@ -62,12 +62,12 @@ function addToSession(obj) {
     const elements = getElements(obj);
 
     if (!elements.select.value) {
-        alert("Vui long chọn nguyen lieu!");
+        alert("Vui lòng chọn nguyên liệu");
         return;
     }
 
     if (!elements.quantity.value || elements.quantity.value <= 0) {
-        alert("Vui long nhap số lượng!");
+        alert("Vui lòng nhập số lượng");
         elements.quantity.focus();
         return;
     }
@@ -110,7 +110,7 @@ function deleteSession(id) {
     }
 }
 function saveGoodsReceipt() {
-    if(confirm('Are you sure?')) {
+    if(confirm('Bạn có chắc chắn muốn lưu phiếu này?')) {
         fetch('/api/employee/goods-receipt/save', {
         method: 'post',
         headers: {
@@ -118,7 +118,7 @@ function saveGoodsReceipt() {
         }
         }).then(res => res.json()).then(data => {
         if (data.code == 200) {
-            alert("Tạo đơn thành công!");
+            alert("Lưu phiếu thành công!");
             location.reload();
         }
         }).catch(err => console.error(err));

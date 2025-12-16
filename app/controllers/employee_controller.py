@@ -2,7 +2,7 @@ from flask import render_template, request, Blueprint
 from flask_login import login_required
 
 from app.daos.dish_dao import load_dishes
-from app.decorators import employee_required
+from app.decorators import employee_required, cashier_required
 from app.models.order import OrderType, ORDER_STATUS_MAP
 from app.daos.order_dao import load_orders, get_order_by_id, get_total_order
 
@@ -26,7 +26,14 @@ def dashboard():
 @login_required
 @employee_required
 def recipe():
-    return render_template('employee/recipe.html')
+    return render_template('employee/comming-soon.html')
+
+
+@employee.route('/cashier_shift')
+@login_required
+@cashier_required
+def cashier_shift():
+    return render_template('employee/comming-soon.html')
 
 @employee.route('/dashboard/orders/<int:id>')
 @login_required

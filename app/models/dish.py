@@ -9,8 +9,8 @@ class BaseModel(db.Model):
     id = Column(Integer, primary_key=True, autoincrement=True)
 
 class DishUnit(Enums):
-    PIECE = "PIECE"
-    CUP = "CUP"
+    PIECE = "Cái"
+    CUP = "Ly"
 
 class CategoryGroup(BaseModel):
     name = Column(String(50), unique=True, nullable=False)
@@ -36,7 +36,6 @@ class Dish(BaseModel):
     unit = Column(Enum(DishUnit), nullable=False)
     dishCategory_id = Column(Integer, ForeignKey('dish_category.id'), nullable=False)
     details = relationship('OrderDetails', backref='dish', lazy=True)
-    recipe = relationship('Recipe', uselist=False, back_populates='dish')
 
     def __str__(self):
         return self.name

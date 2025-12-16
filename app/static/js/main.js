@@ -1,60 +1,30 @@
-//cai nay cho navbar
-document.addEventListener('DOMContentLoaded', function() {
-
+document.addEventListener('DOMContentLoaded', () => {
   const header = document.querySelector('.navbar');
-  let lastScrollTop = 0;
   const scrollThreshold = 50;
+  let lastScrollTop = 0;
 
-  window.addEventListener('scroll', function() {
-    let currentScrollTop = window.scrollY || document.documentElement.scrollTop;
+  window.addEventListener('scroll', () => {
+    const currentScrollTop = window.scrollY || document.documentElement.scrollTop;
+    const isScrolled = currentScrollTop > scrollThreshold;
 
-    if (currentScrollTop > scrollThreshold) {
-      header.classList.add('header-scrolled');
-      header.classList.add('bg-light');
-      header.classList.add('navbar-light');
-      header.classList.remove('navbar-dark');
-      header.classList.remove('position-absolute');
-    }
-    else {
-      header.classList.remove('header-scrolled');
-      header.classList.remove('bg-light');
-      header.classList.remove('navbar-light');
-      header.classList.add('navbar-dark');
-      header.classList.add('position-absolute');
-    }
+    header.classList.toggle('header-scrolled', isScrolled);
+    header.classList.toggle('bg-light', isScrolled);
+    header.classList.toggle('navbar-light', isScrolled);
 
-    if (currentScrollTop > lastScrollTop && currentScrollTop > scrollThreshold) {
-      header.classList.add('header-hidden');
-    }
-    else {
-      header.classList.remove('header-hidden');
-    }
+    header.classList.toggle('navbar-dark', !isScrolled);
+    header.classList.toggle('position-absolute', !isScrolled);
 
-    lastScrollTop = currentScrollTop <= 0 ? 0 : currentScrollTop;
+    const isScrollingDown = currentScrollTop > lastScrollTop && isScrolled;
+    header.classList.toggle('header-hidden', isScrollingDown);
 
-  }, false);
-});
-// cai any cho chu truoc len
-document.addEventListener("DOMContentLoaded", function() {
-  const observerOptions = {
-    root: null,
-    rootMargin: "0px",
-    threshold: 0.1
-  };
+    lastScrollTop = Math.max(0, currentScrollTop);
+  }, { passive: true });
 
-  const observerCallback = (entries, observer) => {
+  const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
-
-      if (entry.isIntersecting) {
-        entry.target.classList.add("is-visible");
-      }
-      else {
-        entry.target.classList.remove("is-visible");
-      }
+      entry.target.classList.toggle("is-visible", entry.isIntersecting);
     });
-  };
+  }, { threshold: 0.1 });
 
-  const observer = new IntersectionObserver(observerCallback, observerOptions);
-  const targets = document.querySelectorAll(".scroll-animate");
-  targets.forEach(target => observer.observe(target));
+  document.querySelectorAll(".scroll-animate").forEach(target => observer.observe(target));
 });

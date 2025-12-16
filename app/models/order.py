@@ -12,26 +12,27 @@ class BaseModel(db.Model):
 class RegulationKey(Enums):
     MAX_QUANTITY = "MAX_QUANTITY"
     SERVICE_FEE_PERCENT = "SERVICE_FEE_PERCENT"
+    MIN_INGREDIENT = 'MIN_INGREDIENT'
 
 class OrderType(Enums):
-    ONLINE = "ONLINE"
-    OFFLINE = "OFFLINE"
+    ONLINE = "Trực tuyến"
+    OFFLINE = "Trực tiếp"
 
 class LogType(Enums):
-    CREATED = "CREATED"
-    CHANGED_STATUS = "CHANGED_STATUS"
-    EDITED = "EDITED"
-    CANCELED = "CANCELED"
+    CREATED = "Đã tạo"
+    CHANGED_STATUS = "Đã đổi trạng thái"
+    EDITED = "Đã sửa"
+    CANCELED = "Đã hủy"
 
 class OrderStatus(Enums):
-    UNPAID = 'UNPAID'
-    PENDING = 'PENDING'
-    CONFIRMED = 'CONFIRMED'
-    PREPARING = 'PREPARING'
-    DELIVERING = 'DELIVERING'
-    READY_TO_PAY = 'READY_TO_PAY'
-    COMPLETED = 'COMPLETED'
-    CANCELED = 'CANCELED'
+    UNPAID = 'Chưa thanh toán'
+    PENDING = 'Đang chờ'
+    CONFIRMED = 'Đã xác nhận'
+    PREPARING = 'Đang chuẩn bị'
+    DELIVERING = 'Đang giao'
+    READY_TO_PAY = 'Sẵn sàng thanh toán'
+    COMPLETED = 'Hoàn thành'
+    CANCELED = 'Đã hủy'
 
 ORDER_STATUS_MAP = {
     OrderType.OFFLINE: [OrderStatus.CONFIRMED,
@@ -52,7 +53,7 @@ class Order(BaseModel):
     status = Column(Enum(OrderStatus), nullable=False)
     note = Column(Text, nullable=True)
     details = relationship('OrderDetails', backref='order', lazy=True)
-    discount = Column(String(50), nullable=True, unique=True)
+    # discount = Column(String(50), nullable=True, unique=True)
     payments = relationship('Payment', backref='order', lazy=True)
     order_type = Column(Enum(OrderType), nullable=False)
     order_logs = relationship('OrderLog', backref='order', lazy=True)
@@ -91,6 +92,7 @@ class OnlineOrder(Order):
     id = Column(Integer, ForeignKey('order.id'), primary_key=True)
     customer_id = Column(Integer, ForeignKey('customer.id'), nullable=False)
     customer_address = Column(String(255), nullable=False)
+
     __mapper_args__ = {
         'polymorphic_identity': OrderType.ONLINE,
     }
@@ -99,6 +101,7 @@ class OfflineOrder(Order):
     id = Column(Integer, ForeignKey('order.id'), primary_key=True)
     table_number = Column(Integer, nullable=False)
     cashier_id = Column(Integer, ForeignKey('cashier.id'), nullable=True)
+
     __mapper_args__ = {
         'polymorphic_identity': OrderType.OFFLINE,
     }

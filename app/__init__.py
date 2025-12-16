@@ -31,7 +31,7 @@ def create_app():
     app.config["MOMO_IPN_URL"] = os.getenv("MOMO_IPN_URL")
     app.config["MOMO_REQUEST_TYPE"] = os.getenv("MOMO_REQUEST_TYPE")
 
-    from .models .order import RegulationKey
+    from .models.order import RegulationKey
 
     @app.context_processor
     def common_attributes():
@@ -40,7 +40,7 @@ def create_app():
             'category_groups': load_category_groups(),
             'cart_stats': get_total_session(session.get('cart')),
             'service_fee': float(get_value(key=RegulationKey.SERVICE_FEE_PERCENT)),
-            'max_quantity': int(get_value(key=RegulationKey.MAX_QUANTITY))
+            'min_ingredient': int(get_value(key=RegulationKey.MIN_INGREDIENT))
         }
 
     login.init_app(app)
