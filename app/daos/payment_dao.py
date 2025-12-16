@@ -108,4 +108,4 @@ def send_momo_request(order, return_url, ipn_url):
 
 
 def get_payment_by_id_and_method_and_status(id, method, status):
-    return Payment.query.filter_by(order_id=id, method=method, status=status).first()
+    return Payment.query.filter(Payment.order_id.__eq__(id), Payment.method.__eq__(method), Payment.status.__eq__(status)).first()

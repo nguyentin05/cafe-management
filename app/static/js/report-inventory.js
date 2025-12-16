@@ -43,6 +43,7 @@ function addToReport(obj) {
         'id': option.value,
         'name': option.textContent,
         'cost': parseInt(option.dataset.cost),
+        'unit': option.dataset.unit,
         'quantity': parseFloat(quantityInput.value)
     })
     }).then(res => res.json())
@@ -54,8 +55,8 @@ function addToReport(obj) {
 }
 
 function deleteReport(id) {
-    if(confirm('Are you sure?')) {
-        fetch('/api/employee/report-inventory/delete/' + id, {
+    if(confirm('Bạn có chắc chắn muốn xóa?')) {
+        fetch('/api/employee/report-inventory' + id + '/delete' , {
             method: 'delete',
             headers: {
                 'Content-Type': 'application/json'

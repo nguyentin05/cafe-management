@@ -1,0 +1,20 @@
+{% extends "layout/base/base.html" %}
+
+{% block css %}
+{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/layout/sidebar.css')}}">
+{% endblock %}
+
+{% block js %}
+{{ super() }}
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        {%include "layout/sidebar.html"%}
+        {% block main required %}
+        {% endblock %}
+    </div>
+</div>
+{% endblock %}

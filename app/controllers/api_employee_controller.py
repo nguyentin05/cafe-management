@@ -3,12 +3,11 @@ from flask_login import login_required, current_user
 
 from app import redis_client
 from app.daos.payment_dao import MomoStrategy, process_order_payment
-from app.models import MomoPayment
 from app.utils import get_total_session
 from app.daos.order_dao import add_offline_order, get_order_by_id, update_offline_order, next_order_status, \
     cancel_order_status, get_value, get_offline_order_by_id
 from app.decorators import waiter_required, employee_required, manager_required, cashier_required
-from app.models.order import OrderType, OrderStatus
+from app.models.order import OrderType, OrderStatus, RegulationKey
 from app.daos.dish_dao import count_dishes
 from app.daos.inventory_dao import add_note
 from datetime import date
@@ -26,12 +25,12 @@ def complete():
     note = data.get('note', '')
     draft = data.get('draft')
 
-    total_tats = get_total_session(cart=draft)
-    total_quantity = total_tats['total_quantity']
+    total_stats = get_total_session(cart=draft)
+    total_quantity = total_stats['total_quantity']
 
-    limit = int(get_value('MAX_QUANTITY'))
+    MAX_QUANTITY = int(get_value('MAX_QUANTITY'))
 
-    if total_quantity > limit:
+    if total_quantity > MAX_QUANTITY:
         return jsonify({
             'code': 400,
             'message': 'qua so luong cho phep'
@@ -49,7 +48,7 @@ def complete():
     return jsonify({'code': 200})
 
 
-@api_employee.route('/orders/update/<int:id>', methods=['put'])
+@api_employee.route('/orders/<int:id>/update', methods=['put'])
 @login_required
 @employee_required
 def update_order(id):
@@ -65,7 +64,9 @@ def update_order(id):
 
     total_quantity = count_dishes(items)
 
-    if total_quantity > 10:
+    MAX_QUANTITY = get_value(key=RegulationKey.MAX_QUANTITY)
+
+    if total_quantity > MAX_QUANTITY:
         return jsonify({
             'code': 400,
             'message': 'qua so luong cho phep'
@@ -86,7 +87,7 @@ def update_order(id):
     return jsonify({'code': 200})
 
 
-@api_employee.route('/orders/next/<int:id>', methods=['put'])
+@api_employee.route('/orders/<int:id>/next', methods=['put'])
 @login_required
 @employee_required
 def next_status(id):
@@ -106,7 +107,7 @@ def next_status(id):
     return jsonify({'code': 200})
 
 
-@api_employee.route('/orders/cancel/<int:id>', methods=['put'])
+@api_employee.route('/orders/<int:id>/cancel', methods=['put'])
 @login_required
 @manager_required
 def cancel_order(id):
@@ -191,6 +192,7 @@ def add_to_report():
     data = request.json
     id = str(data.get('id'))
     name = data.get('name')
+    unit = data.get('unit')
     cost = data.get('cost')
     quantity = float(data.get('quantity'))
 
@@ -202,12 +204,11 @@ def add_to_report():
     if report:
         obj = json.loads(report)
         obj['quantity'] = quantity
-        obj['cost'] = cost
-        obj['name'] = name
     else:
         obj = {
             'id': int(id),
             'name': name,
+            'unit': unit,
             'cost': cost,
             'quantity': quantity
         }
@@ -216,7 +217,7 @@ def add_to_report():
 
     return jsonify({'code': 200})
 
-@api_employee.route('/report-inventory/delete/<id>', methods=['delete'])
+@api_employee.route('/report-inventory/<id>/delete', methods=['delete'])
 @login_required
 @waiter_required
 def delete_from_report(id):

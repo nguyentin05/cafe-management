@@ -10,18 +10,18 @@ class BaseModel(db.Model):
     id = Column(Integer, primary_key=True, autoincrement=True)
 
 class Gender(Enums):
-    MALE = "MALE"
-    FEMALE = "FEMALE"
+    MALE = "Nam"
+    FEMALE = "Nữ"
 
 class UserRole(Enums):
-    ADMIN = "ADMIN"
-    CUSTOMER = "CUSTOMER"
-    EMPLOYEE = "EMPLOYEE"
+    ADMIN = "Quản trị viên"
+    CUSTOMER = "Khách hàng"
+    EMPLOYEE = "Nhân viên"
 
 class EmployeeRole(Enums):
-    MANAGER = "MANAGER"
-    CASHIER = "CASHIER"
-    WAITER = "WAITER"
+    MANAGER = "Quản lý"
+    CASHIER = "Thu ngân"
+    WAITER = "Phục vụ"
 
 class User(BaseModel, UserMixin):
     fullname = Column(String(50), nullable=False)
@@ -118,7 +118,6 @@ class Manager(Employee):
 
 class Waiter(Employee):
     id = Column(Integer, ForeignKey('employee.id'), primary_key=True)
-    notes = relationship('Note', backref='waiter', lazy=True)
     driver_license = Column(String(12), nullable=False)
 
     __mapper_args__ = {

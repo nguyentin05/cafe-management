@@ -5,36 +5,46 @@
             <nav class="nav flex-column sidebar-menu mb-3 gap-2">
                 <a class="nav-link" href="{{ url_for('employee_web.dashboard') }}">
                     <span class="icon-wrap">🏠</span>
-                    <span>Dashboard</span>
+                    <span>Bảng điều khiển</span>
                 </a>
                 {% if current_user.is_authenticated and current_user.is_waiter %}
                 <a class="nav-link" href="{{ url_for('waiter_web.offline_order') }}">
                     <span class="icon-wrap">📝</span>
-                    <span>Create Order</span>
+                    <span>Đơn tại chỗ</span>
                 </a>
                 <a class="nav-link" href="{{ url_for('waiter_web.goods_receipt') }}">
-                    <span class="icon-wrap">📦</span>
-                    <span>Create Note</span>
+                    <span class="icon-wrap">📋</span>
+                    <span>Phiếu nhập hàng</span>
                 </a>
                 <a class="nav-link" href="{{ url_for('waiter_web.report_inventory') }}">
                     <span class="icon-wrap">📦</span>
-                    <span>Create Report</span>
+                    <span>Báo cáo tồn hàng</span>
                 </a>
-                <a class="nav-link" href="{{ url_for('employee_web.recipe') }}">
-                    <span class="icon-wrap">📖</span>
-                    <span>Recipe</span>
+                {% endif %}
+                {% if current_user.is_authenticated and current_user.is_cashier %}
+                <a class="nav-link" href="{{ url_for('employee_web.cashier_shift') }}">
+                    <span class="icon-wrap">🧾</span>
+                    <span>Giao ca thu ngân</span>
                 </a>
                 {% endif %}
                 {% if current_user.is_authenticated and current_user.is_manager %}
-                <a class="nav-link" href="{{ url_for('manager.revenue_stats') }}">
-                    <span class="icon-wrap">📖</span>
-                    <span>Báo cáo tài chính</span>
+                <a class="nav-link" href="{{ url_for('manager.stats_revenue') }}">
+                    <span class="icon-wrap">📈</span>
+                    <span>Thống kê doanh thu</span>
                 </a>
                 <a class="nav-link" href="{{ url_for('manager.stats_dish') }}">
-                    <span class="icon-wrap">📖</span>
-                    <span>Thong Ke Mon</span>
+                    <span class="icon-wrap">📊</span>
+                    <span>Thống kê món</span>
+                </a>
+                <a class="nav-link" href="{{ url_for('manager.stats_report') }}">
+                    <span class="icon-wrap">📑</span>
+                    <span>Báo cáo NVL</span>
                 </a>
                 {% endif %}
+                <a class="nav-link" href="{{ url_for('employee_web.recipe') }}">
+                    <span class="icon-wrap">📖</span>
+                    <span>Công Thức</span>
+                </a>
                 <a class="nav-link" href="{{ url_for('auth.signout') }}">
                     logout
                 </a>
@@ -45,7 +55,7 @@
             {% if current_user.is_authenticated %}
                 <div class="small">
                     <div class="fw-semibold">{{ current_user.fullname }}</div>
-                    <div class="text-muted">{{ current_user.user_role if current_user.user_role.name != 'EMPLOYEE' else current_user.employee_role}}</div>
+                    <div class="text-muted">{{ current_user.employee_role.value}}</div>
                 </div>
             {% else %}
                 <div class="small">

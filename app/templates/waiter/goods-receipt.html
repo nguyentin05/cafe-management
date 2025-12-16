@@ -1,9 +1,9 @@
-{%extends "layout/base/base-waiter.html"%}
+{%extends "layout/base/base-employee.html"%}
 
 {% block css %}
 {{ super() }}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/pages/goods-receipt.css') }}">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 <link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.bootstrap5.min.css" rel="stylesheet">
 {% endblock %}
 
@@ -13,101 +13,94 @@
 <script src="{{ url_for('static', filename='js/goods-receipt.js') }}"></script>
 {% endblock %}
 
-{%block content%}
-<div class="container-fluid bg-light min-vh-100">
-    <div class="row">
-        {%include "layout/sidebar.html"%}
-        <div class="col-lg-10 px-md-3 pt-4">
-            <div class="d-flex justify-content-between align-items-center pb-2 mb-3 border-bottom">
-                <h1 class="fs-2 text-primary fw-bold">Phiếu Nhập Nguyên Liệu</h1>
-                <div>
-                    <button class="btn btn-outline-secondary me-2 px-4">Hủy bỏ</button>
-                    <button class="btn btn-success px-4" onclick="saveGoodsReceipt()">
-                        <i class="bi bi-save me-1"></i> Lưu phiếu
+{%block main%}
+<div class="col-lg-10 px-md-3 pt-4">
+    <div class="d-flex justify-content-between align-items-center pb-2 mb-3 border-bottom">
+        <h1 class="fs-2 text-primary fw-bold">Phiếu Nhập Nguyên Liệu</h1>
+        <button class="btn btn-success px-4" onclick="saveGoodsReceipt()">
+            <i class="fa-solid fa-download"></i> Lưu phiếu
+        </button>
+    </div>
+    <div class="card shadow-sm mb-4 input-bar">
+        <div class="card-body">
+            <div id="add-material-form" class="row g-3 align-items-end">
+                <div class="col-md-5">
+                    <label for="materialSelect" class="text-secondary fs-6 fw-bold pb-1">TÌM KIẾM NGUYÊN LIỆU</label>
+                    <select id="materialSelect" autocomplete="off">
+                        <option value="">Chọn nguyên liệu...</option>
+                        {% for ingredient in ingredients %}
+                        <option value="{{ ingredient.id }}" data-unit="{{ ingredient.unit.name }}"
+                                data-cost="{{ ingredient.cost }}">
+                            {{ ingredient.name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                    <input type="hidden" id="materialName" value="">
+                </div>
+                <div class="col-md-2">
+                    <label class="text-secondary fs-6 fw-bold pb-1">ĐƠN VỊ</label>
+                    <input type="text" class="form-control bg-light" id="unitInput" value="" readonly>
+                </div>
+                <div class="col-md-2">
+                    <label class="text-secondary fs-6 fw-bold pb-1">GIÁ NHẬP</label>
+                    <input type="text" class="form-control bg-light" id="costInput" value="0" readonly>
+                </div>
+                <div class="col-md-2">
+                    <label for="quantityInput" class="text-secondary fs-6 fw-bold pb-1">SỐ LƯỢNG</label>
+                    <input type="number" class="form-control fw-bold text-primary" id="quantityInput"
+                           placeholder="0" min="1">
+                </div>
+                <div class="col-md-1 d-grid">
+                    <button type="button" class="btn btn-primary btn-add" onclick="addToSession(this)">
+                        <i class="fa-solid fa-arrow-turn-down"></i>
                     </button>
                 </div>
             </div>
-            <div class="card shadow-sm mb-4 input-bar">
-                <div class="card-body">
-                    <div id="add-material-form" class="row g-3 align-items-end">
-                        <div class="col-md-5">
-                            <label for="materialSelect" class="text-secondary fs-6 fw-bold pb-1">TIM KIEM NGUYEN
-                                LIEU</label>
-                            <select id="materialSelect" autocomplete="off">
-                                <option value="">Chọn nguyên liệu...</option>
-                                {% for ingredient in ingredients %}
-                                <option value="{{ ingredient.id }}" data-unit="{{ ingredient.unit }}" data-cost="{{ ingredient.cost }}">
-                                    {{ ingredient.name }}
-                                </option>
-                                {% endfor %}
-                            </select>
-                            <input type="hidden" id="materialName" value="">
-                        </div>
-                        <div class="col-md-2">
-                            <label class="text-secondary fs-6 fw-bold pb-1">DON VI</label>
-                            <input type="text" class="form-control bg-light" id="unitInput" value="" readonly>
-                        </div>
-                        <div class="col-md-2">
-                            <label class="text-secondary fs-6 fw-bold pb-1">GIA NHAP</label>
-                            <input type="text" class="form-control bg-light" id="costInput" value="0" readonly>
-                        </div>
-                        <div class="col-md-2">
-                            <label for="quantityInput" class="text-secondary fs-6 fw-bold pb-1">SO LUONG</label>
-                            <input type="number" class="form-control fw-bold text-primary" id="quantityInput"
-                                   placeholder="0" min="1">
-                        </div>
-                        <div class="col-md-1 d-grid">
-                            <button type="button" class="btn btn-primary btn-add-row" onclick="addToSession(this)">
-                                <i class="bi bi-arrow-return-left"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="card shadow border-0">
-                <div class="card-body p-0">
-                    <table class="table table-hover align-middle mb-0" id="receiptTable">
-                        <thead class="bg-light">
-                        <tr>
-                            <th class="ps-4 py-3 text-secondary fs-6"
-                                style="width: 5%;">STT
-                            </th>
-                            <th class="py-3 text-secondary fs-6" style="width: 35%;">TEN NGUYEN LIEU
-                            </th>
-                            <th class="py-3 text-secondary fs-6" style="width: 15%;">DON VI
-                            </th>
-                            <th class="py-3 text-secondary fs-6" style="width: 15%;">GIA NHAP
-                            </th>
-                            <th class="py-3 text-secondary fs-6" style="width: 15%;">SO LUONG
-                            </th>
-                            <th class="py-3 text-secondary text-center fs-6" style="width: 15%;">XOA
-                            </th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {% if 'note' in session and session['note'] %}
-                            {% for c in session['note'].values() %}
-                            <tr class="border-bottom">
-                                <td class="ps-4 fw-bold text-muted">01</td>
-                                <td>
-                                    <span class="d-block fw-bold text-dark">{{ c.name }}</span>
-                                    <small class="text-muted">Mã NL: {{ c.id }}</small>
-                                </td>
-                                <td><span class="text-black">{{ c.unit }}</span></td>
-                                <td class="text-muted">{{ "{:,.0f}".format(c.cost)}}</td>
-                                <td class="fw-bold fs-6">{{ c.quantity }}</td>
-                                <td class="text-center">
-                                    <button class="btn btn-sm btn-link text-danger p-0 btn-delete-row" onclick="deleteSession({{c.id}})">
-                                        <i class="bi bi-x-lg"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        {% endif %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+        </div>
+    </div>
+    <div class="card shadow border-0">
+        <div class="card-body p-0">
+            <table class="table table-hover align-middle mb-0" id="receiptTable">
+                <thead class="bg-light">
+                <tr>
+                    <th class="ps-4 py-3 text-secondary fs-6"
+                        style="width: 5%;">STT
+                    </th>
+                    <th class="py-3 text-secondary fs-6" style="width: 35%;">TÊN NGUYÊN LIỆU
+                    </th>
+                    <th class="py-3 text-secondary fs-6" style="width: 15%;">ĐƠN VỊ
+                    </th>
+                    <th class="py-3 text-secondary fs-6" style="width: 15%;">GIÁ NHẬP
+                    </th>
+                    <th class="py-3 text-secondary fs-6" style="width: 15%;">SỐ LƯỢNG
+                    </th>
+                    <th class="py-3 text-secondary text-center fs-6" style="width: 15%;">XÓA
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                {% if 'note' in session and session['note'] %}
+                {% for c in session['note'].values() %}
+                <tr class="border-bottom">
+                    <td class="ps-4 fw-bold text-muted">01</td>
+                    <td>
+                        <span class="d-block fw-bold text-dark">{{ c.name }}</span>
+                        <small class="text-muted">Mã NL: {{ c.id }}</small>
+                    </td>
+                    <td><span class="text-black">{{ c.unit }}</span></td>
+                    <td class="text-muted">{{ "{:,.0f}".format(c.cost)}}</td>
+                    <td class="fw-bold fs-6">{{ c.quantity }}</td>
+                    <td class="text-center">
+                        <button class="btn btn-delete text-danger p-0 fs-5"
+                                onclick="deleteSession({{c.id}})">
+                            <i class="fa-solid fa-x"></i>
+                        </button>
+                    </td>
+                </tr>
+                {% endfor %}
+                {% endif %}
+                </tbody>
+            </table>
         </div>
     </div>
 </div>

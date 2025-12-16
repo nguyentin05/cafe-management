@@ -9,7 +9,7 @@
     border-radius: 12px;
     color: black;
     font-size: 1rem;
-    padding: 0.6rem 0.8rem;
+    padding: 1rem 0.5rem;
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -26,10 +26,10 @@
 }
 .sidebar-menu .nav-link.active {
     background: #123026;
-    color: #fff;
+    color: #ffffff;
 }
 .sidebar-menu .nav-link.active .icon-wrap {
-    background: #fff;
+    background: #ffffff;
 }
 .sidebar-menu .nav-link:hover:not(.active) {
     background: #eef2ff;

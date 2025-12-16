@@ -6,7 +6,7 @@
                      style="width: 60px; height: 60px; object-fit: cover;">
                 <div>
                     <h5 class="mb-1 text-white">{{ current_user.fullname }}</h5>
-                    <p class="mb-0 text-white-50">{{ current_user.user_role }}</p>
+                    <p class="mb-0 text-white-50">{{ current_user.user_role.value }}</p>
                 </div>
             </div>
         </div>
@@ -25,13 +25,13 @@
                     </a>
                 </li>
                 <li class="list-group-item border-0 p-0">
-                    <a href="#"
+                    <a href="#" onclick='alert("Sắp ra mắt...")'
                        class="nav-link-item d-flex align-items-center px-4 py-3 text-decoration-none text-black">
                         <i class="fa-solid fa-file-lines nav-icon me-3 text-secondary"></i> Lịch sử đơn hàng
                     </a>
                 </li>
                 <li class="list-group-item border-0 p-0">
-                    <a href="#"
+                    <a href="{{ url_for('auth.signout') }}"
                        class="nav-link-item logout-link d-flex align-items-center px-4 py-3 text-decoration-none text-danger">
                         <i class="fas fa-sign-out-alt nav-icon me-3 text-danger"></i> Đăng xuất
                     </a>

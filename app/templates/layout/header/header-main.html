@@ -21,7 +21,7 @@
 
                 {% if current_user.is_authenticated and current_user.is_customer %}
                 <li class="nav-item">
-                    <a class="nav-link icon-hover position-relative" href="#" title="Thông báo">
+                    <a class="nav-link icon-hover position-relative" href="#" title="Thông báo" onclick="alert('sắp ra mắt...')">
                         <i class="fas fa-bell fa-lg text-light"></i>
                     </a>
                 </li>
@@ -60,7 +60,7 @@
                         </li>
                         <li>
                             <a class="dropdown-item py-2"
-                               href="{{ url_for('customer.orders') if 'customer.orders' in url_for.__globals__ else '#' }}">
+                               href="#" onclick='alert("Sắp ra mắt...")'>
                                 <i class="fas fa-history me-2 text-info w-20"></i> Lịch sử đơn
                             </a>
                         </li>

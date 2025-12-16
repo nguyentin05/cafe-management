@@ -18,10 +18,10 @@ def load_orders(order_type, order_status):
     return query.all()
 
 def get_order_by_id(id):
-    return Order.query.filter_by(id=id).first()
+    return Order.query.filter(Order.id.__eq__(id)).first()
 
 def get_online_order_by_id(id, customer_id):
-    return OnlineOrder.query.filter_by(id=id, customer_id=customer_id).first()
+    return OnlineOrder.query.filter(OnlineOrder.id.__eq__(id), OnlineOrder.customer_id.__eq__(customer_id)).first()
 
 def add_offline_order(draft, note, table):
     if not draft:
@@ -110,7 +110,7 @@ def add_online_order(cart, address, note):
         raise e
 
 def get_online_order_by_status(status, customer_id):
-    return OnlineOrder.query.filter_by(customer_id=customer_id, status=status).first()
+    return OnlineOrder.query.filter(OnlineOrder.customer_id.__eq__(customer_id), OnlineOrder.status.__eq__(status)).first()
 
 def get_offline_order_by_id(id):
     return OfflineOrder.query.get(id)

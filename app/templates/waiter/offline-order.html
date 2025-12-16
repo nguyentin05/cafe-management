@@ -1,4 +1,4 @@
-{%extends "layout/base/base-waiter.html"%}
+{%extends "layout/base/base-employee.html"%}
 
 {% block css %}
 {{ super() }}
@@ -10,111 +10,106 @@
 <script src="{{ url_for('static', filename='js/offline-order.js') }}"></script>
 {% endblock %}
 
-{%block content%}
-<div class="container-fluid">
-    <div class="row">
-        {%include "layout/sidebar.html"%}
-        <div class="col-md-9 col-lg-10 d-flex flex-column">
-            <div style="padding-bottom: 100px">
-                <div class="mt-4 text-center d-flex justify-content-between align-center">
-                    <h3>Create Order</h3>
-                    <button class="cart-card text-white text-center fs-4 fw-semibold" style="background-color: #1b7a04"
-                            onclick="complete()">
-                        hoan tat
+{% block main %}
+<div class="col-md-9 col-lg-10 d-flex flex-column">
+    <div style="padding-bottom: 100px">
+        <div class="mt-4 text-center d-flex justify-content-between align-center">
+            <h3>Create Order</h3>
+            <button class="cart-card p-2 text-white text-center fs-4 fw-semibold" style="background-color: #1b7a04"
+                    onclick="complete()">
+                Hoàn tất
+            </button>
+        </div>
+        <form>
+            <div class="row mb-4">
+                <div class="col-md-3 col-12 form-group">
+                    <div class="fs-6 mb-1">Số bàn:</div>
+                    <input type="number" min="1" max="20" class="form-control" name="table" id="table"
+                           placeholder="Nhập số bàn" required>
+                </div>
+            </div>
+            <div class="card shadow-sm mb-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <span class="fw-semibold">Danh sách món</span>
+                    <button type="button" class="btn btn-sm btn-success" id="btnAddItem" onclick="addItemRow()">
+                        + Thêm món
                     </button>
                 </div>
-                <form method="post">
-                    <div class="row mb-4">
-                        <div class="col-md-3 col-12 form-group">
-                            <div class="fs-6 mb-1">So ban:</div>
-                            <input type="number" min="1" max="20" class="form-control" name="table" id="table"
-                                   placeholder="Nhập số bàn" required>
-                        </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table mb-0 align-middle">
+                            <thead class="table-light">
+                            <tr>
+                                <th style="width: 45%">Món</th>
+                                <th style="width: 110px" class="text-center">Số lượng</th>
+                                <th style="width: 120px" class="text-center">Đơn giá</th>
+                                <th style="width: 120px" class="text-center">Thành tiền</th>
+                                <th style="width: 40px" class="text-center"></th>
+                            </tr>
+                            </thead>
+                            <tbody id="order-items">
+                            </tbody>
+                            <template id="row-template">
+                                <tr class="order-item">
+                                    <td>
+                                        <select class="form-select dish-select">
+                                            <option selected disabled value="">Chọn món...</option>
+                                            {% for dish in dishes %}
+                                            <option value="{{ dish.id }}" data-price="{{ dish.price }}">
+                                                {{ dish.name }}
+                                            </option>
+                                            {% endfor %}
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <input type="number" min="1" max="10" class="form-control text-center quantity"
+                                               value="1">
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control text-end price" disabled
+                                               placeholder="0">
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control text-end amount" disabled
+                                               placeholder="0">
+                                    </td>
+                                    <td class="text-center">
+                                        <button type="button" class="btn btn-sm btn-outline-danger btn-delete">
+                                            Xóa
+                                        </button>
+                                    </td>
+                                </tr>
+                            </template>
+                        </table>
                     </div>
-                    <div class="card shadow-sm mb-4">
-                        <div class="card-header d-flex justify-content-between align-items-center">
-                            <span class="fw-semibold">Danh sách món</span>
-                            <button type="button" class="btn btn-sm btn-success" id="btnAddItem" onclick="addItemRow()">
-                                + Thêm món
-                            </button>
-                        </div>
-                        <div class="card-body p-0">
-                            <div class="table-responsive">
-                                <table class="table mb-0 align-middle">
-                                    <thead class="table-light">
-                                    <tr>
-                                        <th style="width: 45%">Món</th>
-                                        <th style="width: 110px" class="text-center">Số lượng</th>
-                                        <th style="width: 120px" class="text-center">Đơn giá</th>
-                                        <th style="width: 120px" class="text-center">Thành tiền</th>
-                                        <th style="width: 40px" class="text-center"></th>
-                                    </tr>
-                                    </thead>
-                                    <tbody id="order-items">
-                                    </tbody>
-                                    <template id="row-template">
-                                        <tr class="order-item">
-                                            <td>
-                                                <select class="form-select dish-select">
-                                                    <option selected disabled value="">Chọn món...</option>
-                                                    {% for dish in dishes %}
-                                                    <option value="{{ dish.id }}" data-price="{{ dish.price }}">
-                                                        {{ dish.name }}
-                                                    </option>
-                                                    {% endfor %}
-                                                </select>
-                                            </td>
-                                            <td>
-                                                <input type="number" min="1" max="10" class="form-control text-center quantity"
-                                                       value="1">
-                                            </td>
-                                            <td>
-                                                <input type="text" class="form-control text-end price" disabled
-                                                       placeholder="0">
-                                            </td>
-                                            <td>
-                                                <input type="text" class="form-control text-end amount" disabled
-                                                       placeholder="0">
-                                            </td>
-                                            <td class="text-center">
-                                                <button type="button" class="btn btn-sm btn-outline-danger btn-delete">
-                                                    Xóa
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    </template>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="mb-5 pb-5 form-group">
-                        <div class="fs-6 mb-1">Ghi chú</div>
-                        <textarea maxlength="200" id="orderNote" rows="4" class="form-control" name="orderNote"
-                                  placeholder="nhap ghi chu"></textarea>
-                    </div>
-                </form>
-                <div class="total-part">
-                    <div class="total-card">
-                        <div class="total-row">
-                            <span>Subtotal</span>
-                            <span class="subtotal">0</span>
-                        </div>
-                        <div class="total-row">
-                            <span>Quantity</span>
-                            <span class="quantity">0</span>
-                        </div>
-                        <div class="total-row" id="service-fee" data-fee="{{ service_fee }}">
-                            <span>Service Fee</span>
-                            <span class="serviceFee">0</span>
-                        </div>
-                        <div class="d-flex justify-content-between fw-bold fs-3 mt-1">
-                            <span>Total</span>
-                            <span class="total">0</span>
-                        </div>
-                    </div>
+                </div>
+            </div>
+            <div class="mb-5 pb-5 form-group">
+                <div class="fs-6 mb-1">Ghi chú</div>
+                <textarea maxlength="200" id="orderNote" rows="4" class="form-control" name="orderNote"
+                          placeholder="nhập ghi chú"></textarea>
+            </div>
+        </form>
+        <div class="p-3 fixed-bottom" style="left: 16.666%">
+            <div class="total-card p-3">
+                <div class="total-row">
+                    <span>Tạm tính</span>
+                    <span class="subtotal">0</span>
+                </div>
+                <div class="total-row">
+                    <span>Số lượng</span>
+                    <span class="quantity">0</span>
+                </div>
+                <div class="total-row" id="service-fee" data-fee="{{ service_fee }}">
+                    <span>Phí phục vụ</span>
+                    <span class="serviceFee">0</span>
+                </div>
+                <div class="d-flex justify-content-between fw-bold fs-3 mt-1">
+                    <span>Tổng tiền</span>
+                    <span class="total">0</span>
                 </div>
             </div>
         </div>
     </div>
 </div>
-{%endblock%}
+{% endblock %}

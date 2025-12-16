@@ -2,14 +2,13 @@ from app import create_app
 from app.extensions import db
 from app.models.dish import CategoryGroup, DishCategory, Dish, DishUnit
 from app.models.user import Waiter, Manager, Cashier, Admin, Customer, Gender, UserRole
-from app.models.inventory import Ingredient, IngredientUnit, IngredientCategory
+from app.models.inventory import Ingredient, IngredientUnit
 from app.models.order import Regulation
 from app.utils import hash_password
 
 app = create_app()
 
 with app.app_context():
-    db.drop_all()
     db.create_all()
 
     cg1 = CategoryGroup(name='Foods')
@@ -115,47 +114,36 @@ with app.app_context():
                     value='0.05')
     r2 = Regulation(key='MAX_QUANTITY',
                     value='10')
-
-    ic1 = IngredientCategory(name='Coffee')
-
-    ic2 = IngredientCategory(name='Syrup')
-
-    ic3 = IngredientCategory(name='Teas')
+    r3 = Regulation(key='MIN_INGREDIENT',
+                    value='5')
 
     i1 = Ingredient(name='Coffee bean',
                     cost=20000,
                     description='Coffee beans from china',
-                    unit=IngredientUnit.KG,
-                    ingredientCategory_id=1)
+                    unit=IngredientUnit.KG)
     i2 = Ingredient(name='Sugar',
                     cost=12000,
                     description='Sugar from us',
-                    unit=IngredientUnit.KG,
-                    ingredientCategory_id=2)
+                    unit=IngredientUnit.KG)
     i3 = Ingredient(name='Black tea',
                     cost=100000,
                     description='Tea from Vietnam',
-                    unit=IngredientUnit.L,
-                    ingredientCategory_id=3)
+                    unit=IngredientUnit.L)
     i4 = Ingredient(name='Matcha',
                     cost=150000,
                     description='Tea from Japan',
-                    unit=IngredientUnit.KG,
-                    ingredientCategory_id=3)
+                    unit=IngredientUnit.KG)
     i5 = Ingredient(name='Grenadine',
                     cost=200000,
                     description='Syrup from France',
-                    unit=IngredientUnit.L,
-                    ingredientCategory_id=2)
+                    unit=IngredientUnit.L)
     i6 = Ingredient(name='Chocolate bar',
                     cost=250000,
                     description='Chocolate from Germany',
-                    unit=IngredientUnit.KG,
-                    ingredientCategory_id=1
-                    )
+                    unit=IngredientUnit.KG)
 
     db.session.add_all([cg1, cg2, dc1, dc2, dc3, dc4, dc5,
-                        d1, d2, d3, d4, d5, d6, d7, c1, a1, w1, cs1, m1, r1, r2, ic1, ic2, ic3, i1, i2, i3, i4, i5, i6])
+                        d1, d2, d3, d4, d5, d6, d7, c1, a1, w1, cs1, m1, r1, r2, r3, i1, i2, i3, i4, i5, i6])
     db.session.commit()
 
     print("✅ Database initialized & seeded.")

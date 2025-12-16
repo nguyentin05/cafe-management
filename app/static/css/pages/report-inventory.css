@@ -1,23 +1,21 @@
 .inventory-table thead th {
-    background-color: #34495e;
-    color: #ffffff;
-    font-size: 1rem;
-    font-weight: 700;
-    padding: 15px 5px;
-    border-right: 1px solid #46627f;
+background-color: #34495e;
+color: #ffffff;
+font-size: 1rem;
+font-weight: 700;
+padding: 15px 5px;
+border-right: 1px solid #46627f;
 }
 .inventory-table tbody td {
     font-size: 1rem;
     padding: 10px 5px;
     color: #333333;
 }
-.form-control, .ts-control {
-    border-radius: 4px;
+.form-control {
+    border-radius: 16px;
     border: 1px solid #ced4da;
-    padding: 0.6rem 0.75rem;
 }
 .btn-primary {
-    padding: 0.6rem;
     background-color: #34495e;
     border-color: #34495e;
 }
@@ -25,14 +23,13 @@
     background-color: #2c3e50;
     border-color: #2c3e50;
 }
-.btn-delete-row {
-    font-size: 1.1rem;
+.btn-delete {
     opacity: 0.7;
     transition: all 0.2s;
 }
-.btn-delete-row:hover {
+.btn-delete:hover {
     opacity: 1;
     background-color: #ffeaea;
-    border-radius: 4px;
+    border-radius: 16px;
     transform: scale(1.1);
 }

@@ -1,211 +1,26 @@
-/* Màu sắc và font tùy chỉnh (thay đổi theo thương hiệu của bạn) */
-:root {
-    --primary-color: #176438; /* Màu xanh lá chủ đạo */
-    --text-color: #333;
-    --light-text-color: #666;
-    --border-color: #e0e0e0;
-    --bg-color: #f8f8f8;
-    --card-bg-color: #fff;
-}
-
-body {
-    font-family: 'Inter', sans-serif;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    background-color: var(--bg-color);
-    color: var(--text-color);
-    overflow: hidden;
-}
-
-.login-container {
-    display: flex;
-    width: 90%;
-    max-width: 1000px;
-    background-color: var(--card-bg-color);
-    border-radius: 15px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-    min-height: 600px;
-}
-
-.login-form-section {
-    flex: 1;
-    padding: 40px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-}
-
-.login-content-wrapper {
-    max-width: 350px;
-    width: 100%;
-    text-align: left;
-}
-
-.welcome-heading {
-    font-size: 2.2em;
-    font-weight: 700;
-    margin-bottom: 10px;
-    color: var(--text-color);
-}
-
-.welcome-subtext {
-    font-size: 1em;
-    color: var(--light-text-color);
-    margin-bottom: 30px;
-}
-
-.form-label {
-    font-weight: 500;
-    color: var(--text-color);
-    font-size: 0.9em;
-}
-
-.form-control {
-    border-radius: 8px;
-    padding: 12px 15px;
-    border: 1px solid var(--border-color);
-    font-size: 0.95em;
-}
-
-.form-control::placeholder {
-    color: #ccc;
-}
-
 .form-control:focus {
-    border-color: var(--primary-color);
+    border-color: #176438;
     box-shadow: 0 0 0 0.25rem rgba(23, 100, 56, 0.25);
 }
-
-.forgot-password-link, .signup-link {
-    color: var(--primary-color);
-    text-decoration: none;
-    font-size: 0.9em;
-    font-weight: 500;
-}
-
-.forgot-password-link:hover, .signup-link:hover {
-    text-decoration: underline;
-}
-
-/*
-.form-check-label {
-    font-size: 0.9em;
-    color: var(--light-text-color);
-}
-
-.form-check-input:checked {
-    background-color: var(--primary-color);
-    border-color: var(--primary-color);
-}
-*/
-
-.btn-login {
-    background-color: var(--primary-color);
-    color: #fff;
-    padding: 12px 20px;
-    border-radius: 8px;
-    font-size: 1.1em;
-    font-weight: 600;
-    border: none;
-    transition: background-color 0.3s ease;
-}
-
-.btn-login:hover {
-    background-color: #1a7843;
-    color: #fff;
-}
-
-.separator {
-    display: flex;
-    align-items: center;
-    text-align: center;
-    color: var(--light-text-color);
-    font-size: 0.9em;
-}
-
 .separator::before,
 .separator::after {
     content: '';
     flex: 1;
-    border-bottom: 1px solid var(--border-color);
+    border-bottom: 1px solid #e0e0e0;
 }
-
 .separator:not(:empty)::before {
-    margin-right: .5em;
+margin-right: .5em;
 }
-
 .separator:not(:empty)::after {
-    margin-left: .5em;
+margin-left: .5em;
 }
-
-.social-login-buttons .btn-outline-secondary {
-    border-color: var(--border-color);
-    color: var(--text-color);
-    padding: 10px 15px;
-    border-radius: 8px;
-    font-size: 1em;
-    font-weight: 500;
-    transition: border-color 0.3s ease, background-color 0.3s ease;
+.btn-outline-custom {
+    color: #333333;
+    border-color: #e0e0e0;
+    background-color: transparent;
 }
-
-.social-login-buttons .btn-outline-secondary:hover {
-    background-color: var(--bg-color);
-    border-color: var(--primary-color);
-}
-
-.social-login-buttons .btn-outline-secondary img {
-    vertical-align: middle;
-}
-
-.signup-text {
-    text-align: center;
-    font-size: 0.9em;
-    color: var(--light-text-color);
-}
-
-.login-image-section {
-    flex: 1.2;
-    background-image: url("D:\cafe-management\app\static\images\login\login.jpg");
-    background-size: cover;
-    background-position: center;
-    border-radius: 0 15px 15px 0;
-}
-
-/* Responsive cho màn hình nhỏ */
-@media (max-width: 768px) {
-    .login-container {
-        flex-direction: column;
-        width: 95%;
-        max-width: 450px;
-        min-height: auto;
-        border-radius: 10px;
-    }
-
-    .login-form-section {
-        padding: 30px;
-        order: 2; /* Form vẫn ở dưới trên mobile */
-    }
-
-    .login-image-section {
-        min-height: 200px;
-        border-radius: 10px 10px 0 0; /* Ảnh vẫn ở trên và bo tròn góc trên */
-        order: 1;
-        flex: none;
-        width: 100%;
-    }
-
-    .welcome-heading {
-        font-size: 1.8em;
-    }
-
-    .welcome-subtext {
-        font-size: 0.9em;
-        margin-bottom: 20px;
-    }
+.btn-outline-custom:hover {
+    background-color: #ffffff;
+    border-color: #176438;
+    color: #333333;
 }

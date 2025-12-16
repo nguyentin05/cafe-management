@@ -1,116 +1,107 @@
-{%extends "layout/base/base-waiter.html"%}
-
-{% block css %}
-{{ super() }}
-{% endblock %}
+{%extends "layout/base/base-employee.html"%}
 
 {% block js %}
 {{ super() }}
-<script src="{{ url_for('static', filename='js/edit-order.js') }}"></script>
+<script src="{{ url_for('static', filename='js/order-edit.js') }}"></script>
 {% endblock %}
 
-{%block content%}
-<div class="container-fluid">
-    <div class="row justify-content-center">
-        {%include "layout/sidebar.html"%}
-        <div class="col-md-9 col-lg-10 py-4">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h4>Chỉnh sửa đơn hàng #{{ order.id }}</h4>
-                {% if order.is_editable %}
-                <div>
-                    <a href="{{ url_for('employee_web.order_detail', id=order.id) }}" class="btn btn-outline-secondary me-2">Hủy
-                        bỏ</a>
-                    <button class="btn btn-primary" onclick="updateOrder({{order.id}})">Lưu thay đổi</button>
-                </div>
-                {% endif %}
-            </div>
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="card mb-3">
-                        <div class="card-header">Thông tin chung</div>
-                        <div class="card-body">
-                            {% if order.order_type.name == 'OFFLINE' %}
-                            <div class="mb-3">
-                                <label class="form-label">Số bàn</label>
-                                <input type="number" id="tableNumber" class="form-control"
-                                       value="{{ order.table_number }}">
-                            </div>
-                            {% endif %}
-                            <div class="mb-3">
-                                <label class="form-label">Ghi chú</label>
-                                <textarea id="orderNote" class="form-control" rows="4">{{ order.note }}</textarea>
-                            </div>
-                        </div>
-                    </div>
-                    {% if order.is_editable %}
-                    <div class="card">
-                        <div class="card-header">Thêm món</div>
-                        <div class="card-body">
-                            <select id="dishSelect" class="form-select mb-2">
-                                <option selected value="" disabled>Chọn món...</option>
-                                {% for dish in dishes %}
-                                <option value="{{ dish.id }}" data-price="{{ dish.price }}">{{ dish.name }}</option>
-                                {% endfor %}
-                            </select>
-                            <button class="btn btn-success w-100" onclick="addDish()">Thêm vào danh sách</button>
-                        </div>
+{%block main%}
+<div class="col-md-9 col-lg-10 py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h4>Chỉnh sửa đơn hàng #{{ order.id }}</h4>
+        {% if order.is_editable %}
+        <div>
+            <a href="{{ url_for('employee_web.order_detail', id=order.id) }}" class="btn btn-outline-secondary me-2">Hủy
+                bỏ</a>
+            <button class="btn btn-primary" onclick="updateOrder({{order.id}})">Lưu thay đổi</button>
+        </div>
+        {% endif %}
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card mb-3">
+                <div class="card-header">Thông tin chung</div>
+                <div class="card-body">
+                    {% if order.order_type.name == 'OFFLINE' %}
+                    <div class="mb-3">
+                        <label class="form-label">Số bàn</label>
+                        <input type="number" id="tableNumber" class="form-control"
+                               value="{{ order.table_number }}">
                     </div>
                     {% endif %}
-                </div>
-                <div class="col-md-8">
-                    <div class="card">
-                        <div class="card-header">Chi tiết đơn hàng</div>
-                        <div class="card-body p-0">
-                            <table class="table align-middle mb-0">
-                                <thead class="table-light">
-                                <tr>
-                                    <th>Sản phẩm</th>
-                                    <th class="text-center" style="width: 100px;">So Luong</th>
-                                    <th class="text-end">Đơn giá</th>
-                                    <th class="text-end">Thành tiền</th>
-                                    <th></th>
-                                </tr>
-                                </thead>
-                                <tbody id="order-items-body">
-                                {% for item in order.details %}
-                                <tr data-id="{{ item.dish_id }}" data-price="{{ item.unit_price }}">
-                                    <td>{{ item.dish.name }}</td>
-                                    <td>
-                                        <input type="number" class="form-control form-control-sm text-center quantity"
-                                               value="{{ item.quantity }}" min="1" max="10" onblur="updateRowTotal(this)"
-                                        {% if not order.is_editable %}disable{% endif %}>
-                                    </td>
-                                    <td>
-                                        <input type="text" class="form-control text-end price"
-                                               placeholder="{{ '{:,.0f}'.format(item.unit_price) }}" disabled>
-                                    </td>
-                                    <td>
-                                        <input type="text" class="form-control fw-semibold text-end amount"
-                                               placeholder="{{ '{:,.0f}'.format(item.unit_price *
-                                        item.quantity) }}" disabled>
-                                    </td>
-                                    {% if order.is_editable %}
-                                    <td class="text-center">
-                                        <button type="button" class="btn btn-sm btn-outline-danger"
-                                                onclick="removeRow(this)">X
-                                        </button>
-                                    </td>
-                                    {% endif %}
-                                </tr>
-                                {% endfor %}
-                                </tbody>
-                                <tfoot>
-                                <tr>
-                                    <td colspan="3" class="text-end fw-bold">Tổng cộng:</td>
-                                    <td class="text-end fw-bold text-success fs-5">
-                                        <span id="grand-total">0</span>
-                                    </td>
-                                    <td></td>
-                                </tr>
-                                </tfoot>
-                            </table>
-                        </div>
+                    <div class="mb-3">
+                        <label class="form-label">Ghi chú</label>
+                        <textarea id="orderNote" class="form-control" rows="4">{{ order.note }}</textarea>
                     </div>
+                </div>
+            </div>
+            {% if order.is_editable %}
+            <div class="card">
+                <div class="card-header">Thêm món</div>
+                <div class="card-body">
+                    <select id="dishSelect" class="form-select mb-2">
+                        <option selected value="" disabled>Chọn món...</option>
+                        {% for dish in dishes %}
+                        <option value="{{ dish.id }}" data-price="{{ dish.price }}">{{ dish.name }}</option>
+                        {% endfor %}
+                    </select>
+                    <button class="btn btn-success w-100" onclick="addDish()">Thêm vào danh sách</button>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">Chi tiết đơn hàng</div>
+                <div class="card-body p-0">
+                    <table class="table align-middle mb-0">
+                        <thead class="table-light">
+                        <tr>
+                            <th>Sản phẩm</th>
+                            <th class="text-center" style="width: 100px;">Số lượng</th>
+                            <th class="text-end">Đơn giá</th>
+                            <th class="text-end">Thành tiền</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody id="order-items-body">
+                        {% for item in order.details %}
+                        <tr data-id="{{ item.dish_id }}" data-price="{{ item.unit_price }}">
+                            <td>{{ item.dish.name }}</td>
+                            <td>
+                                <input type="number" class="form-control form-control-sm text-center quantity"
+                                       value="{{ item.quantity }}" min="1" max="10" onblur="updateTotal(this)"
+                                       {% if not order.is_editable %}disable{% endif %}>
+                            </td>
+                            <td>
+                                <input type="text" class="form-control text-end price"
+                                       placeholder="{{ '{:,.0f}'.format(item.unit_price) }}" disabled>
+                            </td>
+                            <td>
+                                <input type="text" class="form-control fw-semibold text-end amount"
+                                       placeholder="{{ '{:,.0f}'.format(item.unit_price *
+                                        item.quantity) }}" disabled>
+                            </td>
+                            {% if order.is_editable %}
+                            <td class="text-center">
+                                <button type="button" class="btn btn-sm btn-outline-danger"
+                                        onclick="removeRow(this)">X
+                                </button>
+                            </td>
+                            {% endif %}
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                        <tfoot>
+                        <tr>
+                            <td colspan="3" class="text-end fw-bold">Tổng cộng:</td>
+                            <td class="text-end fw-bold text-success fs-5">
+                                <span id="grand-total">0</span>
+                            </td>
+                            <td></td>
+                        </tr>
+                        </tfoot>
+                    </table>
                 </div>
             </div>
         </div>

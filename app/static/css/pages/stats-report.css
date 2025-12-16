@@ -1,0 +1,23 @@
+.card-custom {
+    border: none;
+    border-radius: 16px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+}
+.table-custom thead th {
+    background-color: #f8f9fa;
+    color: #6c757d;
+    font-weight: 600;
+    border-bottom: 2px solid #eaecf0;
+    font-size: 0.9rem;
+    padding: 1rem;
+}
+.table-custom tbody td {
+    padding: 1rem;
+    vertical-align: middle;
+    color: #344767;
+    font-size: 0.95rem;
+    border-bottom: 1px solid #f0f2f5;
+}
+.table-custom tr:hover td {
+    background-color: #fafafa;
+}

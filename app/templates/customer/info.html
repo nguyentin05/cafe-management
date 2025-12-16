@@ -3,13 +3,7 @@
 {% block css %}
 {{ super() }}
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-<link rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Open+Sans&family=Roboto:wght@400;500&display=swap">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/pages/customer-info.css') }}">
-{% endblock %}
-
-{% block js %}
-{{ super() }}
 {% endblock %}
 
 {%block content%}
@@ -26,8 +20,7 @@
             <div class="col-lg-8">
                 <div class="card shadow h-100 overflow-hidden" style="border-radius: 16px">
                     <div class="card-header primary-bg text-center p-4">
-                        <h4 class="fw-bold fs-3 text-white my-1" style="font-family: 'Montserrat', sans-serif">CUSTOMER
-                            INFORMATION</h4>
+                        <h4 class="fw-bold fs-3 text-white my-1">Thông Tin Cá Nhân</h4>
                     </div>
                     <div class="card-body p-4">
                         <div class="info-item mb-3">
@@ -50,19 +43,19 @@
                         </div>
                         <div class="d-flex gap-3">
                             <div class="w-50">
-                                <div class="label text-secondary fw-bold small">Date of birth</div>
+                                <div class="label text-secondary fw-bold small">Ngày Sinh</div>
                                 <p class="label-value border-bottom pe-3 pb-2">{% if current_user.dob %}{{
                                     (current_user.dob).strftime('%d/%m/%Y') }}{% else %}Ngày sinh chưa được cập nhật{% endif
                                     %}</p>
                             </div>
                             <div class="w-50">
-                                <div class="label text-secondary fw-bold small">Gender</div>
+                                <div class="label text-secondary fw-bold small">Giới tính</div>
                                 <p class="label-value border-bottom pe-3 pb-2">{% if current_user.gender %}{{
-                                    current_user.gender }}{% else %}Chua cap nhat gioi tinh{% endif %}</p>
+                                    current_user.gender }}{% else %}Giới tính chưa được được cập nhật{% endif %}</p>
                             </div>
                         </div>
                         <div class="info-item mb-3">
-                            <div class="label text-secondary fw-bold small">Address</div>
+                            <div class="label text-secondary fw-bold small">Địa chỉ</div>
                             <p class="label-value border-bottom pb-2 pe-3">{% if current_user.address %}{{
                                 current_user.address }}{% else %}Địa chỉ chưa được cập nhật{% endif %}</p>
                         </div>

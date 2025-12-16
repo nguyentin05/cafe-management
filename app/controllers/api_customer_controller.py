@@ -1,10 +1,10 @@
 from flask import Blueprint, jsonify, request, session, current_app, flash, redirect, url_for
 from flask_login import login_required, current_user
 
-from app import db
+from app import db, get_value
 from app.daos.payment_dao import PaymentStrategy, MomoStrategy, process_order_payment
 from app.decorators import customer_required
-from app.models import OnlineOrder, OrderStatus, MomoPayment
+from app.models import OnlineOrder, OrderStatus, MomoPayment, RegulationKey
 from app.utils import get_total_session, momo_sign
 from app.daos.dish_dao import get_dish_by_id
 from app.daos.order_dao import add_online_order, get_online_order_by_id
@@ -50,9 +50,21 @@ def pay_cart():
     data = request.json
     address = data.get('address')
     orderNote = data.get('orderNote', '')
+    cart = session.get('cart')
+
+    total_stats = get_total_session(cart=cart)
+    total_quantity = total_stats['total_quantity']
+
+    MAX_QUANTITY = int(get_value(key=RegulationKey.MAX_QUANTITY))
+
+    if total_quantity > MAX_QUANTITY:
+        return jsonify({
+            'code': 400,
+            'message': 'qua so luong cho phep'
+        })
 
     try:
-        add_online_order(session.get('cart'), address=address, note=orderNote)
+        add_online_order(cart, address=address, note=orderNote)
         session.pop('cart', None)
     except Exception as ex:
         print(str(ex))
