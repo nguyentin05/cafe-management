@@ -1,19 +1,14 @@
-from flask import Blueprint, jsonify, request, session, current_app, flash, redirect, url_for
+from flask import Blueprint, jsonify, request, session, flash, redirect, url_for
 from flask_login import login_required, current_user
 
-from app import db, get_value
-from app.daos.payment_dao import PaymentStrategy, MomoStrategy, process_order_payment
+from app.daos.payment_dao import MomoStrategy, process_order_payment
 from app.decorators import customer_required
-from app.models import OnlineOrder, OrderStatus, MomoPayment, RegulationKey
-from app.utils import get_total_session, momo_sign
-from app.daos.dish_dao import get_dish_by_id
-from app.daos.order_dao import add_online_order, get_online_order_by_id
-
-import requests
-import uuid
-
+from app.models.order import OrderStatus, RegulationKey
+from app.utils import get_total_session
+from app.daos.order_dao import add_online_order, get_online_order_by_id, get_value
 
 api_customer = Blueprint('api_customer', __name__)
+
 
 @api_customer.route('/cart/add', methods=['post'])
 @login_required
@@ -23,25 +18,27 @@ def add_cart():
     id = str(data.get('id'))
     name = data.get('name')
     price = data.get('price')
+    image = data.get('image')
     cart = session.get('cart')
 
     if not cart:
         cart = {}
 
     if id in cart:
-        cart[id]['quantity'] +=1
+        cart[id]['quantity'] += 1
     else:
         cart[id] = {
             'id': id,
             'name': name,
             'price': price,
-            'image': get_dish_by_id(id).image,
+            'image': image,
             'quantity': 1
         }
 
     session['cart'] = cart
 
     return jsonify(get_total_session(cart=cart))
+
 
 @api_customer.route('/pay', methods=['post'])
 @login_required
@@ -85,6 +82,7 @@ def update_cart(dish_id):
 
     return jsonify(get_total_session(cart=cart))
 
+
 @api_customer.route('/cart/delete/<dish_id>', methods=['delete'])
 @login_required
 @customer_required
@@ -96,6 +94,7 @@ def delete_cart(dish_id):
         session['cart'] = cart
 
     return jsonify(get_total_session(cart=cart))
+
 
 @api_customer.route('/<order_id>/payment/create', methods=['GET'])
 @login_required

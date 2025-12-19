@@ -3,8 +3,9 @@ import os
 from cloudinary.utils import cloudinary_url
 from flask import Flask, session
 
+from .admin import init_admin
 from .daos.order_dao import get_value
-from .extensions import db, login, admin as admin_ext, redis_client
+from .extensions import db, login, redis_client
 
 from dotenv import load_dotenv
 import cloudinary
@@ -45,11 +46,9 @@ def create_app():
 
     login.init_app(app)
     db.init_app(app)
-    admin_ext.init_app(app)
+    init_admin(app)
 
     from app import models
-    from app import admin as admin_module
-    admin_module.init_admin(admin_ext)
 
     from .controllers.auth_controller import auth
     from .controllers.api_customer_controller import api_customer

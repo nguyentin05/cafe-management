@@ -157,32 +157,28 @@ function complete() {
         alert("Vui lòng chọn ít nhất 1 món!");
         return;
     }
-    if (!confirm("Xác nhận tạo đơn?")) {
-        return;
-    }
 
-    fetch("/api/employee/complete", {
-        method: "POST",
+    if (confirm("Xác nhận tạo đơn?")) {
+        fetch("/api/employee/complete", {
+        method: "post",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
             table: table,
             note: note,
             draft: draft
         })
-    })
-        .then(res => res.json())
-        .then(data => {
-            if (data.code === 200) {
-                localStorage.removeItem("draft");
-                alert("Tạo đơn thành công!");
-                location.reload();
-            }
-            else if (data.code === 400) {
-                alert(data.message);
-                location.reload();
-            }
-        })
-        .catch(err => console.error("Error:", err));
+    }).then(res => res.json()).then(data => {
+        if (data.code === 200) {
+            localStorage.removeItem("draft");
+            alert("Tạo đơn thành công!");
+            location.reload();
+        }
+        else if (data.code === 400) {
+            alert(data.message);
+            location.reload();
+        }
+        }).catch(err => console.error("Error:", err));
+    }
 }
 document.addEventListener("DOMContentLoaded", () => {
     loadCounter();

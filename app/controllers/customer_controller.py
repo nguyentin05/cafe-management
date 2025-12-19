@@ -12,11 +12,13 @@ from app.models import OnlineOrder, OrderStatus, PaymentMethod, PaymentStatus, M
 
 customer = Blueprint('customer', __name__)
 
+
 @customer.route('/info')
 @login_required
 @customer_required
 def info():
     return render_template('customer/info.html')
+
 
 @customer.route('/checkout/<order_id>', methods=['get'])
 @login_required
@@ -29,6 +31,7 @@ def checkout(order_id):
         return redirect(url_for('customer.cart'))
 
     return render_template('customer/checkout.html', order=order)
+
 
 @customer.route('/cart', methods=['get', 'post'])
 @login_required
@@ -60,6 +63,7 @@ def cart():
             )
             return redirect(url_for('customer.checkout', order_id=id))
         except Exception as e:
+            print(e)
             flash('Lỗi hệ thống, vui lòng thử lại.', 'danger')
 
     if request.method.__eq__('GET'):
@@ -73,11 +77,6 @@ def cart():
 
     return render_template('customer/cart.html', form=form)
 
-@customer.route("/orders/<int:id>")
-@login_required
-@customer_required
-def order_detail(id):
-    return render_template("customer/order_detail.html")
 
 @customer.route('/info/edit', methods=['get', 'post'])
 @login_required
@@ -89,13 +88,13 @@ def edit_info():
     if form.validate_on_submit():
         try:
             update_customer_info(
-                customer_id = current_user.id,
-                fullname = form.fullname.data,
-                phone = form.phone.data,
-                address = form.address.data,
-                email = form.email.data,
-                dob = form.dob.data,
-                gender = form.gender.data or None,
+                customer_id=current_user.id,
+                fullname=form.fullname.data,
+                phone=form.phone.data,
+                address=form.address.data,
+                email=form.email.data,
+                dob=form.dob.data,
+                gender=form.gender.data or None,
             )
             flash('Cập nhật thông tin thành công!', 'success')
             return redirect(url_for('auth.info'))
@@ -107,6 +106,8 @@ def edit_info():
 
 
 @customer.route('/payment/momo-return', methods=['get'])
+@login_required
+@customer_required
 def momo_return():
     result_code = request.args.get('resultCode')
     momo_order_id = request.args.get('orderId')
@@ -122,7 +123,8 @@ def momo_return():
     if not order:
         return "Order not found", 404
 
-    current_payment = get_payment_by_id_and_method_and_status(order_id, PaymentMethod.MOBILE_BANKING, PaymentStatus.PENDING)
+    current_payment = get_payment_by_id_and_method_and_status(order_id, PaymentMethod.MOBILE_BANKING,
+                                                              PaymentStatus.PENDING)
 
     if result_code == '0':
         if current_payment:
@@ -139,7 +141,6 @@ def momo_return():
             order.status = OrderStatus.COMPLETED
 
             db.session.commit()
-            flash("Thanh toán thành công! Đơn hàng đã hoàn tất.", "success")
             return render_template('customer/payment-success.html', order=order)
 
     else:
@@ -152,5 +153,5 @@ def momo_return():
 
         if order.order_type == OrderType.ONLINE:
             return redirect(url_for('customer.checkout', order_id=order_id))
-        else:
+        elif order.order_type == OrderType.OFFLINE:
             return redirect(url_for('employee_web.order_detail', id=order_id))

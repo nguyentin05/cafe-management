@@ -56,7 +56,7 @@ function addToReport(obj) {
 
 function deleteReport(id) {
     if(confirm('Bạn có chắc chắn muốn xóa?')) {
-        fetch('/api/employee/report-inventory' + id + '/delete' , {
+        fetch('/api/employee/report-inventory/' + id + '/delete' , {
             method: 'delete',
             headers: {
                 'Content-Type': 'application/json'

@@ -158,6 +158,7 @@ def add_to_note():
 
     return jsonify({'code': 200})
 
+
 @api_employee.route('/goods-receipt/delete/<id>', methods=['delete'])
 @login_required
 @waiter_required
@@ -184,6 +185,7 @@ def save_note():
         return jsonify({'code': 400})
 
     return jsonify({'code': 200})
+
 
 @api_employee.route('/report-inventory/add', methods=['post'])
 @login_required
@@ -216,6 +218,7 @@ def add_to_report():
     redis_client.hset(key, id, json.dumps(obj))
 
     return jsonify({'code': 200})
+
 
 @api_employee.route('/report-inventory/<id>/delete', methods=['delete'])
 @login_required

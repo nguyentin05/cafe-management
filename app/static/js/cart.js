@@ -65,12 +65,14 @@ function updateCart(id) {
     }).catch(err => console.error(err));
 }
 function deleteCart(id) {
-    fetch('/api/customer/cart/delete/' + id, {
-        method: 'delete',
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    }).then(res => res.json()).then(data => {
-        updateUI(data);
-    }).catch(err => console.error(err));
+    if(confirm('Bạn có chắn chắn muốn xóa?')) {
+        fetch('/api/customer/cart/delete/' + id, {
+            method: 'delete',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then(res => res.json()).then(data => {
+            updateUI(data);
+        }).catch(err => console.error(err));
+    }
 }
