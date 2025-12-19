@@ -69,3 +69,17 @@ def signout():
 @login.user_loader
 def user_load(user_id):
     return get_user_by_id(user_id)
+
+@auth.route("/admin-login", methods=["post"])
+def admin_login_process():
+    username = request.form.get("username")
+    password = request.form.get("password")
+
+    user = auth_user(username, password)
+
+    if user:
+        login_user(user)
+        return redirect("/admin")
+    else:
+        err_msg = "Tài khoản hoặc mật khẩu không đúng!"
+        return redirect("/admin")

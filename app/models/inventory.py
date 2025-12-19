@@ -1,5 +1,5 @@
 from enum import Enum as Enums
-from sqlalchemy import Column, Integer, DateTime, String, Float, ForeignKey, Enum, Date, Text
+from sqlalchemy import Column, Integer, DateTime, String, Float, ForeignKey, Enum, Date, Text, Boolean
 from sqlalchemy.orm import relationship
 from datetime import datetime, date
 from app.extensions import db
@@ -21,6 +21,7 @@ class Ingredient(BaseModel):
     name = Column(String(50), unique=True, nullable=False)
     cost = Column(Float, nullable=False)
     description = Column(String(200), nullable=True)
+    is_active = Column(Boolean, default=True)
     created_date = Column(DateTime, default=datetime.now())
     unit = Column(Enum(IngredientUnit), nullable=False)
     detailsNote = relationship('NoteDetail', backref='ingredient', lazy=True)

@@ -9,6 +9,7 @@ from app.utils import hash_password
 app = create_app()
 
 with app.app_context():
+    db.drop_all()
     db.create_all()
 
     cg1 = CategoryGroup(name='Foods')

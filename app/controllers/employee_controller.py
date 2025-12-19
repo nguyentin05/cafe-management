@@ -8,6 +8,7 @@ from app.daos.order_dao import load_orders, get_order_by_id, get_total_order
 
 employee = Blueprint('employee_web', __name__)
 
+
 @employee.route('/dashboard')
 @login_required
 @employee_required
@@ -22,6 +23,8 @@ def dashboard():
                            order_types=list(OrderType),
                            current_order_type=current_order_type,
                            status_map=ORDER_STATUS_MAP)
+
+
 @employee.route('/recipe')
 @login_required
 @employee_required
@@ -35,6 +38,7 @@ def recipe():
 def cashier_shift():
     return render_template('employee/comming-soon.html')
 
+
 @employee.route('/dashboard/orders/<int:id>')
 @login_required
 @employee_required
@@ -42,6 +46,7 @@ def order_detail(id):
     total_order = get_total_order(id=id)
     order = get_order_by_id(id=id)
     return render_template('employee/order-detail.html', order=order, total_order=total_order)
+
 
 @employee.route('/dashboard/orders/edit/<int:id>', methods=['get', 'post'])
 @login_required
