@@ -38,22 +38,24 @@
     </ul>
     <div class="row g-3 mb-4">
         {% for o in orders %}
-        <div class="col-md-3">
-            <a class="text-decoration-none" href="{{ url_for('employee_web.order_detail', id=o.id) }}">
-                <div class="order-card d-flex flex-column cursor-pointer gap-2 text-light p-3">
-                    <div class="d-flex justify-content-between align-items-center mb-1">
-                        <div class="fs-6 small opacity-75">
-                            {{ 'DELIVERY' if current_order_type.name == 'ONLINE' else 'TABLE' }}
+            {% if o.status.name != 'UNPAID' %}
+            <div class="col-md-3">
+                <a class="text-decoration-none" href="{{ url_for('employee_web.order_detail', id=o.id) }}">
+                    <div class="order-card d-flex flex-column cursor-pointer gap-2 text-light p-3">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <div class="fs-6 small opacity-75">
+                                {{ 'DELIVERY' if current_order_type.name == 'ONLINE' else 'TABLE' }}
+                            </div>
+                            <span class="status px-2 py-1 small fw-semibold {{ o.status.name|lower }}">{{ o.status.value }}</span>
                         </div>
-                        <span class="status px-2 py-1 small fw-semibold {{ o.status.name|lower }}">{{ o.status.value }}</span>
+                        <div class="d-flex justify-content-between align-items-end">
+                            <div class="fs-5 fw-semibold">{{ o.id }}</div>
+                            <span class="fw-light small">{{ o.created_date.strftime("%H:%M") }}</span>
+                        </div>
                     </div>
-                    <div class="d-flex justify-content-between align-items-end">
-                        <div class="fs-5 fw-semibold">{{ o.id }}</div>
-                        <span class="fw-light small">{{ o.created_date.strftime("%H:%M") }}</span>
-                    </div>
-                </div>
-            </a>
-        </div>
+                </a>
+            </div>
+            {% endif %}
         {% endfor %}
     </div>
 </div>

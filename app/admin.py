@@ -63,9 +63,20 @@ class UserView(AuthenticatedView):
             model.password = hash_password(form.password.data)
 
 class EmployeeView(AuthenticatedView):
+    column_list = ["fullname", "email", 'employee_role', 'active']
+    can_view_details = True
+    column_searchable_list = ['fullname']
+    column_filters = ['employee_role']
+    column_labels = {
+        "name": "Họ tên",
+        "email": "email",
+        'employee_role': 'Chức vụ',
+        'active': 'active'
+    }
     form_extra_fields = {
         'password': PasswordField('Password')
     }
+    form_excluded_columns = ['order_logs']
 
     form_overrides = {
         'avatar': MyImage
