@@ -102,7 +102,6 @@ class Customer(User):
 
 class Cashier(Employee):
     id = Column(Integer, ForeignKey('employee.id'), primary_key=True)
-    offline_orders = relationship('OfflineOrder', backref='cashier', lazy=True)
 
     __mapper_args__ = {
         'polymorphic_identity': EmployeeRole.CASHIER

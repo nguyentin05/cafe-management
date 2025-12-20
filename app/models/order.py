@@ -100,7 +100,6 @@ class OnlineOrder(Order):
 class OfflineOrder(Order):
     id = Column(Integer, ForeignKey('order.id'), primary_key=True)
     table_number = Column(Integer, nullable=False)
-    cashier_id = Column(Integer, ForeignKey('cashier.id'), nullable=True)
 
     __mapper_args__ = {
         'polymorphic_identity': OrderType.OFFLINE,

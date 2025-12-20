@@ -9,8 +9,13 @@ from app.utils import hash_password
 app = create_app()
 
 with app.app_context():
-    db.drop_all()
     db.create_all()
+
+    if Admin.query.filter_by(username='admin1').first():
+        print("Database đã có dữ liệu")
+        exit(0)
+    else:
+        print("Đang nạp dữ liệu")
 
     cg1 = CategoryGroup(name='Foods')
     cg2 = CategoryGroup(name='Drinks')
@@ -147,4 +152,4 @@ with app.app_context():
                         d1, d2, d3, d4, d5, d6, d7, c1, a1, w1, cs1, m1, r1, r2, r3, i1, i2, i3, i4, i5, i6])
     db.session.commit()
 
-    print("✅ Database initialized & seeded.")
+    print("Đã nạp xong dữ liệu")

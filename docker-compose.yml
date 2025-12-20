@@ -1,0 +1,35 @@
+services:
+  backend:
+    build:
+      context: .
+    restart: always
+    ports:
+      - '5000:5000'
+    container_name: cafe_flask
+    volumes:
+      - .:/app
+    env_file:
+      - .env
+    depends_on:
+      mysql-db:
+        condition: service_healthy
+
+  mysql-db:
+    image: mysql:8.0
+    container_name: cafe_mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+    ports:
+      - '3308:3306'
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 10s
+      retries: 100
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+volumes:
+  mysql_data:

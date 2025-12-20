@@ -1,5 +1,5 @@
 from enum import Enum as Enums
-from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, Enum, Text, Float
+from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, Enum, Text, Float, DateTime
 from sqlalchemy.orm import relationship
 from datetime import datetime
 from app.extensions import db
@@ -32,6 +32,7 @@ class Dish(BaseModel):
     description = Column(Text, nullable=True)
     price = Column(Float, nullable=False)
     is_active = Column(Boolean, default=True)
+    created_date = Column(DateTime, default=datetime.now)
     image = Column(String(200)) #nho cap nhat anh mac dinh sau khi up cloudinary
     unit = Column(Enum(DishUnit), nullable=False)
     dishCategory_id = Column(Integer, ForeignKey('dish_category.id'), nullable=False)

@@ -116,24 +116,3 @@
     margin-top: 10px;
     padding-bottom: 10px;
 }
-
-@media (max-width: 768px) {
-    .footer-top {
-        flex-direction: column;
-        align-items: flex-start;
-        text-align: left;
-        padding-left: 0;
-    }
-
-    .footer-column {
-        margin-bottom: 20px;
-        width: 100%;
-        max-width: 100%;
-        padding: 0 15px;
-    }
-
-    .social-icons {
-        text-align: center;
-        padding-left: 0;
-    }
-}
