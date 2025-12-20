@@ -123,7 +123,7 @@ def momo_return():
     if not order:
         return "Order not found", 404
 
-    current_payment = get_payment_by_id_and_method_and_status(order_id, PaymentMethod.MOBILE_BANKING,
+    current_payment = get_payment_by_id_and_method_and_status(order_id, PaymentMethod.MOMO,
                                                               PaymentStatus.PENDING)
 
     if result_code == '0':
