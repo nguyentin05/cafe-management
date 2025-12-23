@@ -3,20 +3,7 @@
 {{ super() }}
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/pages/cart.css')}}">
-<style>
-    .flash-overlay {
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        z-index: 9999;
-        width: 350px;
-        max-width: 90%;
-    }
-    .alert {
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        animation: slideIn 0.5s ease-out;
-    }
-</style>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/components/alert.css')}}">
 {% endblock %}
 
 {% block js %}
@@ -25,26 +12,7 @@
 {% endblock %}
 
 {%block content%}
-<div class="flash-overlay">
-    {% with messages = get_flashed_messages(with_categories=true) %}
-    {% if messages %}
-    {% for category, message in messages %}
-    <div class="alert alert-{{ category }} alert-dismissible fade show mb-2" role="alert">
-
-        {% if category == 'danger' %}
-        <i class="fas fa-exclamation-circle me-2"></i>
-        {% elif category == 'success' %}
-        <i class="fas fa-check-circle me-2"></i>
-        {% endif %}
-
-        <span>{{ message }}</span>
-
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-    {% endfor %}
-    {% endif %}
-    {% endwith %}
-</div>
+{%include "layout/flash-alert.html"%}
 <div class="row g-0">
     <div class="col-lg-4 col-md-5">
         <div class="left-panel">

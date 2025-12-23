@@ -1,0 +1,14 @@
+/* static/css/component/alert.css */
+.flash-overlay{
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
+  width: 350px;
+  max-width: 90%;
+}
+
+.flash-overlay .alert{
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  animation: slideIn 0.5s ease-out;
+}

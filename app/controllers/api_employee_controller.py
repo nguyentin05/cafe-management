@@ -232,7 +232,7 @@ def delete_from_report(id):
     return jsonify({'code': 200})
 
 
-@api_employee.route('/orders/<int:order_id>/payment/create', methods=['get'])
+@api_employee.route('/orders/<order_id>/payment/create', methods=['get'])
 @login_required
 @cashier_required
 def create_offline_payment(order_id):

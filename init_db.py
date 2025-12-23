@@ -12,7 +12,7 @@ with app.app_context():
     db.create_all()
 
     if Admin.query.filter_by(username='admin1').first():
-        print("Database đã có dữ liệu")
+        print("Đã có dữ liệu")
         exit(0)
     else:
         print("Đang nạp dữ liệu")
