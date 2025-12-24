@@ -19,7 +19,7 @@ class CKTextAreaField(TextAreaField):
 
 class MyImage(FileUploadField):
     def populate_obj(self, obj, name):
-        r = cloudinary.uploader.upload(request.files['avatar'])
+        r = cloudinary.uploader.upload(request.files.get(name))
         setattr(obj, name, r['secure_url'])
 
 def get_total_session(cart):

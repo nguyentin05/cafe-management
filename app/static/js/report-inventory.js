@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
-    initInventorySelect();
-});
+    initInventorySelect()
+})
 
 function initInventorySelect() {
     if (document.getElementById("ingredientSearch")) {
@@ -12,26 +12,26 @@ function initInventorySelect() {
         },
         placeholder: "Chọn hoặc gõ tên nguyên liệu...",
         plugins: ['clear_button']
-    });
+    })
     }
-    return;
+    return
 }
 function addToReport(obj) {
-    const row = obj.closest('.row');
-    const select = row.querySelector('#ingredientSearch');
-    const quantityInput = row.querySelector('#quantityInput');
-    const value = select.value;
-    const option = select.selectedOptions[0];
+    const row = obj.closest('.row')
+    const select = row.querySelector('#ingredientSearch')
+    const quantityInput = row.querySelector('#quantityInput')
+    const value = select.value
+    const option = select.selectedOptions[0]
 
     if (!option || !option.value) {
-        alert('Vui lòng chọn nguyên liệu!');
-        return;
+        alert('Vui lòng chọn nguyên liệu!')
+        return
     }
 
     if (!quantityInput.value || quantityInput.value <= 0) {
-        alert('Vui lòng nhập số lượng hợp lệ!');
-        quantityInput.focus();
-        return;
+        alert('Vui lòng nhập số lượng hợp lệ!')
+        quantityInput.focus()
+        return
     }
 
     fetch('/api/employee/report-inventory/add', {
@@ -49,9 +49,9 @@ function addToReport(obj) {
     }).then(res => res.json())
     .then(data => {
         if (data.code === 200) {
-            location.reload();
+            location.reload()
         }
-    }).catch(err => console.log(err));
+    }).catch(err => console.log(err))
 }
 
 function deleteReport(id) {
@@ -63,8 +63,8 @@ function deleteReport(id) {
             }
         }).then(res => res.json()).then(data => {
             if (data.code == 200) {
-                location.reload();
+                location.reload()
             }
-        }).catch(err => console.error(err));
+        }).catch(err => console.error(err))
     }
 }
