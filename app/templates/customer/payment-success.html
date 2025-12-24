@@ -20,7 +20,7 @@
             </div>
             <div class="d-flex justify-content-between fs-5">
                 <span>Tổng tiền:</span>
-                <span class="fw-bold text-danger">{{ "{:,.0f}".format(order.total_amount) }} VND</span>
+                <span class="fw-bold text-danger">{{ "{:,.0f}".format(order.total_amount * (1+service_fee)) }} VND</span>
             </div>
         </div>
 

@@ -97,7 +97,7 @@ def edit_info():
                 gender=form.gender.data or None,
             )
             flash('Cập nhật thông tin thành công!', 'success')
-            return redirect(url_for('auth.info'))
+            return redirect(url_for('customer.info'))
         except Exception as ex:
             err_msg = 'he thong loi' + str(ex)
             flash(err_msg, 'danger')

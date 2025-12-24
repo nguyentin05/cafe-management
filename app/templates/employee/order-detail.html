@@ -4,6 +4,7 @@
 {{ super() }}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/pages/order-detail.css')}}">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/components/alert.css')}}">
 {% endblock %}
 
 {% block js %}
@@ -12,6 +13,7 @@
 {% endblock %}
 
 {%block main%}
+{%include "layout/flash-alert.html"%}
 <div class="col-md-9 col-lg-10 mt-5">
     <div class="d-flex justify-content-between mb-3">
         <div>
@@ -118,7 +120,7 @@
                         {% if current_user.is_authenticated and current_user.is_manager %}
                         <button type="submit" class="btn btn-outline-danger"
                                 onclick="cancelStatus({{order.id}})">
-                            Hủy order
+                            Hủy đơn hàng
                         </button>
                         {% endif %}
                         {% endif %}

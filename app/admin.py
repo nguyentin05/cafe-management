@@ -6,11 +6,11 @@ from flask_login import current_user, logout_user
 from wtforms import PasswordField
 
 from .extensions import db
-from .models import UserRole, Ingredient
+from .models.inventory import Ingredient
 from .models.order import Regulation
 from .utils import MyImage, hash_password, CKTextAreaField
 from .models.dish import Dish, DishCategory
-from .models.user import User, Employee
+from .models.user import User, Employee, UserRole
 
 class AuthenticatedView(ModelView):
     def is_accessible(self) -> bool:
@@ -19,6 +19,7 @@ class AuthenticatedView(ModelView):
 class DishView(AuthenticatedView):
     column_list = ["name", "price", 'is_active']
     can_view_details = True
+    column_searchable_list = ['name']
     form_columns = (
         'name', 'description', 'price', 'is_active', 'image', 'unit', 'dishCategory'
     )
@@ -42,6 +43,7 @@ class IngredientView(AuthenticatedView):
     }
 
 class DishCategoryView(AuthenticatedView):
+    can_view_details = True
     column_list = ["name", "dishes"]
     column_searchable_list = ['name']
     column_filters = ['name']
@@ -68,7 +70,7 @@ class EmployeeView(AuthenticatedView):
     column_searchable_list = ['fullname']
     column_filters = ['employee_role']
     column_labels = {
-        "name": "Họ tên",
+        "fullname": "Họ tên",
         "email": "email",
         'employee_role': 'Chức vụ',
         'active': 'active'
@@ -76,7 +78,7 @@ class EmployeeView(AuthenticatedView):
     form_extra_fields = {
         'password': PasswordField('Password')
     }
-    form_excluded_columns = ['order_logs']
+    form_excluded_columns = ['order_logs', 'joined_date']
 
     form_overrides = {
         'avatar': MyImage

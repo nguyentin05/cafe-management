@@ -6,9 +6,11 @@
 <link rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Open+Sans&family=Roboto:wght@400;500&display=swap">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/pages/edit-info.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/components/alert.css')}}">
 {% endblock %}
 
 {%block content%}
+{%include "layout/flash-alert.html"%}
 <div class="container-fluid min-vh-100 pt-4" style="background-color: #f5f5dc">
     <div class="ps-2">
         <a href="{{ url_for('main.menu') }}" class="back-button text-black">
@@ -22,7 +24,8 @@
             <div class="col-lg-8">
                 <div class="card shadow h-100 overflow-hidden" style="border-radius: 16px">
                     <div class="card-header primary-bg text-center p-4">
-                        <h4 class="fw-bold fs-3 text-white my-1" style="font-family: 'Montserrat', sans-serif">Chỉnh sửa thông tin</h4>
+                        <h4 class="fw-bold fs-3 text-white my-1" style="font-family: 'Montserrat', sans-serif">Chỉnh sửa
+                            thông tin</h4>
                     </div>
                     <div class="card-body p-4">
                         <form method="post">

@@ -1,8 +1,9 @@
 from datetime import datetime
 from flask import current_app, url_for
 from app import db
-from app.models import PaymentStatus
-from app.models.payment import MomoPayment, PaymentMethod, Payment
+from app.daos.order_dao import get_value
+from app.models.order import RegulationKey
+from app.models.payment import MomoPayment, PaymentMethod, Payment, PaymentStatus
 import requests, uuid
 
 from app.utils import momo_sign
@@ -21,9 +22,11 @@ class MomoStrategy(PaymentStrategy):
         if result.get("error"):
             raise Exception(f"Lỗi MoMo: {result.get('error')}")
 
+        SERVICE_FEE = float(get_value(RegulationKey.SERVICE_FEE_PERCENT))
+
         payment = MomoPayment(
             order_id=order.id,
-            amount=order.total_amount,
+            amount=order.total_amount * (1+SERVICE_FEE),
             status=PaymentStatus.PENDING,
             request_id=result.get("requestId"),
             pay_url=result.get("payUrl")
@@ -53,7 +56,10 @@ def send_momo_request(order, return_url, ipn_url):
     timestamp = int(datetime.now().timestamp())
     momo_order_id = f"{order.id}_{timestamp}"
     request_id = str(uuid.uuid4())
-    amount = str(int(order.total_amount))
+
+    SERVICE_FEE = float(get_value(RegulationKey.SERVICE_FEE_PERCENT))
+
+    amount = str(int(order.total_amount * (1+SERVICE_FEE) ))
     order_info = f"Thanh toan don hang #{order.id}"
     extra_data = ""
 

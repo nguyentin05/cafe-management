@@ -12,7 +12,7 @@ with app.app_context():
     db.create_all()
 
     if Admin.query.filter_by(username='admin1').first():
-        print("Database đã có dữ liệu")
+        print("Đã có dữ liệu")
         exit(0)
     else:
         print("Đang nạp dữ liệu")
@@ -20,46 +20,97 @@ with app.app_context():
     cg1 = CategoryGroup(name='Foods')
     cg2 = CategoryGroup(name='Drinks')
 
-    dc1 = DishCategory(name='Latte',         categoryGroup_id=2)
-    dc2 = DishCategory(name='Hot Coffee',    categoryGroup_id=2)
-    dc3 = DishCategory(name='Breakfast',     categoryGroup_id=1)
+    dc1 = DishCategory(name='Latte', categoryGroup_id=2)
+    dc2 = DishCategory(name='Hot Coffee', categoryGroup_id=2)
+    dc3 = DishCategory(name='Breakfast', categoryGroup_id=1)
     dc4 = DishCategory(name='Hot Chocolate', categoryGroup_id=2)
-    dc5 = DishCategory(name='Bakery',        categoryGroup_id=1)
+    dc5 = DishCategory(name='Bakery', categoryGroup_id=1)
+    dc6 = DishCategory(name='Frappuccino', categoryGroup_id=2)
+    dc7 = DishCategory(name='Tea & Refreshers', categoryGroup_id=2)
 
     d1 = Dish(
-        name='Latte', price=40000,
+        name='Latte', price=44000,
         image='https://res.cloudinary.com/dam6k8ezg/image/upload/v1762667757/kices3owtzqzhhxqshie.jpg',
         unit=DishUnit.CUP, dishCategory_id=1
     )
     d2 = Dish(
-        name='Americano', price=40000,
+        name='Americano', price=48000,
         image='https://res.cloudinary.com/dam6k8ezg/image/upload/v1762668228/nk9biuw7piporcr5ykoa.jpg',
         unit=DishUnit.CUP, dishCategory_id=2
     )
     d3 = Dish(
-        name='Matcha Latte', price=40000,
+        name='Matcha Latte', price=50000,
         image='https://res.cloudinary.com/dam6k8ezg/image/upload/v1762668374/nlai0rzggdsex7bu0mxe.jpg',
         unit=DishUnit.CUP, dishCategory_id=1
     )
     d4 = Dish(
-        name='Croissant', price=40000,
+        name='Croissant', price=35000,
         image='https://res.cloudinary.com/dam6k8ezg/image/upload/v1762668533/qbnmz5iknk5dvuxfb8od.jpg',
         unit=DishUnit.PIECE, dishCategory_id=5
     )
     d5 = Dish(
-        name='Bacon Gouda Egg Sandwich', price=40000,
+        name='Bacon Gouda Egg Sandwich', price=46000,
         image='https://res.cloudinary.com/dam6k8ezg/image/upload/v1762668577/uu2adt55oktzh93j9zlb.jpg',
         unit=DishUnit.PIECE, dishCategory_id=3
     )
     d6 = Dish(
-        name='Cappuccino', price=40000,
+        name='Cappuccino', price=48000,
         image='https://res.cloudinary.com/dam6k8ezg/image/upload/v1762668604/xvifqkcn1ukgexznfpby.jpg',
         unit=DishUnit.CUP, dishCategory_id=2
     )
     d7 = Dish(
-        name='Egg Pesto Mozzarella Sandwich', price=40000,
+        name='Egg Pesto Mozzarella Sandwich', price=60000,
         image='https://res.cloudinary.com/dam6k8ezg/image/upload/v1762668656/yxfejhpbb4g3svpgtsvq.jpg',
         unit=DishUnit.PIECE, dishCategory_id=3
+    )
+    d8 = Dish(
+        name='Caramel Frappuccino',
+        price=55000,
+        image='https://res.cloudinary.com/dam6k8ezg/image/upload/v1766578039/Caramel_ycbd3x.jpg',
+        unit=DishUnit.CUP,
+        dishCategory_id=6
+    )
+    d9 = Dish(
+        name='Java Chip Frappuccino',
+        price=65000,
+        image='https://res.cloudinary.com/dam6k8ezg/image/upload/v1766578040/java_chip_ufkmkd.jpg',
+        unit=DishUnit.CUP,
+        dishCategory_id=6
+    )
+    d10 = Dish(
+        name='Green Tea Cream Frappuccino',
+        price=60000,
+        image='https://res.cloudinary.com/dam6k8ezg/image/upload/v1762667757/default_matcha.jpg',
+        unit=DishUnit.CUP,
+        dishCategory_id=6
+    )
+    d11 = Dish(
+        name='Peach Green Tea Lemonade',
+        price=50000,
+        image='https://res.cloudinary.com/dam6k8ezg/image/upload/v1766578040/green_tea_mh3hnz.jpg',
+        unit=DishUnit.CUP,
+        dishCategory_id=7
+    )
+    d12 = Dish(
+        name='Hibiscus Tea with Pomegranate Pearls',
+        price=55000,
+        image='https://res.cloudinary.com/dam6k8ezg/image/upload/v1766578040/hibicus_txtwht.jpg',
+        unit=DishUnit.CUP,
+        dishCategory_id=7
+    )
+    d13 = Dish(
+        name='Chocolate Chip Cookie',
+        price=30000,
+        image='https://res.cloudinary.com/dam6k8ezg/image/upload/v1766578040/cookie_gqnduw.jpg',
+        unit=DishUnit.PIECE,
+        dishCategory_id=5
+    )
+    d14 = Dish(
+        name='Cold Brew',
+        price=45000,
+        image='https://res.cloudinary.com/dam6k8ezg/image/upload/v1766578039/coldbrew_zwttti.jpg',
+        unit=DishUnit.CUP,
+        dishCategory_id=2
     )
 
     c1 = Customer(
@@ -147,9 +198,28 @@ with app.app_context():
                     cost=250000,
                     description='Chocolate from Germany',
                     unit=IngredientUnit.KG)
+    i7 = Ingredient(name='Fresh Milk',
+                    cost=35000,
+                    unit=IngredientUnit.L)
+    i8 = Ingredient(name='Whipping Cream',
+                    cost=120000,
+                    unit=IngredientUnit.L)
+    i9 = Ingredient(name='Caramel Syrup',
+                    cost=220000,
+                    unit=IngredientUnit.L)
+    i10 = Ingredient(name='Vanilla Syrup',
+                     cost=220000,
+                     unit=IngredientUnit.L)
+    i11 = Ingredient(name='Ice',
+                     cost=5000,
+                     unit=IngredientUnit.KG)
 
-    db.session.add_all([cg1, cg2, dc1, dc2, dc3, dc4, dc5,
-                        d1, d2, d3, d4, d5, d6, d7, c1, a1, w1, cs1, m1, r1, r2, r3, i1, i2, i3, i4, i5, i6])
+    db.session.add_all([cg1, cg2,
+                        dc1, dc2, dc3, dc4, dc5, dc6, dc7,
+                        d1, d2, d3, d4, d5, d6, d7, d8, d9, d10, d11, d12, d13, d14,
+                        c1, a1, w1, cs1, m1,
+                        r1, r2, r3,
+                        i1, i2, i3, i4, i5, i6, i7, i8, i9, i10, i11])
     db.session.commit()
 
     print("Đã nạp xong dữ liệu")

@@ -8,9 +8,9 @@ app = create_app()
 if __name__ == "__main__":
     with app.app_context():
         today = date.today().isoformat()
-        pattern = f'inventory_report:{today}:*'
+        report_key = f'inventory_report:{today}:*'
 
-        keys = redis_client.keys(pattern)
+        keys = redis_client.keys(report_key)
 
         for key in keys:
             _, date_str, waiter_id = key.split(':')

@@ -3,9 +3,11 @@
 {{ super() }}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/pages/checkout.css')}}">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/components/alert.css')}}">
 {% endblock %}
 
 {%block content%}
+{%include "layout/flash-alert.html"%}
 <div class="container-fluid min-vh-100 pt-4 d-flex flex-column" style="background-color: #dbe4e8">
     <div class="ps-3">
         <a href="{{ url_for('customer.cart') }}" class="back-button text-black">
@@ -90,7 +92,7 @@
                 <div class="total-row d-flex justify-content-between fw-bold fs-5 pt-3"
                      style="border-top: 2px dashed #dddddd">
                     <span>Tổng cộng:</span>
-                    <span>{{ "{:,.0f}".format(order.total_amount) }}</span>
+                    <span>{{ "{:,.0f}".format(order.total_amount * (1 + service_fee)) }}</span>
                 </div>
                 <div class="mt-4 d-flex align-items-center">
                     <a href="{{ url_for('api_customer.create_payment', order_id=order.id) }}"
