@@ -80,14 +80,14 @@ with app.app_context():
     d10 = Dish(
         name='Green Tea Cream Frappuccino',
         price=60000,
-        image='https://res.cloudinary.com/dam6k8ezg/image/upload/v1762667757/default_matcha.jpg',
+        image='https://res.cloudinary.com/dam6k8ezg/image/upload/v1766578040/green_tea_mh3hnz.jpg',
         unit=DishUnit.CUP,
         dishCategory_id=6
     )
     d11 = Dish(
         name='Peach Green Tea Lemonade',
         price=50000,
-        image='https://res.cloudinary.com/dam6k8ezg/image/upload/v1766578040/green_tea_mh3hnz.jpg',
+        image='https://res.cloudinary.com/dam6k8ezg/image/upload/v1766578040/tea_lemonade_npd2ah.jpg',
         unit=DishUnit.CUP,
         dishCategory_id=7
     )
